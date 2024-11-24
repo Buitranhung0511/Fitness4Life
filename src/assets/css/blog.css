@@ -1,0 +1,212 @@
+.blog-list {
+	margin: 0 100px 0 100px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+
+.blog-item {
+	border: 1px solid #ddd;
+	padding: 20px;
+	margin: 10px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease-in-out; /* Smooth transition for the zoom effect */
+  }
+  
+  .blog-item:hover {
+	transform: scale(1.05); /* Zoom effect on hover */
+  }
+  
+.blog-thumbnail {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-top: 10px;
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Center the pagination container */
+.pagination {
+	display: flex;
+	justify-content: center; /* Center the buttons and page number horizontally */
+	align-items: center;     /* Align buttons vertically if needed */
+	margin-top: 20px;
+  }
+  
+  /* Style for the page number */
+  .page-number {
+	margin: 0 15px; /* Space between the buttons and page number */
+	font-size: 18px;
+	font-weight: bold;
+  }
+  
+  /* Style for pagination buttons */
+  .pagination button {
+	padding: 8px 16px;
+	border: 0;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+	font-weight: 400;
+	padding: 6px 13px;
+	position: relative;
+	background: var(--orgrage);
+	white-space: nowrap;
+	display: inline-block;
+	text-decoration: none;
+  }
+  .pagination button:hover {
+	color: #f6f6f6;
+	text-decoration: none;
+	transition: all 0.3s ease-in-out;
+	background-color: var(--primary);
+  }
+  
+  .pagination button:disabled {
+	background-color: #d3d3d3;
+	cursor: not-allowed;
+  }
+  
+  /* Add this to your blog.css file */
+.loading-spinner {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+  }
+  
+  .spinner {
+	border: 4px solid rgba(255, 255, 255, 0.3);
+	border-top: 4px solid #3498db;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+  }
+  /* ========= Blog details */
+  /* General styling for the blog detail section */
+#blog-detail {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 40px auto;
+	padding: 20px;
+	max-width: 1200px;
+	background-color: #6e6c6c;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .blog-detail {
+	margin-left: 70px;
+	flex: 8;
+	padding-right: 30px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+	padding: 20px;
+  }
+  
+  .blog-title {
+	font-size: 32px;
+	font-weight: 700;
+	color: #333;
+	margin-bottom: 15px;
+  }
+  
+  .blog-category, .blog-tags, .blog-created-at {
+	font-size: 16px;
+	color: #555;
+	margin-bottom: 10px;
+  }
+  
+  .blog-content {
+	font-size: 18px;
+	line-height: 1.6;
+	color: #333;
+  }
+  
+  .related-blogs {
+	flex: 4;
+	padding-left: 30px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+	padding: 20px;
+  }
+  
+  .related-blogs h3 {
+	font-size: 24px;
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 20px;
+  }
+  
+  .related-blogs ul {
+	list-style-type: none;
+	padding: 0;
+  }
+  
+  .related-blogs li {
+	margin-bottom: 10px;
+  }
+  
+  .related-blog-link {
+	text-decoration: none;
+	color: #007bff;
+	font-size: 18px;
+	transition: color 0.3s ease;
+  }
+  
+  .related-blog-link:hover {
+	color: #0056b3;
+  }
+  
+  @media (max-width: 768px) {
+	#blog-detail {
+	  flex-direction: column;
+	}
+  
+	.blog-detail, .related-blogs {
+	  flex: none;
+	  margin-bottom: 20px;
+	}
+  
+	.blog-title {
+	  font-size: 28px;
+	}
+  
+	.related-blogs h3 {
+	  font-size: 20px;
+	}
+  
+	.related-blog-link {
+	  font-size: 16px;
+	}
+  }
+  
+
+  .blog-list-item {
+	display: flex;
+	transition: background-color 0.3s ease;
+  }
+  
+  .blog-list-item:hover {
+	background-color: #c3baba;
+  }
+  
