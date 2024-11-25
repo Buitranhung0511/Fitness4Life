@@ -8,14 +8,15 @@ import AllClubs from "./AllClubs";
 function Club() {
 
     const [dataClubs, setDataClubs] = useState([]);
+    const [filteredData, setFilteredData] = useState(dataClubs);
 
     useEffect(() => {
         loadClubs();
     }, []);
 
     const loadClubs = async () => {
-        const res = await fetchAllClubs()
-        console.log("Dữ Liệu Trả Về từ res.date", res.data.data);
+        const res = await fetchAllClubs();
+        setFilteredData(res.data.data);
         setDataClubs(res.data.data);
     }
 
@@ -25,7 +26,11 @@ function Club() {
 
             <AllClubs
                 loadClubs={loadClubs}
-                dataClubs={dataClubs} />
+                dataClubs={dataClubs} 
+                filteredData={filteredData}
+                setFilteredData={setFilteredData}
+
+                />
         </div>
     )
 }

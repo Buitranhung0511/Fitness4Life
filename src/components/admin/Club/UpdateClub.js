@@ -16,7 +16,6 @@ const UpdateClub = (props) => {
 
 
     useEffect(() => {
-        console.log(">>>Check dataUpdate", dataUpdate);
         if (dataUpdate) {
             setId(dataUpdate.id);
             setName(dataUpdate.name);

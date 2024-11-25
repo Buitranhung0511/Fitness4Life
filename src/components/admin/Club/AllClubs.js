@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, notification, Pagination, Popconfirm, Table, TimePicker } from 'antd';
+import { Button, Input, notification, Popconfirm, Table, TimePicker } from 'antd';
 import { useEffect, useState } from 'react';
 import UpdateClub from './UpdateClub';
 import { deleteClubApi } from '../../../services/ClubService';
 import ViewUserDetail from './DetailClub';
 
 function AllClubs(props) {
-    const { dataClubs, loadClubs } = props
+    const { dataClubs, loadClubs,setFilteredData,filteredData } = props
 
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -15,7 +15,6 @@ function AllClubs(props) {
     const [dataDetail, setDataDetail] = useState(null);
 
     const [searchText, setSearchText] = useState('');
-    const [filteredData, setFilteredData] = useState(dataClubs);
 
     const columns = [
         {
@@ -179,12 +178,12 @@ function AllClubs(props) {
                 isDataDetailOpen={isDataDetailOpen}
                 setIsDataDetailOpen={setIsDataDetailOpen}
             />
-            <Pagination
+            {/* <Pagination
                 total={100}
                 showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
                 defaultPageSize={20}
                 defaultCurrent={1}
-            />
+            /> */}
         </>
     )
 }

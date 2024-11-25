@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createClubApi } from "../../../services/ClubService";
+import { addClubImageApi, createClubApi } from "../../../services/ClubService";
 import Input from "antd/es/input/Input";
 import { Button, notification, Modal } from "antd";
 
@@ -13,6 +13,8 @@ function CreateClub(props) {
     const [openHour, setOpenHour] = useState("");
     const [closeHour, setCloseHour] = useState("");
     const [isModalOpen, setIsModelOpen] = useState(false);
+    const [file, setFile] = useState(null);
+
     const [error, setErrors] = useState({});
 
     const validateField = (field, value) => {
@@ -46,6 +48,15 @@ function CreateClub(props) {
                     newErrors.hours = "";
                 }
                 break;
+            case "file":
+                if (!value) {
+                    newErrors.file = "Image file is required.";
+                } else if (!/\.(jpg|jpeg|png)$/i.test(value.name)) {
+                    newErrors.file = "File must be a .jpg, .jpeg, or .png image.";
+                } else {
+                    newErrors.file = "";
+                }
+                break;
             default:
                 break;
         }
@@ -65,11 +76,11 @@ function CreateClub(props) {
         };
 
         setErrors(newErrors);
-    
+
         // Kiểm tra xem có bất kỳ lỗi nào không
         return Object.values(newErrors).some((err) => err);
     };
-    
+
 
     const handleChange = (field, value) => {
         const setters = {
@@ -79,28 +90,55 @@ function CreateClub(props) {
             description: setDescription,
             openHour: setOpenHour,
             closeHour: setCloseHour,
+            file: setFile,
         };
-    
+
         setters[field]?.(value); // Gọi hàm set tương ứng nếu tồn tại
         validateField(field, value); // Gọi validate cho trường đó
     };
     const handleSubmitBtn = async () => {
         const hasErrors = validateAllFields();
-    if (hasErrors) {
-        notification.error({
-            message: "Validation Error",
-            description: "Please fix the errors in the form before submitting."
-        });
-        return;
-    }
+        if (hasErrors) {
+            notification.error({
+                message: "Validation Error",
+                description: "Please fix the errors in the form before submitting."
+            });
+            return;
+        }
 
         const res = await createClubApi(name, address, contactPhone, description, openHour, closeHour);
-        
+
         if (res.data.data) {
             notification.success({
                 message: "Create Club",
                 description: "Club created successfully."
             });
+            console.log("hihihihi");
+
+            const clubId = res.data.data.id; // Assuming the response contains the club ID
+            console.log("12", clubId);
+
+
+            const imageFormData = new FormData();
+            imageFormData.append("clubId", clubId);
+            imageFormData.append("file", file);
+
+
+            // Upload image for the created club
+            const imageRes = await addClubImageApi(imageFormData);
+            console.log("Image API Response:", imageRes.data);
+            if (imageRes.data) {
+                notification.success({
+                    message: "Image Upload",
+                    description: "Club image uploaded successfully."
+                });
+
+            } else {
+                notification.error({
+                    message: "Error Uploading Image",
+                    description:"Image upload failed."
+                });
+            }
             resetAndCloseModal();
             await loadClubs();
         } else {
@@ -119,6 +157,7 @@ function CreateClub(props) {
         setDescription("");
         setOpenHour("");
         setCloseHour("");
+        setFile("");
         setErrors({});
     };
 
@@ -193,6 +232,16 @@ function CreateClub(props) {
                         {error.closeHour && <span style={{ color: "red" }}>{error.closeHour}</span>}
                         {error.hours && <span style={{ color: "red" }}>{error.hours}</span>}
                     </div>
+                    <div>
+                        <span>Upload Image</span>
+                        <Input
+                            type="file"
+
+                            onChange={(event) => { handleChange("file", event.target.files[0]); }}
+                        />
+                        {error.file && <span style={{ color: "red" }}>{error.file}</span>}
+                    </div>
+
                 </div>
             </Modal>
         </>
