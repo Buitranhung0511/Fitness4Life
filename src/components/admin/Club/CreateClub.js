@@ -4,7 +4,7 @@ import Input from "antd/es/input/Input";
 import { Button, notification, Modal } from "antd";
 
 function CreateClub(props) {
-    const { loadClubs } = props;
+    const { loadClubs, isModalOpen,setIsModelOpen } = props;
 
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
@@ -12,7 +12,7 @@ function CreateClub(props) {
     const [description, setDescription] = useState("");
     const [openHour, setOpenHour] = useState("");
     const [closeHour, setCloseHour] = useState("");
-    const [isModalOpen, setIsModelOpen] = useState(false);
+  
     const [file, setFile] = useState(null);
 
     const [error, setErrors] = useState({});
@@ -136,7 +136,7 @@ function CreateClub(props) {
             } else {
                 notification.error({
                     message: "Error Uploading Image",
-                    description:"Image upload failed."
+                    description: "Image upload failed."
                 });
             }
             resetAndCloseModal();
@@ -157,20 +157,22 @@ function CreateClub(props) {
         setDescription("");
         setOpenHour("");
         setCloseHour("");
-        setFile("");
+        setFile(null);
         setErrors({});
+
     };
 
     return (
         <>
-            <div className="user-form" style={{ display: "flex", justifyContent: "space-between" }}>
-                <h3>Table Clubs</h3>
+            {/* <div className="user-form" style={{ display: "flex", justifyContent: "space-between" }}>
                 <div>
                     <Button
+                        name='plus-circle'
                         onClick={() => { setIsModelOpen(true); }}
-                        type="primary"> Create New Club  </Button>
+                    > +</Button>
+                    <box-icon  ></box-icon>
                 </div>
-            </div>
+            </div> */}
             <Modal
                 title="Create A New Club"
                 open={isModalOpen}

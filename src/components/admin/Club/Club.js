@@ -9,7 +9,7 @@ function Club() {
 
     const [dataClubs, setDataClubs] = useState([]);
     const [filteredData, setFilteredData] = useState(dataClubs);
-
+    const [isModalOpen, setIsModelOpen] = useState(false);
     useEffect(() => {
         loadClubs();
     }, []);
@@ -22,15 +22,20 @@ function Club() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <CreateClub loadClubs={loadClubs} />
+            <CreateClub
+                loadClubs={loadClubs}
+                isModalOpen={isModalOpen}
+                setIsModelOpen={setIsModelOpen}
+            />
 
             <AllClubs
                 loadClubs={loadClubs}
-                dataClubs={dataClubs} 
+                dataClubs={dataClubs}
                 filteredData={filteredData}
                 setFilteredData={setFilteredData}
+                setIsModelOpen={setIsModelOpen}
 
-                />
+            />
         </div>
     )
 }

@@ -1,12 +1,14 @@
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, notification, Popconfirm, Table, TimePicker } from 'antd';
 import { useEffect, useState } from 'react';
+import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from 'antd';
 import UpdateClub from './UpdateClub';
+import ViewClubDetail from './DetailClub';
 import { deleteClubApi } from '../../../services/ClubService';
-import ViewUserDetail from './DetailClub';
+import '../../../assets/css/club.css';
+import moment from 'moment';
 
 function AllClubs(props) {
-    const { dataClubs, loadClubs,setFilteredData,filteredData } = props
+    const { dataClubs, loadClubs, setFilteredData, filteredData, setIsModelOpen } = props;
 
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -16,49 +18,40 @@ function AllClubs(props) {
 
     const [searchText, setSearchText] = useState('');
 
+    const [addressFilters, setAddressFilters] = useState([]);
+    useEffect(() => {
+        const uniqueAddresses = [...new Set(dataClubs.map((club) => club.address))];
+        const filters = uniqueAddresses.map((address) => ({
+            text: address,
+            value: address,
+        }));
+        setAddressFilters(filters);
+    }, [dataClubs]);
+
     const columns = [
         {
             title: 'Id',
             dataIndex: 'id',
-            render: (_, record) => {
-                return (
-                    <a href='#'
-                        onClick={() => {
-                            setDataDetail(record);
-                            setIsDataDetailOpen(true);
-                        }}
-                    >{record.id}</a>
-                )
-            }
+            render: (_, record) => (
+                <a
+                    href="#"
+                    onClick={() => {
+                        setDataDetail(record);
+                        setIsDataDetailOpen(true);
+                    }}
+                >
+                    {record.id}
+                </a>
+            ),
         },
         {
             title: 'Name',
             dataIndex: 'name',
-            filters: [
-                {
-                    text: 'Lad',
-                    value: 'Joe',
-                }
-
-            ],
-            filterMode: 'tree',
-            filterSearch: true,
-            onFilter: (value, record) => record.name.includes(value),
-            width: '30%',
         },
         {
             title: 'Address',
             dataIndex: 'address',
-            filters: [
-                {
-                    text: '477 Elm St',
-                    value: '477 Elm St',
-                },
-                {
-                    text: '223 HongHa st',
-                    value: '223 HongHa st',
-                },
-            ],
+            filters: addressFilters, // Use dynamically generated filters
             onFilter: (value, record) => record.address.startsWith(value),
             filterSearch: true,
             width: '40%',
@@ -70,97 +63,117 @@ function AllClubs(props) {
         {
             title: 'Close Hour',
             dataIndex: 'closeHour',
-       
+            render: (value) => moment(value, 'HHmm').format('HH:mm'),
         },
         {
             title: 'Open Hour',
             dataIndex: 'openHour',
-            
+            render: (value) => moment(value, 'HHmm').format('HH:mm'),
         },
         {
             title: 'Action',
             key: 'action',
-            render: (_, record) => (
-                <div style={{ display: "flex", gap: "20px" }}>
-                    <EditOutlined
-                        style={{ cursor: "pointer", color: "orange" }}
-                        onClick={() => {
-                            setDataUpdate(record)
-                            setIsModalUpdateOpen(true)
-                        }}
-                    />
-                    <Popconfirm
-                        title="Delete Club"
-                        description="Are you sure delete it ?? ....."
-                        onConfirm={() => { handleDeleteUser(record.id) }}
-                        okText="Yes"
-                        cancelText="No"
-                        placement="left"
-                    >
-                        <DeleteOutlined style={{ cursor: "pointer", color: "red" }} />
-                    </Popconfirm>
-                </div>
-            ),
-        }
+            render: (_, record) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item
+                            key="edit"
+                            icon={<EditOutlined style={{ color: 'orange' }} />}
+                            onClick={() => {
+                                setDataUpdate(record);
+                                setIsModalUpdateOpen(true);
+                            }}
+                        >
+                            Edit
+                        </Menu.Item>
+                        <Menu.Item
+                            key="delete"
+                            icon={<DeleteOutlined style={{ color: 'red' }} />}
+                        >
+                            <Popconfirm
+                                title="Delete Club"
+                                description="Are you sure delete it?"
+                                onConfirm={() => handleDeleteUser(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                                placement="left"
+                            >
+                                Delete
+                            </Popconfirm>
+                        </Menu.Item>
+                    </Menu>
+                );
+                return (
+                    <Dropdown overlay={menu} trigger={['click']} placement="bottomLeft">
+                        <MoreOutlined
+                            style={{
+                                fontSize: '18px',
+                                cursor: 'pointer',
+                                color: '#1890ff',
+                            }}
+                        />
+                    </Dropdown>
+                );
+            },
+        },
     ];
 
     const handleSearch = (value) => {
-        const filtered = dataClubs.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
+        const filtered = dataClubs.filter((item) =>
+            item.name.toLowerCase().includes(value.toLowerCase())
+        );
         setFilteredData(filtered);
     };
 
     const handleDeleteUser = async (id) => {
         const res = await deleteClubApi(id);
-        console.log("id: ", id);
         if (res.data.data) {
             notification.success({
-                message: "Delete Club",
-                description: "Delete Club successfully....!"
-            })
+                message: 'Delete Club',
+                description: 'Delete Club successfully....!',
+            });
             await loadClubs();
         } else {
             notification.error({
-                message: "Error delete user",
-                description: JSON.stringify(res.message)
-            })
+                message: 'Error delete user',
+                description: JSON.stringify(res.message),
+            });
         }
-    }
-
-    const onChange = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
     };
-
-
 
     return (
         <>
             <div>
-                {/* Tạo ô tìm kiếm */}
-                <Input
-                    placeholder="Search by name"
-                    value={searchText}
-                    onChange={(e) => {
-                        setSearchText(e.target.value);
-                        handleSearch(e.target.value);
-                    }}
-                    onPressEnter={() => handleSearch(searchText)}
-                    style={{ width: 200, marginBottom: 20 }}
-                />
-                <Button
-                    type="primary"
-                    icon={<SearchOutlined />}
-                    onClick={() => handleSearch(searchText)}
-                >
+                <div className="table-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                        <h2>Clubs</h2>
+                    </div>
+                    <div className="user-form">
+                        <PlusOutlined
+                            name="plus-circle"
+                            onClick={() => {
+                                setIsModelOpen(true);
+                            }}
+                            style={{ marginRight: 15, color: '#FF6600' }}
+                        />
+                        <Input
+                            placeholder="Search by name"
+                            value={searchText}
+                            onChange={(e) => {
+                                setSearchText(e.target.value);
+                                handleSearch(e.target.value);
+                            }}
+                            onPressEnter={() => handleSearch(searchText)}
+                            style={{ width: 450, marginBottom: 50, marginRight: 100, height: 35 }}
+                        />
+                    </div>
+                </div>
 
-                </Button>
-
-                {/* Bảng với dữ liệu đã lọc */}
                 <Table
+                    className="row-highlight-table"
                     columns={columns}
                     dataSource={filteredData}
-                    rowKey={"id"}
-                    onChange={onChange}
-
+                    rowKey={'id'}
                 />
             </div>
 
@@ -172,20 +185,14 @@ function AllClubs(props) {
                 loadClubs={loadClubs}
             />
 
-            <ViewUserDetail
+            <ViewClubDetail
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
                 setIsDataDetailOpen={setIsDataDetailOpen}
             />
-            {/* <Pagination
-                total={100}
-                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-                defaultPageSize={20}
-                defaultCurrent={1}
-            /> */}
         </>
-    )
+    );
 }
 
 export default AllClubs;

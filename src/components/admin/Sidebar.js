@@ -7,10 +7,9 @@ const Sidebar = ({ setMenuItems, isCollapsed }) => {
   const menuItems = useMemo(() => [
     { label: 'Dashboard', icon: 'bxs-dashboard', path: '/admin/dashboard' },
     { label: 'User', icon: 'bxs-user-rectangle', path: '/admin/users' },
-    { label: 'Blogs', icon: 'bx-analyse', path: '/admin/blogs' },
-    { label: 'Tickets', icon: 'bx-message-square-dots', path: '/admin/home' },
-    { label: 'Users', icon: 'bx-group', path: '/admin/home' },
+    { label: 'Blogs', icon: 'bx-analyse', path: '/admin/Blogs' },
     { label: 'Club', icon: 'bx-buildings', path: '/admin/Club' },
+    { label: 'Tickets', icon: 'bx-message-square-dots', path: '/admin/home' },
     { label: 'Settings', icon: 'bx-cog', path: '/admin/home' }
   ], []); // Menu items
 

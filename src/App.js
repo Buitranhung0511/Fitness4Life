@@ -14,6 +14,8 @@ import ContactForm from './components/main/contact/ContactForm';
 import Login from './components/main/login/Login';
 import Registration from './components/main/login/Registration';
 import Club from './components/admin/Club/Club'
+import Blogs from './components/admin/Blog/Blogs';
+import Users from './components/admin/User/Users';
 
 
 const App = () => {
@@ -43,6 +45,8 @@ const App = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="home" element={<Home />} />
+          <Route path="Users" element={<Users/>} />
+          <Route path="Blogs" element={<Blogs/>} />
           <Route path="Club" element={<Club/>} />
 
         </Route>
