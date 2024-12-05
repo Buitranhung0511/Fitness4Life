@@ -16,6 +16,10 @@ import Registration from './components/main/login/Registration';
 import Club from './components/admin/Club/Club'
 import Blogs from './components/admin/Blog/Blogs';
 import Users from './components/admin/User/Users';
+import Booking from './components/admin/Booking/Booking';
+import Room from './components/admin/Room/Room';
+import Branch from './components/admin/Branch/Branch';
+import Trainer from './components/admin/Trainer/Trainer';
 
 
 const App = () => {
@@ -48,6 +52,11 @@ const App = () => {
           <Route path="Users" element={<Users/>} />
           <Route path="Blogs" element={<Blogs/>} />
           <Route path="Club" element={<Club/>} />
+          <Route path="Booking" element={<Booking/>} />
+          <Route path="Room" element={<Room/>} />
+          <Route path="Branch" element={<Branch/>} />
+          <Route path="Trainer" element={<Trainer/>} />
+
 
         </Route>
       </Routes>

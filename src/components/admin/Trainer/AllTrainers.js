@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from 'antd';
-import UpdateClub from './UpdateClub';
-import ViewClubDetail from './DetailClub';
-import { deleteClubApi } from '../../../services/ClubService';
 import '../../../assets/css/club.css';
 import moment from 'moment';
-
-function AllClubs(props) {
-    const { dataClubs, loadClubs, setFilteredData, filteredData, setIsModelOpen } = props;
-    console.log(">>>Check DATA",dataClubs);
+import { deleteTrainer } from '../../../services/TrainerService';
+function AllTrainers(props) {
+    const { dataTrainer, loadTrainers, setFilteredData, filteredData, setIsModelOpen } = props;
+    console.log(">>>Check DATA", dataTrainer);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -18,15 +15,15 @@ function AllClubs(props) {
 
     const [searchText, setSearchText] = useState('');
 
-    const [addressFilters, setAddressFilters] = useState([]);
-    useEffect(() => {
-        const uniqueAddresses = [...new Set(dataClubs.map((club) => club.address))];
-        const filters = uniqueAddresses.map((address) => ({
-            text: address,
-            value: address,
-        }));
-        setAddressFilters(filters);
-    }, [dataClubs]);
+    const [branchFilters, setBranchFilters] = useState([]);
+    // useEffect(() => {
+    //     const uniqueBranches = [...new Set(dataTrainer.map((trainer) => trainer.branch.name))];
+    //     const filters = uniqueBranches.map((branch) => ({
+    //         text: branch,
+    //         value: branch,
+    //     }));
+    //     setBranchFilters(filters);
+    // }, [dataTrainer]);
 
     const columns = [
         {
@@ -45,31 +42,29 @@ function AllClubs(props) {
             ),
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'Full Name',
+            dataIndex: 'fullName',
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            filters: addressFilters, // Use dynamically generated filters
-            onFilter: (value, record) => record.address.startsWith(value),
-            filterSearch: true,
-            width: '40%',
+            title: 'Specialization',
+            dataIndex: 'specialization',
         },
         {
-            title: 'Contact Phone',
-            dataIndex: 'contactPhone',
+            title: 'Phone Number',
+            dataIndex: 'phoneNumber',
         },
         {
-            title: 'Close Hour',
-            dataIndex: 'closeHour',
-            render: (value) => moment(value, 'HHmm').format('HH:mm'),
+            title: 'Experience (Years)',
+            dataIndex: 'experienceYear',
         },
-        {
-            title: 'Open Hour',
-            dataIndex: 'openHour',
-            render: (value) => moment(value, 'HHmm').format('HH:mm'),
-        },
+        // {
+        //     title: 'Branch',
+        //     dataIndex: 'branch',
+        //     filters: branchFilters, // Use dynamically generated filters
+        //     onFilter: (value, record) => record.branch.name.startsWith(value),
+        //     filterSearch: true,
+        //     width: '40%',
+        // },
         {
             title: 'Action',
             key: 'action',
@@ -91,9 +86,9 @@ function AllClubs(props) {
                             icon={<DeleteOutlined style={{ color: 'red' }} />}
                         >
                             <Popconfirm
-                                title="Delete Club"
+                                title="Delete Trainer"
                                 description="Are you sure delete it?"
-                                onConfirm={() => handleDeleteUser(record.id)}
+                                onConfirm={() => handleDeleteTrainer(record.id)}
                                 okText="Yes"
                                 cancelText="No"
                                 placement="left"
@@ -119,23 +114,24 @@ function AllClubs(props) {
     ];
 
     const handleSearch = (value) => {
-        const filtered =dataClubs.filter((item) =>
-            item.name.toLowerCase().includes(value.toLowerCase())
+        const filtered = dataTrainer.filter((item) =>
+            item.fullName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(filtered);
+        console.log(">>>>CHeck", filtered);
     };
 
-    const handleDeleteUser = async (id) => {
-        const res = await deleteClubApi(id);
+    const handleDeleteTrainer = async (id) => {
+        const res = await deleteTrainer(id);
         if (res.data.data) {
             notification.success({
-                message: 'Delete Club',
-                description: 'Delete Club successfully....!',
+                message: 'Delete Trainer',
+                description: 'Delete Trainer successfully....!',
             });
-            await loadClubs();
+            await loadTrainers();
         } else {
             notification.error({
-                message: 'Error delete user',
+                message: 'Error delete trainer',
                 description: JSON.stringify(res.message),
             });
         }
@@ -146,7 +142,7 @@ function AllClubs(props) {
             <div>
                 <div className="table-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                        <h2>Clubs</h2>
+                        <h2>Trainers</h2>
                     </div>
                     <div className="user-form">
                         <PlusOutlined
@@ -177,22 +173,22 @@ function AllClubs(props) {
                 />
             </div>
 
-            <UpdateClub
+            {/* <UpdateTrainer
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
-                loadClubs={loadClubs}
+                loadTrainers={loadTrainers}
             />
 
-            <ViewClubDetail
+            <ViewTrainerDetail
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
                 setIsDataDetailOpen={setIsDataDetailOpen}
-            />
+            /> */}
         </>
     );
 }
 
-export default AllClubs;
+export default AllTrainers;

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-    const URL_CLUB = "http://localhost:9997/api";
+const URL_CLUB = "http://localhost:9998/api/dashboard";
 
 const createClubApi = (name, address, contactPhone, description, openHour, closeHour) => {
-    const URL_BACKEND = `${URL_CLUB}/manager/club/add`;
+    const URL_BACKEND = `${URL_CLUB}/club/add`;
     const data = {
         name: name,
         address: address,
@@ -16,7 +16,7 @@ const createClubApi = (name, address, contactPhone, description, openHour, close
 }
 
 const updateClubApi = (id, name, address, contactPhone, description, openHour, closeHour) => {
-    const URL_BACKEND = `${URL_CLUB}/manager/club/update/${id}`;
+    const URL_BACKEND = `${URL_CLUB}/club/update/${id}`;
     const data = {
         name: name,
         address: address,
@@ -29,17 +29,17 @@ const updateClubApi = (id, name, address, contactPhone, description, openHour, c
 }
 
 const fetchAllClubs = () => {
-    const URL_BACKEND = `${URL_CLUB}/public/clubs`;
+    const URL_BACKEND = `${URL_CLUB}/clubs`;
     return axios.get(URL_BACKEND);
 }
 
 const deleteClubApi = (id) => {
-    const URL_BACKEND = `${URL_CLUB}/manager/club/delete/${id}`;
+    const URL_BACKEND = `${URL_CLUB}/club/delete/${id}`;
     return axios.delete(URL_BACKEND);
 }
 
 const addClubImageApi = async (formData) => {
-    const response = await axios.post(`${URL_CLUB}/manager/clubImage/add`, formData, {
+    const response = await axios.post(`${URL_CLUB}/clubImage/add`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",  // Ensure content type is set to multipart/form-data
         },

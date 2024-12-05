@@ -36,15 +36,33 @@ const ViewClubDetail = (props) => {
             <Descriptions.Item label="Description">{dataDetail.description}</Descriptions.Item>
             <Descriptions.Item label="Open Time">{dataDetail.openHour}</Descriptions.Item>
             <Descriptions.Item label="Close Time">{dataDetail.closeHour}</Descriptions.Item>
+            <Descriptions.Item label="Rooms">
+              {dataDetail.rooms && dataDetail.rooms.length > 0 ? (
+                dataDetail.rooms.map((room, index) => (
+                  <div key={index}>
+                    <Text>{room.roomName}</Text>
+                  </div>
+                ))
+              ) : (
+                <Text type="secondary">No rooms available</Text>
+              )}
+            </Descriptions.Item>
           </Descriptions>
           <div style={{ marginTop: "20px", textAlign: "center" }}>
-            <Title level={5}>Club Image</Title>
-            <Image
-              src="http://localhost:9998/uploads/avatarImage/a6c264a0-cf80-42b7-92a7-0aa5276b08e82.jpg"
-              alt="Club"
-              style={{ maxHeight: "200px", borderRadius: "10px" }}
-              placeholder
-            />
+            <Title level={5}>Club Images</Title>
+            {dataDetail.clubImages && dataDetail.clubImages.length > 0 ? (
+              dataDetail.clubImages.map((image, index) => (
+                <Image
+                  key={index}
+                  src={image.imageUrl}
+                  alt={`Club Image ${index + 1}`}
+                  style={{ maxHeight: "200px", borderRadius: "10px", margin: "10px 0" }}
+                  placeholder
+                />
+              ))
+            ) : (
+              <Text type="secondary">No images available</Text>
+            )}
           </div>
         </>
       ) : (

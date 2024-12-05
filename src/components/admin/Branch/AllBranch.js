@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from 'antd';
-import UpdateClub from './UpdateClub';
-import ViewClubDetail from './DetailClub';
-import { deleteClubApi } from '../../../services/ClubService';
-import '../../../assets/css/club.css';
+import'../../../assets/css/club.css'; 
 import moment from 'moment';
+import { deleteBranch } from '../../../services/BrandService';
+import UpdateBranch from './UpdateBranch';
+import DetailBranch from './DetailBranch';
 
-function AllClubs(props) {
-    const { dataClubs, loadClubs, setFilteredData, filteredData, setIsModelOpen } = props;
-    console.log(">>>Check DATA",dataClubs);
+function AllBranch(props) {
+    const { loadBranch, dataBranch,filteredData,setFilteredData,setIsModalOpen} = props;
+
+    console.log(">>>Check DATA",dataBranch);
+    
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -17,16 +19,18 @@ function AllClubs(props) {
     const [dataDetail, setDataDetail] = useState(null);
 
     const [searchText, setSearchText] = useState('');
+    const [brandFillter, setBranchFilters] = useState([]);
 
-    const [addressFilters, setAddressFilters] = useState([]);
     useEffect(() => {
-        const uniqueAddresses = [...new Set(dataClubs.map((club) => club.address))];
-        const filters = uniqueAddresses.map((address) => ({
-            text: address,
-            value: address,
-        }));
-        setAddressFilters(filters);
-    }, [dataClubs]);
+        if (dataBranch && dataBranch.length > 0) {
+            const uniqueAddresses = [...new Set(dataBranch.map((branch) => branch.branchName))];
+            const filters = uniqueAddresses.map((branchName) => ({
+                text: branchName,
+                value: branchName,
+            }));
+            setBranchFilters(filters);
+        }
+    }, [dataBranch]);
 
     const columns = [
         {
@@ -45,30 +49,34 @@ function AllClubs(props) {
             ),
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'Branch Name',
+            dataIndex: 'branchName',
+            // filters: brandFillter, // Use dynamically generated filters
+            // onFilter: (value, record) => record.branchName.startsWith(value),
+            // filterSearch: true,
+            // width: '25%',
         },
         {
             title: 'Address',
             dataIndex: 'address',
-            filters: addressFilters, // Use dynamically generated filters
-            onFilter: (value, record) => record.address.startsWith(value),
-            filterSearch: true,
-            width: '40%',
         },
         {
-            title: 'Contact Phone',
-            dataIndex: 'contactPhone',
+            title: 'Phone Number',
+            dataIndex: 'phoneNumber',
         },
         {
-            title: 'Close Hour',
-            dataIndex: 'closeHour',
-            render: (value) => moment(value, 'HHmm').format('HH:mm'),
+            title: 'Email',
+            dataIndex: 'email',
         },
         {
             title: 'Open Hour',
-            dataIndex: 'openHour',
-            render: (value) => moment(value, 'HHmm').format('HH:mm'),
+            dataIndex: 'openHours',
+            render: (value) => moment(value, 'HH:mm').format('HH:mm'),
+        },
+        {
+            title: 'Close Hour',
+            dataIndex: 'closeHours',
+            render: (value) => moment(value, 'HH:mm').format('HH:mm'),
         },
         {
             title: 'Action',
@@ -91,9 +99,9 @@ function AllClubs(props) {
                             icon={<DeleteOutlined style={{ color: 'red' }} />}
                         >
                             <Popconfirm
-                                title="Delete Club"
+                                title="Delete Branch"
                                 description="Are you sure delete it?"
-                                onConfirm={() => handleDeleteUser(record.id)}
+                                onConfirm={() => handleDeleteBranch(record.id)}
                                 okText="Yes"
                                 cancelText="No"
                                 placement="left"
@@ -119,23 +127,25 @@ function AllClubs(props) {
     ];
 
     const handleSearch = (value) => {
-        const filtered =dataClubs.filter((item) =>
-            item.name.toLowerCase().includes(value.toLowerCase())
+        const filtered = dataBranch.filter((item) =>
+            item.branchName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(filtered);
+        console.log(">>>>CHeck", filtered);
+        
     };
 
-    const handleDeleteUser = async (id) => {
-        const res = await deleteClubApi(id);
-        if (res.data.data) {
+    const handleDeleteBranch = async (id) => {
+        const res = await deleteBranch(id);
+        if (res.data) {
             notification.success({
-                message: 'Delete Club',
-                description: 'Delete Club successfully....!',
+                message: 'Delete Branch',
+                description: 'Delete Branch successfully....!',
             });
-            await loadClubs();
+            await loadBranch();
         } else {
             notification.error({
-                message: 'Error delete user',
+                message: 'Error deleting branch',
                 description: JSON.stringify(res.message),
             });
         }
@@ -146,13 +156,13 @@ function AllClubs(props) {
             <div>
                 <div className="table-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                        <h2>Clubs</h2>
+                        <h2>Branches</h2>
                     </div>
                     <div className="user-form">
                         <PlusOutlined
                             name="plus-circle"
                             onClick={() => {
-                                setIsModelOpen(true);
+                                setIsModalOpen(true);
                             }}
                             style={{ marginRight: 15, color: '#FF6600' }}
                         />
@@ -177,15 +187,15 @@ function AllClubs(props) {
                 />
             </div>
 
-            <UpdateClub
+            <UpdateBranch
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
-                loadClubs={loadClubs}
+                loadBranch={loadBranch}
             />
 
-            <ViewClubDetail
+            <DetailBranch
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
@@ -195,4 +205,4 @@ function AllClubs(props) {
     );
 }
 
-export default AllClubs;
+export default AllBranch;

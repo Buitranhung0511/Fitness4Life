@@ -9,7 +9,10 @@ const Sidebar = ({ setMenuItems, isCollapsed }) => {
     { label: 'User', icon: 'bxs-user-rectangle', path: '/admin/users' },
     { label: 'Blogs', icon: 'bx-analyse', path: '/admin/Blogs' },
     { label: 'Club', icon: 'bx-buildings', path: '/admin/Club' },
-    { label: 'Tickets', icon: 'bx-message-square-dots', path: '/admin/home' },
+    { label: 'Room', icon: 'bx-message-square-dots', path: '/admin/Room' },
+    { label: 'Branch', icon: 'bx-message-square-dots', path: '/admin/Branch' },
+    { label: 'Trainer', icon: 'bx-message-square-dots', path: '/admin/Trainer' },
+    { label: 'Booking', icon: 'bxs-hand-up', path: '/admin/Booking' },
     { label: 'Settings', icon: 'bx-cog', path: '/admin/home' }
   ], []); // Menu items
 
