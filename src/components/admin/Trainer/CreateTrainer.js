@@ -25,9 +25,9 @@ function CreateTrainer(props) {
         const fetchAllBranch = async () => {
             try {
                 const response = await axios.get("http://localhost:9998/api/dashboard/branchs");
-                setBranches(response.data.data); 
-                console.log(">>Chack Data",setBranches);
-                
+                setBranches(response.data.data);
+                console.log(">>Chack Data", setBranches);
+
             } catch (error) {
                 console.error("Error fetching branches:", error);
             }
@@ -225,6 +225,7 @@ function CreateTrainer(props) {
                         {error.branch && <span style={{ color: "red" }}>{error.branch}</span>}
                     </div>
                     <div>
+
                         <span>Schedule</span>
                         <Select
                             mode="multiple"

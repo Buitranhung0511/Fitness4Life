@@ -4,9 +4,10 @@ import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from '
 import '../../../assets/css/club.css';
 import moment from 'moment';
 import { deleteTrainer } from '../../../services/TrainerService';
+import UpdateTrainer from './UpdateTrainer';
+import DetailTrainer from './DetailTrainer';
 function AllTrainers(props) {
     const { dataTrainer, loadTrainers, setFilteredData, filteredData, setIsModelOpen } = props;
-    console.log(">>>Check DATA", dataTrainer);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -173,7 +174,7 @@ function AllTrainers(props) {
                 />
             </div>
 
-            {/* <UpdateTrainer
+            <UpdateTrainer
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}
                 dataUpdate={dataUpdate}
@@ -181,12 +182,12 @@ function AllTrainers(props) {
                 loadTrainers={loadTrainers}
             />
 
-            <ViewTrainerDetail
+            <DetailTrainer
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
                 setIsDataDetailOpen={setIsDataDetailOpen}
-            /> */}
+            />
         </>
     );
 }
