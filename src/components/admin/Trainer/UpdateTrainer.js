@@ -21,7 +21,7 @@ const UpdateTrainer = (props) => {
     useEffect(() => {
         const fetchAllBranch = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/dashboard/branchs");
+                const response = await axios.get("http://localhost:8081/api/dashboard/branchs");
                 setBranches(response.data.data);  // Store the fetched branches
             } catch (error) {
                 console.error("Error fetching branches:", error);
@@ -101,6 +101,8 @@ const UpdateTrainer = (props) => {
             setScheduleTrainers(dataUpdate.scheduleTrainers || []);
             setBranch(dataUpdate.branch || "");
             setFile(dataUpdate.file || null);
+            console.log("súdsdsa: ", dataUpdate);
+
         }
     }, [dataUpdate]);
 
@@ -223,6 +225,7 @@ const UpdateTrainer = (props) => {
                         </Select.Option>
                     ))}
                 </Select>
+
                 <Input
                     type="file"
                     onChange={(e) => handleChange("file", e.target.files[0])}

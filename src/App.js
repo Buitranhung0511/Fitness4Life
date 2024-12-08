@@ -24,24 +24,19 @@ import Trainer from './components/admin/Trainer/Trainer';
 
 const App = () => {
 
-
   return (
-
     <Router>
       <Routes>
         {/* trang main */}
         <Route path="/" element={<MainLayout />}>
-        
+
         </Route>
-
-        <Route element={<><MainHeader/><Outlet /><Footer /></>}>
-        <Route path='/login' element={<Login />} />
-        <Route path='/registration' element={<Registration />} />
-
-        <Route path='/blog' element={<Blog />} />
-        <Route path="/blog/:id" element={<BlogDetail />} />
-        <Route path="/contact-us/" element={<ContactForm />} />
-
+        <Route element={<><MainHeader /><Outlet /><Footer /></>}>
+          <Route path='/login' element={<Login />} />
+          <Route path='/registration' element={<Registration />} />
+          <Route path='/blog' element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
+          <Route path="/contact-us/" element={<ContactForm />} />
         </Route>
 
         {/* Trang  Admin */}
@@ -49,15 +44,13 @@ const App = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="home" element={<Home />} />
-          <Route path="Users" element={<Users/>} />
-          <Route path="Blogs" element={<Blogs/>} />
-          <Route path="Club" element={<Club/>} />
-          <Route path="Booking" element={<Booking/>} />
-          <Route path="Room" element={<Room/>} />
-          <Route path="Branch" element={<Branch/>} />
-          <Route path="Trainer" element={<Trainer/>} />
-
-
+          <Route path="Users" element={<Users />} />
+          <Route path="Blogs" element={<Blogs />} />
+          <Route path="Club" element={<Club />} />
+          <Route path="Booking" element={<Booking />} />
+          <Route path="Room" element={<Room />} />
+          <Route path="Branch" element={<Branch />} />
+          <Route path="Trainer" element={<Trainer />} />
         </Route>
       </Routes>
     </Router>

@@ -58,14 +58,10 @@ function AllTrainers(props) {
             title: 'Experience (Years)',
             dataIndex: 'experienceYear',
         },
-        // {
-        //     title: 'Branch',
-        //     dataIndex: 'branch',
-        //     filters: branchFilters, // Use dynamically generated filters
-        //     onFilter: (value, record) => record.branch.name.startsWith(value),
-        //     filterSearch: true,
-        //     width: '40%',
-        // },
+        {
+            title: 'Branch',
+            dataIndex: 'branch',
+        },
         {
             title: 'Action',
             key: 'action',
