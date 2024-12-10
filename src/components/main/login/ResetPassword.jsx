@@ -2,8 +2,8 @@ import { Input, Modal, Button, notification } from "antd";
 import { useState } from "react";
 import { GetOTP, ResetPass } from "../../../services/UsersService";
 
-function ChangePass(props) {
-    const { isChangePassOpen, setChangePassOpen } = props;
+function ResetPassword(props) {
+    const { isResetPassword, setResetPassword } = props;
     const [email, setEmail] = useState("");
     const [OTP, setOTP] = useState("");
     const [loading, setLoading] = useState(false);
@@ -67,14 +67,14 @@ function ChangePass(props) {
     const resetAndCloseModal = () => {
         setEmail("");
         setOTP("");
-        setChangePassOpen(false);
+        setResetPassword(false);
         setStep(1); // Reset về bước 1
     };
 
     return (
         <Modal
             title={step === 1 ? "Send Email" : "Đổi mật khẩu"}
-            open={isChangePassOpen}
+            open={isResetPassword}
             onCancel={resetAndCloseModal}
             footer={
                 step === 2 && (
@@ -127,5 +127,5 @@ function ChangePass(props) {
     );
 }
 
-export default ChangePass;
+export default ResetPassword;
 

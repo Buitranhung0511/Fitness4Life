@@ -21,6 +21,7 @@ import Room from './components/admin/Room/Room';
 import Branch from './components/admin/Branch/Branch';
 import Trainer from './components/admin/Trainer/Trainer';
 import OTPVerification from './components/main/login/OTPVerification';
+import ChangePassword from './components/main/login/ChangePassword';
 
 const App = () => {
 
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact-us/" element={<ContactForm />} />
           <Route path="/verify-account/:email/:otp" element={<OTPVerification />} />
+          <Route path="/change-password" element={<ChangePassword />} />
         </Route>
 
         {/* Trang  Admin */}

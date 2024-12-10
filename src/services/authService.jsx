@@ -43,11 +43,3 @@ export const verifyAccountRegister = async (email, otp) => {
 export const changePassword = async (data) => {
     return await axios.post(`${userAPI}/users/change-pass`, data)
 };
-
-export const sendOTP = async (data) => {
-    return await axios.post(`${userAPI}/users/send-otp`, data)
-};
-
-export const resetPassword = async (data) => {
-    return await axios.post(`${userAPI}/users/reset-password`, data)
-};

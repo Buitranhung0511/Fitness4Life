@@ -2,131 +2,211 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Form, Input, Button, Radio, notification } from 'antd';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { registerUser } from '../../../services/authService';
 
 const Registration = () => {
   const [loading, setLoading] = useState(false);
-
   // Schema validation với Yup
   const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required('Full name is required'),
+    fullName: Yup.string()
+      .required("Full name is required"),
     email: Yup.string()
-      .required('Email is required')
-      .email('Email should be valid'),
+      .required("Email is required")
+      .email("Email should be valid"),
     password: Yup.string()
-      .required('Password is required')
-      .min(6, 'Password must be at least 6 characters long'),
+      .required("Password is required")
+      .min(6, "Password must be at least 6 characters long"),
     confirmPassword: Yup.string()
-      .required('Confirm password is required')
+      .required("Confirm password is required")
       .oneOf([Yup.ref('password')], 'Passwords must match'),
-    gender: Yup.string().required('Gender is required'),
+    gender: Yup.string()
+      .required("Gender is required")
   });
-
+  // Sử dụng useForm từ react-hook-form với Yup resolver
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema)
   });
 
   const onSubmit = async (data) => {
-    const newData = { ...data, role: 'USER' };
+    let newData = {
+      ...data,
+      role: "USER"
+    }
+    console.log('New Data:', newData);
     try {
-      setLoading(true);
-      const result = await registerUser(newData);
+      setLoading(true)
+      let result = await registerUser(newData);
+      console.log("result: ", result);
 
-      if (result.status === 201) {
-        reset();
-        notification.success({
-          message: 'Success',
-          description: 'Registration successful!',
-        });
-      } else if (result.status === 400) {
-        notification.error({
-          message: 'Registration Failed',
-          description: result.message,
-        });
+      if (result.status == 201) {
+        reset()
+        toast.success("Registration successful!");
+      }
+      if (result.status == 400) {
+        toast.error(result.message);
       }
     } catch (error) {
-      notification.error({
-        message: 'Registration Error',
-        description: 'Oops, something went wrong!',
-      });
+      toast.error("Oops, something went wrong!!");
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '50px auto', textAlign: 'center' }}>
-      <h1 style={{ color: '#1890ff' }}>Register</h1>
-      <Form
-        layout="vertical"
-        onFinish={handleSubmit(onSubmit)}
-        style={{ background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
-      >
-        {/* Full Name */}
-        <Form.Item
-          label="Full Name"
-          validateStatus={errors.fullName ? 'error' : ''}
-          help={errors.fullName?.message}
-        >
-          <Input placeholder="Enter your full name" {...register('fullName')} />
-        </Form.Item>
+    <section id="services">
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div href="#" className="logo">
+          <div className="logo-name">RE<span>GISTER</span></div>
+        </div>
+      </div>
 
-        {/* Email */}
-        <Form.Item
-          label="Email Address"
-          validateStatus={errors.email ? 'error' : ''}
-          help={errors.email?.message}
-        >
-          <Input placeholder="Enter your email" {...register('email')} />
-        </Form.Item>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
 
-        {/* Password */}
-        <Form.Item
-          label="Password"
-          validateStatus={errors.password ? 'error' : ''}
-          help={errors.password?.message}
-        >
-          <Input.Password placeholder="Enter your password" {...register('password')} />
-        </Form.Item>
+            <form className="reg-page" onSubmit={handleSubmit(onSubmit)}>
+              <div className="reg-header">
+                <h2>Register a new account</h2>
+                <p>
+                  Already Signed Up? Click{' '}
+                  <a href="/login" className="color-green">
+                    Sign In
+                  </a>{' '}
+                  to login your account.
+                </p>
+              </div>
 
-        {/* Confirm Password */}
-        <Form.Item
-          label="Confirm Password"
-          validateStatus={errors.confirmPassword ? 'error' : ''}
-          help={errors.confirmPassword?.message}
-        >
-          <Input.Password placeholder="Confirm your password" {...register('confirmPassword')} />
-        </Form.Item>
+              {/* Full Name */}
+              <label>full Name</label>
+              <input
+                type="text"
+                className={`form-control ${errors.fullName ? 'is-invalid' : ''}`}
+                id="fullName"
+                {...register('fullName')}
+                style={{ marginBottom: '20px' }}
+              />
+              <div className="invalid-feedback">{errors.fullName?.message}</div>
 
-        {/* Gender */}
-        <Form.Item
-          label="Gender"
-          validateStatus={errors.gender ? 'error' : ''}
-          help={errors.gender?.message}
-        >
-          <Radio.Group {...register('gender')}>
-            <Radio value="MALE">Male</Radio>
-            <Radio value="FEMALE">Female</Radio>
-            <Radio value="OTHER">Other</Radio>
-          </Radio.Group>
-        </Form.Item>
+              {/* Email */}
+              <label>Email Address <span className="color-red">*</span></label>
+              <input
+                type="email"
+                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                id="email"
+                {...register('email')}
+                style={{ marginBottom: '20px' }}
+                required
+              />
+              <div className="invalid-feedback">{errors.email?.message}</div>
 
-        {/* Submit Button */}
-        <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
-            Register
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+              {/* Password */}
+              <div className="row">
+                <div className="col-sm-6">
+                  <label>Password <span className="color-red">*</span></label>
+                  <input
+                    type="password"
+                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                    id="password"
+                    {...register('password')}
+                    style={{ marginBottom: '20px' }}
+                  />
+                  <div className="invalid-feedback">{errors.password?.message}</div>
+                </div>
+
+                {/* Confirm Password */}
+                <div className="col-sm-6">
+                  <label>Confirm Password <span className="color-red">*</span></label>
+                  <input
+                    type="password"
+                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                    id="confirmPassword"
+                    {...register('confirmPassword')}
+                    style={{ marginBottom: '20px' }}
+                  />
+                  <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
+                </div>
+              </div>
+              {/* Gender */}
+              <div className="row">
+                <div className="col-md-12 mb-3">
+                  <label className="form-label">Gender</label>
+                  <div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`}
+                        type="radio"
+                        id="male"
+                        {...register('gender')}
+                        defaultChecked
+                        value="MALE"
+                      />
+                      <label className="form-check-label" htmlFor="male">Male</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`}
+                        type="radio"
+                        id="female"
+                        {...register('gender')}
+                        value="FEMALE"
+                      />
+                      <label className="form-check-label" htmlFor="female">Female</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`}
+                        type="radio"
+                        id="other"
+                        {...register('gender')}
+                        value="OTHER"
+                      />
+                      <label className="form-check-label" htmlFor="other">Other</label>
+                    </div>
+                    <div className="invalid-feedback d-block">{errors.gender?.message}</div>
+                  </div>
+                </div>
+              </div>
+
+              <hr />
+
+              <div className="row">
+
+                {/* Submit Button */}
+                <div className="col-lg-6 text-right">
+                  <button className="btn-u" disabled={loading} type="submit">
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    ) : (
+                      "Register"
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
 export default Registration;
-
