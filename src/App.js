@@ -20,7 +20,7 @@ import Booking from './components/admin/Booking/Booking';
 import Room from './components/admin/Room/Room';
 import Branch from './components/admin/Branch/Branch';
 import Trainer from './components/admin/Trainer/Trainer';
-
+import OTPVerification from './components/main/login/OTPVerification';
 
 const App = () => {
 
@@ -37,6 +37,7 @@ const App = () => {
           <Route path='/blog' element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact-us/" element={<ContactForm />} />
+          <Route path="/verify-account/:email/:otp" element={<OTPVerification />} />
         </Route>
 
         {/* Trang  Admin */}

@@ -37,7 +37,7 @@ const MainHeader = () => {
                     <Link className="btn btn-outline-light me-2" to="/login">Login</Link>
                   </li>
                   <li className="scroll">
-                    <Link className="btn btn-light" to="/register">Register</Link>
+                    <Link className="btn btn-light" to="/registration">Register</Link>
                   </li>
                 </>
               ) : (
@@ -46,7 +46,7 @@ const MainHeader = () => {
                     <Link className="btn btn-light" to="/user/profile">Profile</Link>
                   </li>
                   <li className="scroll">
-                    <button className="ms-2 btn btn-outline-light" onClick={() => handleLogout()}>Logout</button>
+                    <Link className="ms-2 btn btn-outline-light" onClick={() => handleLogout()}>Logout</Link>
                   </li>
                 </>
               )}
