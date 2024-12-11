@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { loginUser } from '../../../services/authService';
 import { DataContext } from '../../helpers/DataContext';
 import ResetPassword from './ResetPassword';
-
 const Login = () => {
   const { handleStoreUser } = useContext(DataContext);
 
@@ -150,4 +149,3 @@ const Login = () => {
 };
 
 export default Login;
-
