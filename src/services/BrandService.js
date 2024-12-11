@@ -38,7 +38,9 @@ const updateBranch = (id,branchName, slug, address, phoneNumber, email, openHour
         closeHours: closeHours,
         services: services
     };
-    return axios.post(URL_BACKEND, data);
+    console.log("ID being sent to API:", id); // Log giá trị của id
+    console.log("Data being sent to API:", data); // Log dữ liệu gửi lên
+    return axios.put(URL_BACKEND, data);
 }
 export {
     fetchAllBranch,

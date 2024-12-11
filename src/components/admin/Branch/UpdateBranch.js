@@ -4,8 +4,9 @@ import moment from "moment";
 import { updateBranch } from "../../../services/BrandService";
 
 const UpdateBranch = (props) => {
-    const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadBranches } = props;
+    const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadBranch } = props;
     const [branchName, setBranchName] = useState("");
+    const [slug, setSlug] = useState("");
     const [address, setAddress] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
@@ -14,13 +15,16 @@ const UpdateBranch = (props) => {
     const [services, setServices] = useState([]);
     const [error, setErrors] = useState({});
 
-    const serviceOptions = ["GYM", "YOGA", "GROUPX", "DANCE", "TUMS", "CYCLING"]; // Replace with actual service enums
+    const serviceOptions = ["GYM", "YOGA", "GROUPX", "DANCE", "TUMS", "CYCLING"];
 
     const validateField = (field, value) => {
         const newErrors = { ...error };
         switch (field) {
             case "branchName":
                 newErrors.branchName = value.trim() ? "" : "Branch name is required.";
+                break;
+            case "slug":
+                newErrors.slug = value.trim() ? "" : "Slug is required.";
                 break;
             case "address":
                 newErrors.address = value.trim() ? "" : "Address is required.";
@@ -56,6 +60,7 @@ const UpdateBranch = (props) => {
     const validateAllFields = () => {
         const newErrors = {
             branchName: branchName.trim() ? "" : "Branch name is required.",
+            slug: slug.trim() ? "" : "Slug is required.",
             address: address.trim() ? "" : "Address is required.",
             phoneNumber: phoneNumber.trim() ? "" : "Phone number is required.",
             email: /^\S+@\S+\.\S+$/.test(email) ? "" : "Invalid email format.",
@@ -71,6 +76,7 @@ const UpdateBranch = (props) => {
     const handleChange = (field, value) => {
         const setters = {
             branchName: setBranchName,
+            slug: setSlug,
             address: setAddress,
             phoneNumber: setPhoneNumber,
             email: setEmail,
@@ -86,6 +92,7 @@ const UpdateBranch = (props) => {
     useEffect(() => {
         if (dataUpdate) {
             setBranchName(dataUpdate.branchName);
+            setSlug(dataUpdate.slug || "");
             setAddress(dataUpdate.address);
             setPhoneNumber(dataUpdate.phoneNumber);
             setEmail(dataUpdate.email);
@@ -96,6 +103,7 @@ const UpdateBranch = (props) => {
     }, [dataUpdate]);
 
     const handleSubmitBtn = async () => {
+
         const hasErrors = validateAllFields();
         if (hasErrors) {
             notification.error({
@@ -105,24 +113,26 @@ const UpdateBranch = (props) => {
             return;
         }
 
-        const formattedData = {
+
+        const res = await updateBranch(
+            dataUpdate.id,
             branchName,
+            slug,
             address,
             phoneNumber,
             email,
-            openHours: openHours.format("HH:mm"),
-            closeHours: closeHours.format("HH:mm"),
-            services,
-        };
+            openHours ? openHours.format("HH:mm") : null,
+            closeHours ? closeHours.format("HH:mm") : null,
+            services
+        );
 
-        const res = await updateBranch(dataUpdate.id, formattedData);
         if (res.data) {
             notification.success({
                 message: "Update Branch",
                 description: "Branch updated successfully.",
             });
             resetAndCloseModal();
-            await loadBranches();
+            await loadBranch();
         } else {
             notification.error({
                 message: "Error Updating Branch",
@@ -134,6 +144,7 @@ const UpdateBranch = (props) => {
     const resetAndCloseModal = () => {
         setIsModalUpdateOpen(false);
         setBranchName("");
+        setSlug("");
         setAddress("");
         setPhoneNumber("");
         setEmail("");
@@ -160,6 +171,13 @@ const UpdateBranch = (props) => {
                     onChange={(e) => handleChange("branchName", e.target.value)}
                 />
                 {error.branchName && <span style={{ color: "red" }}>{error.branchName}</span>}
+
+                <Input
+                    value={slug}
+                    placeholder="Slug"
+                    onChange={(e) => handleChange("slug", e.target.value)}
+                />
+                {error.slug && <span style={{ color: "red" }}>{error.slug}</span>}
 
                 <Input
                     value={address}

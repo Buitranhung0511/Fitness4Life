@@ -1,7 +1,7 @@
 import { Input, notification, Modal, Select, Space, Switch } from "antd";
 import { useEffect, useState } from "react";
-import { updateTrainer } from "../../../services/TrainerService";
 import axios from "axios";
+import { updateTrainer } from "../../../services/TrainerService";
 
 const UpdateTrainer = (props) => {
     const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadTrainers } = props;
@@ -14,6 +14,8 @@ const UpdateTrainer = (props) => {
     const [scheduleTrainers, setScheduleTrainers] = useState([]);
     const [branch, setBranch] = useState("");
     const [file, setFile] = useState(null);
+    const [currentFile, setCurrentFile] = useState(null);
+
     const [branches, setBranches] = useState([]);  // State to store branch data
     const [error, setErrors] = useState({});
 
@@ -43,13 +45,7 @@ const UpdateTrainer = (props) => {
             case "experienceYear":
                 newErrors.experienceYear = value && Number(value) >= 0 ? "" : "Experience year must be a positive number.";
                 break;
-            case "file":
-                if (value && !/\.(jpg|jpeg|png)$/i.test(value.name)) {
-                    newErrors.file = "File must be a .jpg, .jpeg, or .png image.";
-                } else {
-                    newErrors.file = "";
-                }
-                break;
+
             default:
                 break;
         }
@@ -65,9 +61,6 @@ const UpdateTrainer = (props) => {
             branch: branch ? "" : "Branch is required.",
         };
 
-        if (file && !/\.(jpg|jpeg|png)$/i.test(file.name)) {
-            newErrors.file = "File must be a .jpg, .jpeg, or .png image.";
-        }
 
         setErrors(newErrors);
         return Object.values(newErrors).some((err) => err);
@@ -88,7 +81,10 @@ const UpdateTrainer = (props) => {
 
         setters[field]?.(value);
         validateField(field, value);
+
     };
+
+
 
     useEffect(() => {
         if (dataUpdate) {
@@ -100,10 +96,26 @@ const UpdateTrainer = (props) => {
             setPhoneNumber(dataUpdate.phoneNumber || "");
             setScheduleTrainers(dataUpdate.scheduleTrainers || []);
             setBranch(dataUpdate.branch || "");
-            setFile(dataUpdate.file || null);
+            setCurrentFile(dataUpdate.photo);
+            console.log("f", currentFile);
+
+
         }
     }, [dataUpdate]);
 
+    useEffect(() => {
+        if (dataUpdate) {
+            setCurrentFile(dataUpdate.photo); // Lưu URL ảnh hiện tại
+        }
+    }, [dataUpdate]);
+
+    const convertURLToFile = async (url) => {
+        const response = await fetch(url); // Tải ảnh từ URL
+        const blob = await response.blob(); // Chuyển đổi dữ liệu thành Blob
+        const fileName = url.split('/').pop(); // Lấy tên file từ URL
+        return new File([blob], fileName, { type: blob.type }); // Tạo đối tượng File
+    };
+    
     const handleSubmitBtn = async () => {
         const hasErrors = validateAllFields();
         if (hasErrors) {
@@ -113,13 +125,24 @@ const UpdateTrainer = (props) => {
             });
             return;
         }
-
+    
+        let fileToUpdate = null;
+        if (!file) {
+            if (currentFile.startsWith("http")) {
+                fileToUpdate = await convertURLToFile(currentFile); // Chuyển URL thành File
+            } else {
+                fileToUpdate = currentFile; // Nếu đã là File, sử dụng trực tiếp
+            }
+        } else {
+            fileToUpdate = file; // Nếu có file mới, sử dụng file mới
+        }
+    
         try {
             const res = await updateTrainer(
                 dataUpdate.id,
                 fullName,
                 slug,
-                file,
+                fileToUpdate,
                 specialization,
                 experienceYear,
                 certificate,
@@ -127,21 +150,31 @@ const UpdateTrainer = (props) => {
                 scheduleTrainers,
                 branch
             );
-
-            notification.success({
-                message: "Update Trainer",
-                description: "Trainer updated successfully.",
-            });
-            resetAndCloseModal();
-            await loadTrainers();
+    
+            if (res.status === 200) {
+                notification.success({
+                    message: "Update Trainer",
+                    description: "Trainer updated successfully.",
+                });
+                resetAndCloseModal();
+                await loadTrainers();
+            } else {
+                notification.error({
+                    message: "Error Updating Trainer",
+                    description: JSON.stringify(res.data || "Unknown error"),
+                });
+            }
         } catch (error) {
-            console.error("Error:", error.response || error.message);
+            console.error("Error during update:", error.response || error.message);
             notification.error({
                 message: "Error Updating Trainer",
                 description: error.response?.data?.message || "An unexpected error occurred.",
             });
         }
     };
+    
+
+
 
     const resetAndCloseModal = () => {
         setIsModalUpdateOpen(false);
@@ -223,10 +256,36 @@ const UpdateTrainer = (props) => {
                         </Select.Option>
                     ))}
                 </Select>
-                <Input
-                    type="file"
-                    onChange={(e) => handleChange("file", e.target.files[0])}
-                />
+                <div>
+                    <div>
+                        {file ? (
+                            // Hiển thị file mới khi người dùng chọn
+                            <img
+                                src={URL.createObjectURL(file)}
+                                alt="Selected File"
+                                style={{ width: '100px', height: '100px', objectFit: 'cover', marginBottom: '10px' }}
+                            />
+                        ) : currentFile ? (
+                            // Hiển thị ảnh hiện tại từ URL nếu không có file mới
+                            <img
+                                src={currentFile}
+                                alt="Current Photo"
+                                style={{ width: '100px', height: '100px', objectFit: 'cover', marginBottom: '10px' }}
+                            />
+                        ) : (
+                            <span>No photo available</span>
+                        )}
+                    </div>
+                    <Input
+                        type="file"
+                        accept=".jpeg, .jpg, .png"
+                        onChange={(e) => {
+                            const selectedFile = e.target.files[0];
+                            handleChange("file", selectedFile); // Cập nhật file mới
+                        }}
+                    />
+                </div>
+
                 {error.file && <span style={{ color: "red" }}>{error.file}</span>}
             </div>
         </Modal>

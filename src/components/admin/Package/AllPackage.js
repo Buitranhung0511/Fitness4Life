@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input, Dropdown, Menu, notification, Popconfirm, Table } from 'antd';
-import { deleteTrainer } from '../../../services/TrainerService';
-import UpdateTrainer from './UpdateTrainer';
-import DetailTrainer from './DetailTrainer';
-import '../../../assets/css/club.css';
-import { fetchAllBranch } from '../../../services/BrandService';
+import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from 'antd';
+import moment from 'moment';
+import DetailPackage from './DetailPAckage';
+import UpdatePackage from './UpdatePackage';
+import { deletePackage } from '../../../services/PackageService';
+function AllPackage(props) {
+    const { loadPackage, dataPackage, filteredData, setFilteredData, setIsModalOpen } = props;
 
-function AllTrainers(props) {
-    const { dataTrainer, loadTrainers, setFilteredData, filteredData, setIsModelOpen } = props;
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -16,9 +15,7 @@ function AllTrainers(props) {
     const [dataDetail, setDataDetail] = useState(null);
 
     const [searchText, setSearchText] = useState('');
-    const [branchFilters, setBranchFilters] = useState([]);
 
-    // Columns definition for Table
     const columns = [
         {
             title: 'Id',
@@ -36,39 +33,21 @@ function AllTrainers(props) {
             ),
         },
         {
-            title: 'Full Name',
-            dataIndex: 'fullName',
+            title: 'Package Name',
+            dataIndex: 'packageName',
         },
         {
-            title: 'Specialization',
-            dataIndex: 'specialization',
+            title: 'Description',
+            dataIndex: 'description',
         },
         {
-            title: 'Phone Number',
-            dataIndex: 'phoneNumber',
+            title: 'Duration (Months)',
+            dataIndex: 'durationMonth',
         },
         {
-            title: 'Experience (Years)',
-            dataIndex: 'experienceYear',
-        },
-        {
-            title: 'Photo',
-            dataIndex: 'photo',
-            render: (photo) => (
-                <img
-                    src={photo || 'default-image.jpg'} // Sử dụng ảnh mặc định nếu không có ảnh
-                    alt="Trainer Photo"
-                    style={{ width: '50px', height: '50px', borderRadius: '50%' }}
-                />
-            ),
-        },
-        {
-            title: 'Branch',
-            dataIndex: 'branch',
-            filters: branchFilters,
-            onFilter: (value, record) => record.branch?.branchName === value,
-            filterSearch: true,
-            render: (branch) => (branch ? branch.branchName : 'No Branch Assigned'),
+            title: 'Price (VND)',
+            dataIndex: 'price',
+            render: (value) => value.toLocaleString('vi-VN'),
         },
         {
             title: 'Action',
@@ -82,8 +61,6 @@ function AllTrainers(props) {
                             onClick={() => {
                                 setDataUpdate(record);
                                 setIsModalUpdateOpen(true);
-                                console.log("d",record);
-                                
                             }}
                         >
                             Edit
@@ -93,9 +70,9 @@ function AllTrainers(props) {
                             icon={<DeleteOutlined style={{ color: 'red' }} />}
                         >
                             <Popconfirm
-                                title="Delete Trainer"
+                                title="Delete Package"
                                 description="Are you sure delete it?"
-                                onConfirm={() => handleDeleteTrainer(record.id)}
+                                onConfirm={() => handleDeletePackage(record.id)}
                                 okText="Yes"
                                 cancelText="No"
                                 placement="left"
@@ -121,31 +98,24 @@ function AllTrainers(props) {
     ];
 
     const handleSearch = (value) => {
-        const filtered = dataTrainer.filter((item) =>
-            item.fullName.toLowerCase().includes(value.toLowerCase())
+        const filtered = dataPackage.filter((item) =>
+            item.packageName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(filtered);
     };
 
-    const handleDeleteTrainer = async (id) => {
-        try {
-            const res = await deleteTrainer(id);
-            if (res.data && res.data.data) {
-                notification.success({
-                    message: 'Delete Trainer',
-                    description: 'Delete Trainer successfully!',
-                });
-                await loadTrainers();
-            } else {
-                notification.error({
-                    message: 'Error delete trainer',
-                    description: res.message || 'Unknown error occurred.',
-                });
-            }
-        } catch (error) {
+    const handleDeletePackage = async (id) => {
+        const res = await deletePackage(id);
+        if (res.data) {
+            notification.success({
+                message: 'Delete Package',
+                description: 'Delete Package successfully....!',
+            });
+            await loadPackage();
+        } else {
             notification.error({
-                message: 'Error',
-                description: 'An error occurred while deleting trainer.',
+                message: 'Error deleting package',
+                description: JSON.stringify(res.message),
             });
         }
     };
@@ -155,18 +125,18 @@ function AllTrainers(props) {
             <div>
                 <div className="table-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                        <h2>Trainers</h2>
+                        <h2>Packages</h2>
                     </div>
                     <div className="user-form">
                         <PlusOutlined
                             name="plus-circle"
                             onClick={() => {
-                                setIsModelOpen(true);
+                                setIsModalOpen(true);
                             }}
                             style={{ marginRight: 15, color: '#FF6600' }}
                         />
                         <Input
-                            placeholder="Search by name"
+                            placeholder="Search by package name"
                             value={searchText}
                             onChange={(e) => {
                                 setSearchText(e.target.value);
@@ -186,15 +156,15 @@ function AllTrainers(props) {
                 />
             </div>
 
-            <UpdateTrainer
+            <UpdatePackage
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
-                loadTrainers={loadTrainers}
+                loadPackage={loadPackage}
             />
 
-            <DetailTrainer
+            <DetailPackage
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
@@ -204,4 +174,4 @@ function AllTrainers(props) {
     );
 }
 
-export default AllTrainers;
+export default AllPackage;

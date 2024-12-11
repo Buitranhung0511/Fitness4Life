@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input, Dropdown, Menu, notification, Popconfirm, Table } from 'antd';
-import { deleteTrainer } from '../../../services/TrainerService';
-import UpdateTrainer from './UpdateTrainer';
-import DetailTrainer from './DetailTrainer';
+import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from 'antd';
+import moment from 'moment';
+import { deleteRoom } from '../../../services/RoomService';
+import DetailRoom from './DetailRoom';
+import UpdateRoom from './UpdateRoom';
 import '../../../assets/css/club.css';
-import { fetchAllBranch } from '../../../services/BrandService';
 
-function AllTrainers(props) {
-    const { dataTrainer, loadTrainers, setFilteredData, filteredData, setIsModelOpen } = props;
+function AllRoom(props) {
+    const { loadRoom, dataRoom, filteredData, setFilteredData, setIsModalOpen } = props;
+
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -16,9 +17,18 @@ function AllTrainers(props) {
     const [dataDetail, setDataDetail] = useState(null);
 
     const [searchText, setSearchText] = useState('');
-    const [branchFilters, setBranchFilters] = useState([]);
 
-    // Columns definition for Table
+    useEffect(() => {
+        if (dataRoom && dataRoom.length > 0) {
+            const uniqueRoomNames = [...new Set(dataRoom.map((room) => room.roomName))];
+            const filters = uniqueRoomNames.map((roomName) => ({
+                text: roomName,
+                value: roomName,
+            }));
+            // Nếu cần filter theo room name, xử lý tại đây
+        }
+    }, [dataRoom]);
+
     const columns = [
         {
             title: 'Id',
@@ -36,39 +46,30 @@ function AllTrainers(props) {
             ),
         },
         {
-            title: 'Full Name',
-            dataIndex: 'fullName',
+            title: 'Room Name',
+            dataIndex: 'roomName',
         },
         {
-            title: 'Specialization',
-            dataIndex: 'specialization',
+            title: 'Capacity',
+            dataIndex: 'capacity',
         },
         {
-            title: 'Phone Number',
-            dataIndex: 'phoneNumber',
+            title: 'Available Seats',
+            dataIndex: 'availableSeats',
         },
         {
-            title: 'Experience (Years)',
-            dataIndex: 'experienceYear',
+            title: 'Facilities',
+            dataIndex: 'facilities',
         },
         {
-            title: 'Photo',
-            dataIndex: 'photo',
-            render: (photo) => (
-                <img
-                    src={photo || 'default-image.jpg'} // Sử dụng ảnh mặc định nếu không có ảnh
-                    alt="Trainer Photo"
-                    style={{ width: '50px', height: '50px', borderRadius: '50%' }}
-                />
-            ),
+            title: 'Start Time',
+            dataIndex: 'startTime',
+            render: (value) => `${value[0]}:${value[1] === 0 ? '00' : value[1]}`,
         },
         {
-            title: 'Branch',
-            dataIndex: 'branch',
-            filters: branchFilters,
-            onFilter: (value, record) => record.branch?.branchName === value,
-            filterSearch: true,
-            render: (branch) => (branch ? branch.branchName : 'No Branch Assigned'),
+            title: 'End Time',
+            dataIndex: 'endTime',
+            render: (value) => `${value[0]}:${value[1] === 0 ? '00' : value[1]}`,
         },
         {
             title: 'Action',
@@ -82,8 +83,6 @@ function AllTrainers(props) {
                             onClick={() => {
                                 setDataUpdate(record);
                                 setIsModalUpdateOpen(true);
-                                console.log("d",record);
-                                
                             }}
                         >
                             Edit
@@ -93,9 +92,9 @@ function AllTrainers(props) {
                             icon={<DeleteOutlined style={{ color: 'red' }} />}
                         >
                             <Popconfirm
-                                title="Delete Trainer"
+                                title="Delete Room"
                                 description="Are you sure delete it?"
-                                onConfirm={() => handleDeleteTrainer(record.id)}
+                                onConfirm={() => handleDeleteRoom(record.id)}
                                 okText="Yes"
                                 cancelText="No"
                                 placement="left"
@@ -121,31 +120,24 @@ function AllTrainers(props) {
     ];
 
     const handleSearch = (value) => {
-        const filtered = dataTrainer.filter((item) =>
-            item.fullName.toLowerCase().includes(value.toLowerCase())
+        const filtered = dataRoom.filter((item) =>
+            item.roomName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(filtered);
     };
 
-    const handleDeleteTrainer = async (id) => {
-        try {
-            const res = await deleteTrainer(id);
-            if (res.data && res.data.data) {
-                notification.success({
-                    message: 'Delete Trainer',
-                    description: 'Delete Trainer successfully!',
-                });
-                await loadTrainers();
-            } else {
-                notification.error({
-                    message: 'Error delete trainer',
-                    description: res.message || 'Unknown error occurred.',
-                });
-            }
-        } catch (error) {
+    const handleDeleteRoom = async (id) => {
+        const res = await deleteRoom(id);
+        if (res.data.data) {
+            notification.success({
+                message: 'Delete Room',
+                description: 'Delete Room successfully....!',
+            });
+            await loadRoom();
+        } else {
             notification.error({
-                message: 'Error',
-                description: 'An error occurred while deleting trainer.',
+                message: 'Error deleting room',
+                description: JSON.stringify(res.message),
             });
         }
     };
@@ -155,13 +147,13 @@ function AllTrainers(props) {
             <div>
                 <div className="table-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                        <h2>Trainers</h2>
+                        <h2>Rooms</h2>
                     </div>
                     <div className="user-form">
                         <PlusOutlined
                             name="plus-circle"
                             onClick={() => {
-                                setIsModelOpen(true);
+                                setIsModalOpen(true);
                             }}
                             style={{ marginRight: 15, color: '#FF6600' }}
                         />
@@ -186,15 +178,15 @@ function AllTrainers(props) {
                 />
             </div>
 
-            <UpdateTrainer
+            <UpdateRoom
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
-                loadTrainers={loadTrainers}
+                loadRoom={loadRoom}
             />
 
-            <DetailTrainer
+            <DetailRoom
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
@@ -204,4 +196,4 @@ function AllTrainers(props) {
     );
 }
 
-export default AllTrainers;
+export default AllRoom;

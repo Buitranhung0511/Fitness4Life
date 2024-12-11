@@ -18,6 +18,8 @@ function Trainer() {
         const res = await fetchAllTrainer();
         setFilteredData(res.data.data);
         setDataTrainer(res.data.data);
+        console.log("s",res.data.data);
+        
     }
 
     return (
