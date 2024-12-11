@@ -18,6 +18,9 @@ import Booking from './components/admin/Booking/Booking';
 import Room from './components/admin/Room/Room';
 import Branch from './components/admin/Branch/Branch';
 import Trainer from './components/admin/Trainer/Trainer';
+import Login from './components/main/login/Login';
+import Registration from './components/main/login/Registration';
+import BookingMain from './components/main/booking/Booking';
 
 
 const App = () => {
@@ -33,7 +36,7 @@ const App = () => {
         <Route element={<><MainHeader/><Outlet /><Footer /></>}>
         <Route path='/login' element={<Login />} />
         <Route path='/registration' element={<Registration />} />
-
+        <Route path='/bookingMain' element={<BookingMain />} />
         <Route path='/blog' element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
