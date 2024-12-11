@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import MainHeader from '../main/MainHeader';
 import { Outlet } from 'react-router-dom';
 import Footer from '../main/Footer';
@@ -13,25 +13,49 @@ import OurTeam from '../main/OurTeam';
 import Portfolio from '../main/Portfolio';
 import PricingSection from '../main/PricingSection';
 import Contact from '../main/Contact';
+import { DataContext } from '../helpers/DataContext';
+import { toast, ToastContainer } from 'react-toastify';
 
 function MainLayout(props) {
-    return (
-        <div id='home'> 
-        <MainHeader />
-        <HeroBanner/>
-        <Service/>
-        <About/>
-        <OurTeam/>
-        <Portfolio/>
-        <PricingSection/>
-        <Contact/>
-        <main>
-          <Outlet /> {/* Các trang con của website */}
-        </main>
-        <Footer/>
+  const { notificationMessage, clearNotification } = useContext(DataContext);
 
-      </div>
-    );
+  // Hiển thị thông báo khi trạng thái notificationMessage thay đổi
+  useEffect(() => {
+    if (notificationMessage) {
+      toast.success(notificationMessage);
+      clearNotification(); // Reset thông báo sau khi hiển thị
+    }
+  }, [notificationMessage, clearNotification]);
+
+  return (
+    <div id='home'>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <MainHeader />
+      <HeroBanner />
+      <Service />
+      <About />
+      <OurTeam />
+      <Portfolio />
+      <PricingSection />
+      <Contact />
+      <main>
+        <Outlet /> {/* Các trang con của website */}
+      </main>
+      <Footer />
+
+    </div>
+  );
 }
 
 export default MainLayout;

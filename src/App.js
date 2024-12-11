@@ -18,31 +18,26 @@ import Booking from './components/admin/Booking/Booking';
 import Room from './components/admin/Room/Room';
 import Branch from './components/admin/Branch/Branch';
 import Trainer from './components/admin/Trainer/Trainer';
-import BookingMain from './components/main/booking/Booking';
-import Package from './components/admin/Package/Package';
-import OTPVerification from './components/main/login/OTPVerification';
-import ChangePassword from './components/main/login/ChangePassword';
-import Login from './components/main/login/Login';
-import Registration from './components/main/login/Registration';
+
+
 const App = () => {
 
-
   return (
-
     <Router>
       <Routes>
         {/* trang main */}
         <Route path="/" element={<MainLayout />}>
-        
+
         </Route>
-        
+
         <Route element={<><MainHeader/><Outlet /><Footer /></>}>
         <Route path='/login' element={<Login />} />
         <Route path='/registration' element={<Registration />} />
-        <Route path='/bookingMain' element={<BookingMain />} />
+
         <Route path='/blog' element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
+
         </Route>
 
         {/* Trang  Admin */}
@@ -57,10 +52,6 @@ const App = () => {
           <Route path="Room" element={<Room/>} />
           <Route path="Branch" element={<Branch/>} />
           <Route path="Trainer" element={<Trainer/>} />
-          <Route path="Package" element={<Package/>} />
-
-         
-
 
 
         </Route>

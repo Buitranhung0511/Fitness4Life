@@ -24,7 +24,7 @@ function CreateTrainer(props) {
         // Fetch Branch data when component is mounted
         const fetchAllBranch = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/dashboard/branchs");
+                const response = await axios.get("http://localhost:8081/api/dashboard/branchs");
                 setBranches(response.data.data);
                 console.log(">>Chack Data", setBranches);
 

@@ -23,7 +23,7 @@ const UpdateTrainer = (props) => {
     useEffect(() => {
         const fetchAllBranch = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/dashboard/branchs");
+                const response = await axios.get("http://localhost:8081/api/dashboard/branchs");
                 setBranches(response.data.data);  // Store the fetched branches
             } catch (error) {
                 console.error("Error fetching branches:", error);

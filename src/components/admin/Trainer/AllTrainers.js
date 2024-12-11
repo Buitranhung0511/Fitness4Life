@@ -51,25 +51,14 @@ function AllTrainers(props) {
             title: 'Experience (Years)',
             dataIndex: 'experienceYear',
         },
-        {
-            title: 'Photo',
-            dataIndex: 'photo',
-            render: (photo) => (
-                <img
-                    src={photo || 'default-image.jpg'} // Sử dụng ảnh mặc định nếu không có ảnh
-                    alt="Trainer Photo"
-                    style={{ width: '50px', height: '50px', borderRadius: '50%' }}
-                />
-            ),
-        },
-        {
-            title: 'Branch',
-            dataIndex: 'branch',
-            filters: branchFilters,
-            onFilter: (value, record) => record.branch?.branchName === value,
-            filterSearch: true,
-            render: (branch) => (branch ? branch.branchName : 'No Branch Assigned'),
-        },
+        // {
+        //     title: 'Branch',
+        //     dataIndex: 'branch',
+        //     filters: branchFilters, // Use dynamically generated filters
+        //     onFilter: (value, record) => record.branch.name.startsWith(value),
+        //     filterSearch: true,
+        //     width: '40%',
+        // },
         {
             title: 'Action',
             key: 'action',

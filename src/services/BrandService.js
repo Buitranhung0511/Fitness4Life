@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL_BRAND= "http://localhost:9998/api/dashboard";
+const URL_BRAND = "http://localhost:8081/api/dashboard";
 const fetchAllBranch = () => {
     const URL_BACKEND = `${URL_BRAND}/branchs`;
     return axios.get(URL_BACKEND);
@@ -26,7 +26,7 @@ const createBrand = (branchName, slug, address, phoneNumber, email, openHours, c
     return axios.post(URL_BACKEND, data);
 }
 
-const updateBranch = (id,branchName, slug, address, phoneNumber, email, openHours, closeHours, services) => {
+const updateBranch = (id, branchName, slug, address, phoneNumber, email, openHours, closeHours, services) => {
     const URL_BACKEND = `${URL_BRAND}/branch/update/${id}`;
     const data = {
         branchName: branchName,

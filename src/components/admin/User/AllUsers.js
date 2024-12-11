@@ -6,7 +6,7 @@ import UpdateUser from './UpdateUser';
 import ChangePass from './ChangPass';
 
 function AllUsers(props) {
-    const { dataUsers , loadUsers, setFilteredData, filteredData, setIsModelOpen } = props
+    const { dataUsers, loadUsers, setFilteredData, filteredData, setIsModelOpen } = props
 
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -14,7 +14,7 @@ function AllUsers(props) {
     const [isDataDetailOpen, setIsDataDetailOpen] = useState(false);
     const [dataDetail, setDataDetail] = useState(null);
 
-    const [isChangePassOpen,setChangePassOpen] = useState(false)
+    const [isChangePassOpen, setChangePassOpen] = useState(false)
 
     const [emailFilters, setEmailFilters] = useState([]);
     useEffect(() => {
@@ -25,15 +25,15 @@ function AllUsers(props) {
         }));
         setEmailFilters(filters);
     }, [dataUsers]);
-    
-    
+
+
     const [searchText, setSearchText] = useState('');
     const handleSearch = (value) => {
         const filtered = dataUsers.filter((item) => item.fullName.toLowerCase().includes(value.toLowerCase()));
         setFilteredData(filtered);
     };
 
-    
+
 
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
@@ -41,10 +41,9 @@ function AllUsers(props) {
 
 
     const handleChangePassUser = async () => {
-       
-        
+
     }
-    
+
     const columns = [
         {
             title: 'Id',
@@ -101,7 +100,7 @@ function AllUsers(props) {
             filterMode: 'tree',
             filterSearch: true,
             onFilter: (value, record) => record.role.includes(value),
-            
+
         },
         {
             title: 'Active',
@@ -128,7 +127,7 @@ function AllUsers(props) {
                             key="changePass"
                             icon={<LockOutlined style={{ color: 'blue' }} />}
                         >
-                            <Popconfirm 
+                            <Popconfirm
                                 title="Change Pass"
                                 onConfirm={() => handleChangePassUser(record.id)}
                                 placement="left"
@@ -158,79 +157,79 @@ function AllUsers(props) {
 
     return (
         <>
-        <div>
-            {/* Tạo ô tìm kiếm */}
-            <div className="table-header" style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>
-                    <h2>Users</h2>
-                </div>
-                <div className="user-form">
-
+            <div>
+                {/* Tạo ô tìm kiếm */}
+                <div className="table-header" style={{ display: "flex", justifyContent: "space-between" }}>
                     <div>
-
-                        <PlusOutlined
-                            name='plus-circle'
-                            onClick={() => { setIsModelOpen(true); }}
-                            style={{ marginRight: 15, color: '#FF6600' }}
-                        />
-                        <Input
-                            placeholder="Search by name"
-                            value={searchText}
-                            onChange={(e) => {
-                                setSearchText(e.target.value);
-                                handleSearch(e.target.value);
-                            }}
-                            onPressEnter={() => handleSearch(searchText)}
-
-                            style={{ width: 450, marginBottom: 50, marginRight: 100, height: 35 }}
-                        />
+                        <h2>Users</h2>
                     </div>
+                    <div className="user-form">
+
+                        <div>
+
+                            <PlusOutlined
+                                name='plus-circle'
+                                onClick={() => { setIsModelOpen(true); }}
+                                style={{ marginRight: 15, color: '#FF6600' }}
+                            />
+                            <Input
+                                placeholder="Search by name"
+                                value={searchText}
+                                onChange={(e) => {
+                                    setSearchText(e.target.value);
+                                    handleSearch(e.target.value);
+                                }}
+                                onPressEnter={() => handleSearch(searchText)}
+
+                                style={{ width: 450, marginBottom: 50, marginRight: 100, height: 35 }}
+                            />
+                        </div>
+                    </div>
+
                 </div>
 
-            </div> 
+                <Button
+                    type="primary"
+                    hidden
+                    onClick={() => handleSearch(searchText)}
+                ></Button>
 
-            <Button
-                type="primary"
-                hidden
-                onClick={() => handleSearch(searchText)}
-            ></Button>
+                <Table
+                    style={{
+                        border: '1px  rgba(0, 0, 0, 0.1)',
+                        boxShadow: '12px',
 
-            <Table
-                style={{
-                    border: '1px  rgba(0, 0, 0, 0.1)', 
-                    boxShadow: '12px',
-
-                }}
-                className="row-highlight-table" 
-                columns={columns}
-                dataSource={filteredData}
-                rowKey={"id"}
-                onChange={onChange}
+                    }}
+                    className="row-highlight-table"
+                    columns={columns}
+                    dataSource={filteredData}
+                    rowKey={"id"}
+                    onChange={onChange}
 
 
+                />
+            </div>
+
+            <UpdateUser
+                isModalUpdateOpen={isModalUpdateOpen}
+                setIsModalUpdateOpen={setIsModalUpdateOpen}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+                loadUsers={loadUsers}
             />
-        </div>
 
-        <UpdateUser
-            isModalUpdateOpen={isModalUpdateOpen}
-            setIsModalUpdateOpen={setIsModalUpdateOpen}
-            dataUpdate={dataUpdate}
-            setDataUpdate={setDataUpdate}
-            loadUsers={loadUsers}
-        />
+            <ViewUserDetail
+                dataDetail={dataDetail}
+                setDataDetail={setDataDetail}
+                isDataDetailOpen={isDataDetailOpen}
+                setIsDataDetailOpen={setIsDataDetailOpen}
+            />
 
-        <ViewUserDetail
-            dataDetail={dataDetail}
-            setDataDetail={setDataDetail}
-            isDataDetailOpen={isDataDetailOpen}
-            setIsDataDetailOpen={setIsDataDetailOpen}
-        />
-
-        <ChangePass
-        isChangePassOpen={isChangePassOpen}
-        setChangePassOpen={setChangePassOpen}
-        />
-    </>
+            <ChangePass
+                isChangePassOpen={isChangePassOpen}
+                setChangePassOpen={setChangePassOpen}
+            />
+        </>
     )
 }
 

@@ -19,7 +19,6 @@ const MainHeader = () => {
             </button>
             <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
               <Link to="/" className="logo"> <div className="logo-name" style={{ fontSize: "28px" }}><span>FITNESS</span>4LIFE</div></Link>
-
             </div>
           </div>
 
@@ -33,9 +32,26 @@ const MainHeader = () => {
               <li className="scroll"><Link to="/bookingMain">Booking</Link></li>
               <li className="scroll"><Link to="/blogS">Blog</Link></li>
               <li className="scroll"><Link to="/contact-us">Contact</Link></li>
-              <li className="scroll"><Link to="/contact-us">Login</Link></li>
+              {!isLoggedIn ? (
+                <>
+                  <li className="scroll">
+                    <Link className="btn btn-outline-light me-2" to="/login">Login</Link>
+                  </li>
+                  <li className="scroll">
+                    <Link className="btn btn-light" to="/registration">Register</Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="scroll">
+                    <Link className="btn btn-light" to="/user/profile">Profile</Link>
+                  </li>
+                  <li className="scroll">
+                    <Link className="ms-2 btn btn-outline-light" onClick={() => handleLogout()}>Logout</Link>
+                  </li>
+                </>
+              )}
 
-                
             </ul>
           </div>
         </div>

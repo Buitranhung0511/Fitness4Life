@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const URL_USER = "http://localhost:9999/api/users";
+const URL_USER = "http://localhost:8080/api/users";
 
 
 const fetchAllUsers = () => {

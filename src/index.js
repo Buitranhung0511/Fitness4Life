@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { DataProvider } from './components/helpers/DataContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
     <DataProvider>
