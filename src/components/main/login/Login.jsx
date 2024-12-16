@@ -27,6 +27,7 @@ const Login = () => {
     password: Yup.string().required('Password is required'),
   });
 
+
   const {
     register,
     handleSubmit,
@@ -41,6 +42,8 @@ const Login = () => {
       if (result.status === 200) {
         handleStoreUser(result.data);
         navigate('/');
+        console.log(">>>handleStoreUser123<<<<",result.data);
+        
       } else if (result.status === 400) {
         toast.error(result.message || 'Invalid input.');
       } else if (result.status === 404) {

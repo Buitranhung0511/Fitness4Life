@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const URL_USER = "http://localhost:9999/api/users";
+const URL_USER = "http://localhost:8080/api/users";
 
 
 const fetchAllUsers = () => {
@@ -10,14 +10,13 @@ const fetchAllUsers = () => {
 }
 
 
-const createUser = (fullName, email, password, confirmPassword, phone, role, gender) => {
+const createUser = (fullName, email, password, confirmPassword, role, gender) => {
     const URL_BACKEND = `${URL_USER}/register`;
     const data = {
         fullName: fullName,
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-        phone: phone,
         role: role,
         gender: gender
     }

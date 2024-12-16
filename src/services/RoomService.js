@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL_ROOM= "http://localhost:9998/api/dashboard";
+const URL_ROOM= "http://localhost:8081/api/dashboard";
 
 
 const fetchAllRoom = () => {
@@ -42,7 +42,7 @@ const updateRoom = (id,club, trainer, roomName, slug, capacity, facilities, stat
 
 
 const deleteRoom = (id) => {
-    const URL_BACKEND = `${URL_ROOM}/trainer/delete/${id}`;
+    const URL_BACKEND = `${URL_ROOM}/room/delete/${id}`;
     return axios.delete(URL_BACKEND);
 }
 

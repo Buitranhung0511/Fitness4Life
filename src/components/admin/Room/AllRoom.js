@@ -128,7 +128,7 @@ function AllRoom(props) {
 
     const handleDeleteRoom = async (id) => {
         const res = await deleteRoom(id);
-        if (res.data.data) {
+        if (res.data.data && res.data.data == 200) {
             notification.success({
                 message: 'Delete Room',
                 description: 'Delete Room successfully....!',

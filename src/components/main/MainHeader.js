@@ -30,6 +30,7 @@ const MainHeader = () => {
               <li className="scroll"><a href="#our-team">Trainers</a></li>
               <li className="scroll"><a href="#portfolio">Gallery</a></li>
               <li className="scroll"><Link to="/bookingMain">Booking</Link></li>
+              <li className="scroll"><Link to="/packageMain">Membership</Link></li>
               <li className="scroll"><Link to="/blogS">Blog</Link></li>
               <li className="scroll"><Link to="/contact-us">Contact</Link></li>
               {!isLoggedIn ? (

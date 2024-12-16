@@ -26,7 +26,7 @@ const UpdateRoom = (props) => {
         // Fetch Clubs
         const fetchAllClubs = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/dashboard/clubs");
+                const response = await axios.get("http://localhost:8081/api/dashboard/clubs");
                 setClubs(response.data.data);
             } catch (error) {
                 console.error("Error fetching clubs:", error);
@@ -36,7 +36,7 @@ const UpdateRoom = (props) => {
         // Fetch Trainers
         const fetchAllTrainer = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/dashboard/trainers");
+                const response = await axios.get("http://localhost:8081/api/dashboard/trainers");
                 setTrainers(response.data.data);
             } catch (error) {
                 console.error("Error fetching trainers:", error);

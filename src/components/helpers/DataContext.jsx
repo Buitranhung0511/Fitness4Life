@@ -12,6 +12,7 @@ export const DataProvider = ({ children }) => {
         setIsLoggedIn(true)
         setNotificationMessage('Login successful!'); // Đặt thông báo
     }
+    
     function handleLogout() {
         localStorage.removeItem("user")
         setUser(null)

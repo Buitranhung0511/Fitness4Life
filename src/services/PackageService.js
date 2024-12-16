@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL_PACK= "http://localhost:9996/api/booking";
+const URL_PACK= "http://localhost:8082/api/booking";
 
 
 const fetchAllPackage = () => {
@@ -21,7 +21,7 @@ export const submitBookingRoom = async (bookingData) => {
     }
 };
 const createPackageAPI = (packageName, description, durationMonth, price) => {
-    const URL_BACKEND = "http://localhost:9996/api/booking/package/add";
+    const URL_BACKEND = `${URL_PACK}/package/add`;
     const data = {
         packageName: packageName,
         description: description,

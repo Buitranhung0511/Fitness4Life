@@ -15,8 +15,6 @@ function Branch() {
         const res = await fetchAllBranch();
         setFilteredData(res.data.data);
         setDataBrand(res.data.data);
-     console.log(">>>CHeck RES",res);
-     
     }
 
     return (

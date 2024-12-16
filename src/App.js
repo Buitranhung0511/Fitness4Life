@@ -21,6 +21,8 @@ import Trainer from './components/admin/Trainer/Trainer';
 import Login from './components/main/login/Login';
 import Registration from './components/main/login/Registration';
 import BookingMain from './components/main/booking/Booking';
+import Package from './components/admin/Package/Package';
+import PackageMain from './components/main/package/Package';
 
 
 const App = () => {
@@ -37,10 +39,13 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/registration' element={<Registration />} />
         <Route path='/bookingMain' element={<BookingMain />} />
+        <Route path="/packageMain/" element={<PackageMain />} />
+
         <Route path='/blog' element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
 
+        
         </Route>
 
         {/* Trang  Admin */}
@@ -55,6 +60,7 @@ const App = () => {
           <Route path="Room" element={<Room/>} />
           <Route path="Branch" element={<Branch/>} />
           <Route path="Trainer" element={<Trainer/>} />
+          <Route path="Package" element={<Package/>} />
 
 
         </Route>

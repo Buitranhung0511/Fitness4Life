@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL_TRAINER = "http://localhost:9998/api/dashboard";
+const URL_TRAINER = "http://localhost:8081/api/dashboard";
 
 const fetchAllTrainer = () => {
     const URL_BACKEND = `${URL_TRAINER}/trainers`;

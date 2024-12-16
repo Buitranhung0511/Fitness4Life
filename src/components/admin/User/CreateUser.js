@@ -11,7 +11,6 @@ function CreateUser(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [phone, setPhone] = useState("");
     const [role, setRole] = useState("");
     const [gender, setGender] = useState("");
 
@@ -35,9 +34,7 @@ function CreateUser(props) {
                     newErrors.confirmPassword = "Passwords do not match.";
                 }
                 break;
-            case "phone":
-                newErrors.phone = value.trim() ? "" : "Phone number is required.";
-                break;
+
             case "role":
                 newErrors.role = value ? "" : "Role is required.";
                 break;
@@ -56,7 +53,6 @@ function CreateUser(props) {
             email: email.trim() ? "" : "Email is required.",
             password: password ? "" : "Password is required.",
             confirmPassword: confirmPassword ? "" : "Confirm Password is required.",
-            phone: phone.trim() ? "" : "Phone number is required.",
             role: role ? "" : "Role is required.",
             gender: gender ? "" : "Gender is required."
         };
@@ -77,7 +73,6 @@ function CreateUser(props) {
             email: setEmail,
             password: setPassword,
             confirmPassword: setConfirmPassword,
-            phone: setPhone,
             role: setRole,
             gender: setGender,
         };
@@ -96,7 +91,7 @@ function CreateUser(props) {
             return;
         }
 
-        const res = await createUser(fullName, email, password, confirmPassword, phone, role, gender);
+        const res = await createUser(fullName, email, password, confirmPassword, role, gender);
 
         if (res.data) {
             notification.success({
@@ -119,7 +114,6 @@ function CreateUser(props) {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        setPhone("");
         setRole("");
         setGender("");
         setErrors({});
@@ -168,14 +162,6 @@ function CreateUser(props) {
                             onChange={(event) => { handleChange("confirmPassword", event.target.value); }}
                         />
                         {error.confirmPassword && <span style={{ color: "red" }}>{error.confirmPassword}</span>}
-                    </div>
-                    <div>
-                        <span>Phone</span>
-                        <Input
-                            value={phone}
-                            onChange={(event) => { handleChange("phone", event.target.value); }}
-                        />
-                        {error.phone && <span style={{ color: "red" }}>{error.phone}</span>}
                     </div>
                     <div>
                         <span>Role</span>
