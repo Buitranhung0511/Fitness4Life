@@ -22,6 +22,8 @@ import Branch from './components/admin/Branch/Branch';
 import Trainer from './components/admin/Trainer/Trainer';
 import OTPVerification from './components/main/login/OTPVerification';
 import UserProfilePage from './components/main/user/UserProfilePage';
+import ForumPage from './components/main/forum/ForumPage';
+import PromotionPage from './components/admin/Promotion/PromotionPage';
 
 const App = () => {
 
@@ -40,6 +42,8 @@ const App = () => {
           <Route path="/contact-us/" element={<ContactForm />} />
           <Route path="/verify-account/:email/:otp" element={<OTPVerification />} />
           <Route path="/user/profile" element={<UserProfilePage />} />
+          <Route path="/forum" element={<ForumPage />} />
+
         </Route>
 
         {/* Trang  Admin */}
@@ -54,6 +58,7 @@ const App = () => {
           <Route path="Room" element={<Room />} />
           <Route path="Branch" element={<Branch />} />
           <Route path="Trainer" element={<Trainer />} />
+          <Route path="Promotion" element={<PromotionPage />} />
         </Route>
       </Routes>
     </Router>

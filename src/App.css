@@ -22,6 +22,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  margin-bottom: 100px; /* Thêm khoảng cách giữa header và nội dung bên dưới */
 }
 
 .App-link {

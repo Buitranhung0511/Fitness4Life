@@ -15,6 +15,7 @@
     "@yaireo/tagify": "^4.32.2",
     "antd": "^5.22.2",
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "devextreme": "^24.1.7",
     "devextreme-react": "^24.1.7",
     "formik": "^2.4.6",
