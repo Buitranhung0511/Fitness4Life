@@ -25,7 +25,7 @@ const MainHeader = () => {
           <div className="collapse navbar-collapse navbar-right">
             <ul className="nav navbar-nav">
               <li className="scroll active"><a href="#home">Home</a></li>
-              <li className="scroll"><a href="#services">Classes</a></li>
+              <li className="scroll"><a href="/clubs">Clubs</a></li>
               <li className="scroll"><a href="#about">About</a></li>
               <li className="scroll"><a href="#our-team">Trainers</a></li>
               <li className="scroll"><a href="#portfolio">Gallery</a></li>
