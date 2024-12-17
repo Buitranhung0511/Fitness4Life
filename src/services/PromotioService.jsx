@@ -38,5 +38,43 @@ export const changestatus = async (id, isActive) => {
     }
 };
 
+export const sendPromotionOfUser = async (code) => {
+    try {
+        const response = await axios.post(`${userAPI}/promotions/send-code-to-all?code=${code}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+export const sendPromotionOneUser = async (code, userId) => {
+    try {
+        const response = await axios.post(`${userAPI}/promotions/send-code-to-user?code=${code}&userId=${userId}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+export const verifyCode = async (code) => {
+    console.log("Data code đúng ko ta service: ", code);
+    try {
+        const response = await axios.post(`${userAPI}/promotions/verify?code=${code}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
 
 

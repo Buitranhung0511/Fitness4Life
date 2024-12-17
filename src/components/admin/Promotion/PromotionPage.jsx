@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, notification, Button, Switch } from 'antd';
-import { changestatus, getAllPromotions } from '../../../services/PromotioService';
+import { Table, notification, Button, Switch, Form, Input } from 'antd';
+import { changestatus, getAllPromotions, verifyCode } from '../../../services/PromotioService';
 import PromotionDetailsModal from './PromotionDetailsModal';
 import CreatePromotionModal from './CreatePromotionModal';
 import moment from 'moment';
+import SendPromotionCodeModal from './SendPromotionCodeModal';
+import SendPromotionToUserModal from './SendPromotionToUserModal ';
 
 const PromotionPage = () => {
     const [promotions, setPromotions] = useState([]); // Quản lý danh sách khuyến mãi
@@ -11,6 +13,10 @@ const PromotionPage = () => {
     const [selectedPromotion, setSelectedPromotion] = useState(null); // Lưu dữ liệu khuyến mãi được chọn
     const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái hiển thị modal
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false); // Trạng thái hiển thị modal tạo mới
+    const [isSendCodeModalVisible, setIsSendCodeModalVisible] = useState(false);
+    const [isSendCodeToUserModalVisible, setIsSendCodeToUserModalVisible] = useState(false);
+    const [form] = Form.useForm(); // Tạo form để quản lý trạng thái nhập liệu
+    const [codeInput, setCodeInput] = useState(''); // Lưu mã khuyến mãi người dùng nhập
     const pollingInterval = useRef(null); // Dùng để lưu interval polling
 
     // Hàm gọi API lấy danh sách khuyến mãi
@@ -38,7 +44,7 @@ const PromotionPage = () => {
 
     useEffect(() => {
         fetchPromotions();
-        pollingInterval.current = setInterval(fetchPromotions, 10000); // Tự động gọi lại API mỗi 30 giây
+        pollingInterval.current = setInterval(fetchPromotions, 60000); // Tự động gọi lại API mỗi 30 giây
         return () => clearInterval(pollingInterval.current); // Dọn dẹp interval khi unmount
     }, []);
 
@@ -73,7 +79,30 @@ const PromotionPage = () => {
             });
         }
     };
+    // Hàm xử lý khi nhấn nút xác minh mã
+    const handleVerifyCode = async () => {
+        try {
+            const response = await verifyCode(codeInput);
+            console.log("Data code đúng ko ta: ", response);
 
+            if (response && response.isValid) {
+                notification.success({
+                    message: 'Success',
+                    description: `Promotion code "${codeInput}" is valid!`,
+                });
+            } else {
+                notification.error({
+                    message: 'Invalid Code',
+                    description: response.message || 'The promotion code is invalid.',
+                });
+            }
+        } catch (error) {
+            notification.error({
+                message: 'Error',
+                description: error.message || 'Failed to verify promotion code.',
+            });
+        }
+    };
 
     // Định nghĩa các cột trong bảng
     const columns = [
@@ -142,6 +171,29 @@ const PromotionPage = () => {
             <Button type="primary" onClick={() => setIsCreateModalVisible(true)} style={{ marginBottom: '20px' }}>
                 Create Promotion
             </Button>
+            <Button type="default" onClick={() => setIsSendCodeModalVisible(true)}>
+                Send Code to All Users
+            </Button>
+            <Button type="default" onClick={() => setIsSendCodeToUserModalVisible(true)}>
+                Send Code to User
+            </Button>
+            {/* Form nhập mã */}
+            <div style={{ margin: '20px 0' }}>
+                <Form layout="inline" onFinish={handleVerifyCode}>
+                    <Form.Item>
+                        <Input
+                            placeholder="Enter promotion code"
+                            value={codeInput}
+                            onChange={(e) => setCodeInput(e.target.value)}
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Verify Code
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
             <Table
                 dataSource={Array.isArray(promotions) ? promotions : []} // Đảm bảo là mảng
                 columns={columns}
@@ -161,6 +213,16 @@ const PromotionPage = () => {
                 visible={isCreateModalVisible}
                 onClose={() => setIsCreateModalVisible(false)}
                 onSuccess={handleCreateSuccess}
+            />
+            {/* Modal gửi mã khuyến mãi */}
+            <SendPromotionCodeModal
+                visible={isSendCodeModalVisible}
+                onClose={() => setIsSendCodeModalVisible(false)}
+            />
+            {/* Modal gửi mã cho một người dùng */}
+            <SendPromotionToUserModal
+                visible={isSendCodeToUserModalVisible}
+                onClose={() => setIsSendCodeToUserModalVisible(false)}
             />
         </div>
     );
