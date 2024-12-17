@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table } from 'antd';
+import { Button, Dropdown, Input, Menu, notification, Popconfirm, Table ,Image } from 'antd';
 import UpdateClub from './UpdateClub';
 import ViewClubDetail from './DetailClub';
 import { deleteClubApi } from '../../../services/ClubService';
@@ -28,6 +28,7 @@ function AllClubs(props) {
         setAddressFilters(filters);
     }, [dataClubs]);
 
+
     const columns = [
         {
             title: 'Id',
@@ -54,12 +55,13 @@ function AllClubs(props) {
             filters: addressFilters, // Use dynamically generated filters
             onFilter: (value, record) => record.address.startsWith(value),
             filterSearch: true,
-            width: '40%',
+            width: '20%',
         },
         {
             title: 'Contact Phone',
             dataIndex: 'contactPhone',
         },
+        
         {
             title: 'Close Hour',
             dataIndex: 'closeHour',
@@ -69,6 +71,24 @@ function AllClubs(props) {
             title: 'Open Hour',
             dataIndex: 'openHour',
             render: (value) => moment(value, 'HHmm').format('HH:mm'),
+        },
+        {
+            title: 'Img',
+            dataIndex: 'clubImages',
+            render: (images) => {
+              if (images && images.length > 0) {
+                return (
+                  <Image
+                    src={images[0].imageUrl}
+                    alt="Club Image"
+                    width={50}
+                    height={50}
+                    style={{ borderRadius: '5px' }}
+                  />
+                );
+              }
+              return null;
+            },
         },
         {
             title: 'Action',

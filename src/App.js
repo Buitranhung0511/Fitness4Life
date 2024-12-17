@@ -21,6 +21,7 @@ import Trainer from './components/admin/Trainer/Trainer';
 import Login from './components/main/login/Login';
 import Registration from './components/main/login/Registration';
 import BookingMain from './components/main/booking/Booking';
+import ClubHome from './components/main/club/ClubHome';
 
 
 const App = () => {
@@ -40,7 +41,8 @@ const App = () => {
         <Route path='/blog' element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
-
+        <Route path="/clubs/" element={<ClubHome />} />
+        BranchHome
         </Route>
 
         {/* Trang  Admin */}

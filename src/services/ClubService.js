@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL_CLUB = "http://localhost:8081/api/dashboard";
+const URL_CLUB = "http://localhost:8080/api/dashboard";
 
 const createClubApi = (name, address, contactPhone, description, openHour, closeHour) => {
     const URL_BACKEND = `${URL_CLUB}/club/add`;
