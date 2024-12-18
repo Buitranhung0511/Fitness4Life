@@ -1,10 +1,12 @@
-// PackageMain.jsx
 import { useEffect, useState } from 'react';
 import { Card, Button, Row, Col } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { fetchAllPackage } from '../../../services/PackageService';
-import'../../../assets/css/package.css'
+import '../../../assets/css/package.css';
+
 function PackageMain() {
     const [dataPackage, setDataPackage] = useState([]);
+    const navigate = useNavigate(); // Hook để chuyển hướng
 
     useEffect(() => {
         loadPackage();
@@ -19,6 +21,10 @@ function PackageMain() {
         }
     };
 
+    const handlePaynow = (pkg) => {
+        navigate('/payment', { state: { package: pkg } }); // Chuyển hướng với dữ liệu gói
+    };
+
     return (
         <section id="services">
             <div style={{ padding: '20px' }}>
@@ -30,21 +36,23 @@ function PackageMain() {
                             <Card
                                 className="custom-card" // Add custom CSS class
                                 title={
-                                    <div className="card-header" style={{border:'solid 1px black'}}>
+                                    <div className="card-header" style={{ border: 'solid 1px black' }}>
                                         <span>{pkg.packageName}</span>
                                     </div>
                                 }
                                 bordered={false}
                                 hoverable
-                                style={{border:'solid 1px black'}}
-                                
-                                
+                                style={{ border: 'solid 1px black' }}
                             >
                                 <p className="card-description"><strong>Description:</strong> {pkg.description}</p>
                                 <p className="card-duration"><strong>Duration:</strong> {pkg.durationMonth} months</p>
                                 <p className="card-price">{pkg.price.toLocaleString('vi-VN')} VND</p>
                                 <div className="card-footer">
-                                    <Button type="primary" href="#" className="paynow-btn">
+                                    <Button 
+                                        type="primary" 
+                                        onClick={() => handlePaynow(pkg)} // Thêm sự kiện onClick
+                                        className="paynow-btn"
+                                    >
                                         Paynow
                                     </Button>
                                 </div>

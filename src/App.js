@@ -23,6 +23,7 @@ import Registration from './components/main/login/Registration';
 import BookingMain from './components/main/booking/Booking';
 import Package from './components/admin/Package/Package';
 import PackageMain from './components/main/package/Package';
+import PaymentMain from './components/main/Paypal/PaymentMain';
 
 
 const App = () => {
@@ -44,7 +45,7 @@ const App = () => {
         <Route path='/blog' element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
-
+        <Route path="/payment" element={<PaymentMain />} />
         
         </Route>
 
