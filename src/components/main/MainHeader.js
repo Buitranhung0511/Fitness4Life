@@ -49,6 +49,7 @@ const MainHeader = () => {
               <li className="scroll"><a href="#pricing">Pricing</a></li>
               <li className="scroll"><Link to="/blog">Blog</Link></li>
               <li className="scroll"><Link to="/contact-us">Contact</Link></li>
+              <li className="scroll"><Link to="/forums">forum</Link></li>
               {!isLoggedIn ? (
                 <>
                   <li className="scroll">

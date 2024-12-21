@@ -24,6 +24,17 @@ import OTPVerification from './components/main/login/OTPVerification';
 import UserProfilePage from './components/main/user/UserProfilePage';
 import ForumPage from './components/main/forum/ForumPage';
 import PromotionPage from './components/admin/Promotion/PromotionPage';
+import CategoryPage from './components/main/forum/CategoryPage';
+import DetailPage from './components/main/forum/DetailPage';
+import PostPage from './components/admin/Post/PostPage';
+import CreatePostQuestions from './components/main/user/CreatePostQuestions';
+import YourPostThread from './components/main/user/YourPostThread';
+import YourPostDetailPage from './components/main/user/YourPostDetailPage';
+import ForumLayout from './components/main/forum/ForumLayout ';
+import WhatsNew from './components/main/forum/WhatsNew';
+import PostNew from './components/main/forum/PostNew';
+import CreateNewPost from './components/main/forum/CreateNewPost';
+
 
 const App = () => {
 
@@ -42,12 +53,25 @@ const App = () => {
           <Route path="/contact-us/" element={<ContactForm />} />
           <Route path="/verify-account/:email/:otp" element={<OTPVerification />} />
           <Route path="/user/profile" element={<UserProfilePage />} />
-          <Route path="/forum" element={<ForumPage />} />
 
+          <Route path="/forums" element={<ForumLayout />}>
+            <Route index element={<CategoryPage />} />
+            <Route path="forum" element={<ForumPage />} />
+            <Route path="category" element={<CategoryPage />} />
+            <Route path="whats-new" element={<WhatsNew />} />
+            <Route path="post-new" element={<PostNew />} />
+            <Route path="create-new-post" element={<CreateNewPost />} />
+          </Route>
+
+          <Route path="forum/:id" element={<DetailPage />} />
+          <Route path="/post-thread" element={<CreatePostQuestions />} />
+          <Route path="/your-posts" element={<YourPostThread />} />
+          <Route path="/post/:postId" element={<YourPostDetailPage />} />
         </Route>
 
         {/* Trang  Admin */}
         <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin/profile" element={<UserProfilePage />} />
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="home" element={<Home />} />
@@ -59,6 +83,7 @@ const App = () => {
           <Route path="Branch" element={<Branch />} />
           <Route path="Trainer" element={<Trainer />} />
           <Route path="Promotion" element={<PromotionPage />} />
+          <Route path="Post" element={<PostPage />} />
         </Route>
       </Routes>
     </Router>

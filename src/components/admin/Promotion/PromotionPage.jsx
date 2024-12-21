@@ -44,7 +44,7 @@ const PromotionPage = () => {
 
     useEffect(() => {
         fetchPromotions();
-        pollingInterval.current = setInterval(fetchPromotions, 60000); // Tự động gọi lại API mỗi 30 giây
+        pollingInterval.current = setInterval(fetchPromotions, 10000); // Tự động gọi lại API mỗi 30 giây
         return () => clearInterval(pollingInterval.current); // Dọn dẹp interval khi unmount
     }, []);
 
@@ -83,7 +83,7 @@ const PromotionPage = () => {
     const handleVerifyCode = async () => {
         try {
             const response = await verifyCode(codeInput);
-            console.log("Data code đúng ko ta: ", response);
+            console.log("Data code đúng ko ta page: ", response);
 
             if (response && response.isValid) {
                 notification.success({

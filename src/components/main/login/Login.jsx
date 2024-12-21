@@ -41,7 +41,11 @@ const Login = () => {
       const result = await loginUser(data);
       if (result.status === 200) {
         handleStoreUser(result.data);
-        navigate('/');
+        if (result.data.role === "ADMIN") {
+          navigate('/admin/profile');
+        } else {
+          navigate('/');
+        }
       } else if (result.status === 400) {
         toast.error(result.message || 'Invalid input.');
       } else if (result.status === 404) {

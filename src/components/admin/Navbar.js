@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom';  // Import useNavigate
 
 const Navbar = ({ menuItems, onToggleSidebar }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,9 +76,7 @@ const Navbar = ({ menuItems, onToggleSidebar }) => {
         <i className="bx bx-bell"></i>
         <span className="count">12</span>
       </a>
-      <a href="#" className="profile">
-        <img src="././logo192.png" alt="Profile" />
-      </a>
+      <Link className="btn btn-light" to="/admin/profile">Profile</Link>
     </nav>
   );
 };

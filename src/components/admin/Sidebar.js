@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = ({ setMenuItems, isCollapsed }) => {
   const initialIndex = parseInt(localStorage.getItem('activeIndex')) || 0;
@@ -14,6 +15,7 @@ const Sidebar = ({ setMenuItems, isCollapsed }) => {
     { label: 'Trainer', icon: 'bx-message-square-dots', path: '/admin/Trainer' },
     { label: 'Booking', icon: 'bxs-hand-up', path: '/admin/Booking' },
     { label: 'Promotion', icon: 'bx-cog', path: '/admin/Promotion' },
+    { label: 'Post', icon: 'bx-cog', path: '/admin/post' },
     { label: 'Settings', icon: 'bx-cog', path: '/admin/home' }
 
   ], []); // Menu items
@@ -47,10 +49,7 @@ const Sidebar = ({ setMenuItems, isCollapsed }) => {
       </ul>
       <ul className="side-menu">
         <li>
-          <a href="#" className="logout">
-            <i className="bx bx-log-out-circle"></i>
-            Logout
-          </a>
+          <Link className="btn btn-outline-light me-2" to="/login">Logout</Link>
         </li>
       </ul>
     </div>
