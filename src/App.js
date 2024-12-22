@@ -22,7 +22,8 @@ import Login from './components/main/login/Login';
 import Registration from './components/main/login/Registration';
 import BookingMain from './components/main/booking/Booking';
 import ClubHome from './components/main/club/ClubHome';
-
+import TrainerHome from './components/main/trainer/TrainerHome';
+import ClubDetails from './components/main/club/ClubDetails';
 
 const App = () => {
 
@@ -42,7 +43,8 @@ const App = () => {
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
         <Route path="/clubs/" element={<ClubHome />} />
-        BranchHome
+        <Route path="/clubs/:id" element={<ClubDetails />} />
+        <Route path="/trainers/" element={<TrainerHome />} />
         </Route>
 
         {/* Trang  Admin */}

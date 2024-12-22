@@ -53,22 +53,24 @@ function ClubHome() {
                 {filteredData.map((club) => (
                     <div key={club.id} className="card">
                         <div className="row-highlight-table">
-                            <h1 style={{ textAlign: 'center' }}>  {club.name}</h1>
+                            <h1 style={{ textAlign: 'center' }}>
+                                <a href={`/clubs/${club.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    {club.name}
+                                </a>
+                            </h1>
                             <p>
-                                <strong>Photos:<br /></strong>
-                                   {club.clubImages && club.clubImages.length > 0 && (
-                                        <Image
-                                            src={club.clubImages[0].imageUrl}
-                                            alt={`${club.name} photo`}
-                                            width={'95%'}
-                                            height={'180px'}
-                                            style={{ borderRadius: '5px' }}                 
-                                        />
-                                    )}
+                                {club.clubImages && club.clubImages.length > 0 && (
+                                    <Image
+                                        src={club.clubImages[0].imageUrl}
+                                        alt={`${club.name} photo`}
+                                        width={'95%'}
+                                        height={'180px'}
+                                        style={{ borderRadius: '5px' }}
+                                    />
+                                )}
                             </p>
                             <p><strong>Address:<br /></strong> {club.address}</p>
                             <p><strong>Phone Number:<br /></strong> {club.contactPhone}</p>
-                            <p><strong>Description:<br /></strong> {club.description}</p>
                             <p>
                                 <strong>Open Hour:</strong> {moment(club.openHour, 'HH:mm').format('HH:mm')}
                             </p>
