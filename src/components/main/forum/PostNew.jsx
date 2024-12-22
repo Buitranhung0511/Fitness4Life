@@ -94,6 +94,7 @@ const PostNew = () => {
                                 {/* Hàng 4: Content */}
                                 <Paragraph style={{ marginBottom: "8px" }}>
                                     {truncateContent(article.content, 300)}
+
                                     <span
                                         onClick={() => navigate(`/forum/${article.id}`)} // Điều hướng khi click
                                         style={{

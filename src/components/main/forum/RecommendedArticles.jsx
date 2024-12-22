@@ -96,7 +96,9 @@ const RecommendedArticles = () => {
                         )}
                     />
                 )}
+
             </div>
+
         </section>
     );
 };

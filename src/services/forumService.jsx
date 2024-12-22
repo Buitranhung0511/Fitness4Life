@@ -13,6 +13,19 @@ export const GetAllQuestion = async () => {
         }
     }
 };
+
+export const getQuestionById = async (id) => {
+    try {
+        const response = await axios.get(`${smartAPI}/forums/questions/${id}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
 export const CreateQuestion = async (newQuestion) => {
     try {
         const response = await axios.post(`${smartAPI}/forums/questions/create`, newQuestion)
@@ -22,6 +35,61 @@ export const CreateQuestion = async (newQuestion) => {
             return error.response.data || 'An error occurred'
         } else {
             return error.message || 'An unexpected error occurred'
+        }
+    }
+};
+
+
+export const voteQuestion = async (id, voteType, userId) => {
+    try {
+        const response = await axios.post(`${smartAPI}/forums/${id}/vote?userId=${userId}&voteType=${voteType}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+export const incrementViewCount = async (id, userId) => {
+    try {
+        const response = await axios.get(`${smartAPI}/forums/${id}/view?userId=${userId}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+//============================comment=======================
+
+export const createComment = async (data) => {
+    try {
+        const response = await axios.post(`${smartAPI}/forums/comments/create`, data);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+export const GetCommentByQuestionId = async (idQuestion) => {
+    try {
+        const response = await axios.get(`${smartAPI}/forums/question/${idQuestion}/comment`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
         }
     }
 };

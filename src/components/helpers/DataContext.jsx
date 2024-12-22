@@ -42,7 +42,7 @@ export const DataProvider = ({ children }) => {
         const updatedUser = ensureProfileDTO(data); // Đảm bảo profileDTO đầy đủ
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
-        // console.log("user: ", updatedUser);
+        console.log("user: ", updatedUser);
         setIsLoggedIn(true);
         setNotificationMessage('Login successful!'); // Đặt thông báo
     }

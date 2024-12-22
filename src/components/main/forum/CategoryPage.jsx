@@ -6,7 +6,6 @@ import { FileTextOutlined } from "@ant-design/icons";
 import { DataContext } from '../../helpers/DataContext';
 import "../../../assets/css/CategoryPage.css";
 
-
 const { Title, Text } = Typography;
 
 const categories = [
@@ -65,8 +64,6 @@ const CategoryPage = () => {
                     ))}
                 </div>
             </div>
-
-
         </section>
     );
 };

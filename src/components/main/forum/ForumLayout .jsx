@@ -3,7 +3,7 @@ import { Layout, Row, Col } from "antd";
 import ForumSidebar from "./ForumSidebar";
 import RecommendedArticles from "./RecommendedArticles";
 import { Outlet, useLocation } from "react-router-dom";
-
+import AdDisplay from "./AdDisplay";
 const { Sider, Content } = Layout;
 
 const ForumLayout = () => {
@@ -14,6 +14,7 @@ const ForumLayout = () => {
             {/* Thanh menu bên trái */}
             <Sider theme="light" width={250} style={{ background: "#fff" }}>
                 <ForumSidebar />
+                <AdDisplay />
             </Sider>
 
             {/* Nội dung chính + Bài viết đề xuất */}
@@ -38,6 +39,7 @@ const ForumLayout = () => {
                                 }}
                             >
                                 <RecommendedArticles />
+                                <AdDisplay /> {/* Hiển thị quảng cáo */}
                             </Content>
                         </Col>
                     )}
