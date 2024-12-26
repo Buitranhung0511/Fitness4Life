@@ -43,3 +43,31 @@ export const verifyAccountRegister = async (email, otp) => {
 export const changePassword = async (data) => {
     return await axios.post(`${userAPI}/users/change-pass`, data)
 };
+
+
+export const getOneUserById = async (id) => {
+    try {
+        const response = await axios.get(`${userAPI}/users/manager/oneUser/${id}`)
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred'
+        } else {
+            return error.message || 'An unexpected error occurred'
+        }
+    }
+};
+
+
+export const UpdateProflie = async (id, editData) => {
+    try {
+        const response = await axios.put(`${userAPI}/users/update/${id}`, editData)
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred'
+        } else {
+            return error.message || 'An unexpected error occurred'
+        }
+    }
+};

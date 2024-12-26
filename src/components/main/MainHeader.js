@@ -1,11 +1,25 @@
 import React, { useContext } from 'react';
 import logo from '../../assets/images/logo.png'; // Import the logo image
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { DataContext } from '../helpers/DataContext';
+import { Modal } from 'antd';
 
 const MainHeader = () => {
   const { isLoggedIn, handleLogout } = useContext(DataContext);
 
+  const navigate = useNavigate();
+
+  const confirmLogout = () => {
+    Modal.confirm({
+      title: 'Bạn có chắc chắn muốn đăng xuất?',
+      okText: 'Đăng xuất',
+      cancelText: 'Hủy',
+      onOk: () => {
+        handleLogout(); // Thực hiện logout
+        navigate('/login'); // Chuyển hướng đến trang login
+      },
+    });
+  };
   return (
     <header id="header">
       <nav id="main-nav" className="navbar navbar-default navbar-fixed-top" role="banner">
@@ -48,7 +62,7 @@ const MainHeader = () => {
                     <Link className="btn btn-light" to="/user/profile">Profile</Link>
                   </li>
                   <li className="scroll">
-                    <Link className="ms-2 btn btn-outline-light" onClick={() => handleLogout()}>Logout</Link>
+                    <Link className="ms-2 btn btn-outline-light" onClick={(confirmLogout)}>Logout</Link>
                   </li>
                 </>
               )}

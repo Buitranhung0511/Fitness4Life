@@ -24,6 +24,9 @@ import BookingMain from './components/main/booking/Booking';
 import Package from './components/admin/Package/Package';
 import PackageMain from './components/main/package/Package';
 import PaymentMain from './components/main/Paypal/PaymentMain';
+import PaymentSuccess from './components/main/Paypal/SuccessfullyPay';
+import UserProfilePage from './components/main/user/UserProfilePage';
+import HistoryBooking from './components/main/user/HistoryBooking';
 
 
 const App = () => {
@@ -46,7 +49,10 @@ const App = () => {
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
         <Route path="/payment" element={<PaymentMain />} />
-        
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+
+        <Route path="/user/profile" element={<UserProfilePage />} />
+        <Route path="/history-booking" element={<HistoryBooking />} />
         </Route>
 
         {/* Trang  Admin */}

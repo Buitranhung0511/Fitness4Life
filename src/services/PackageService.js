@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const URL_PACK= "http://localhost:8082/api/booking";
+const URL_PACK = "http://localhost:8082/api/booking";
 
-
+const URL_PAY = "http://localhost:8082/api";
 const fetchAllPackage = () => {
     const URL_BACKEND = `${URL_PACK}/packages`;
     return axios.get(URL_BACKEND);
@@ -31,7 +31,7 @@ const createPackageAPI = (packageName, description, durationMonth, price) => {
     return axios.post(URL_BACKEND, data);
 };
 
-const updatePackage = (id,packageName, description, durationMonth, price) => {
+const updatePackage = (id, packageName, description, durationMonth, price) => {
     const URL_BACKEND = `${URL_PACK}/package/update/${id}`;
     const data = {
         packageName: packageName,
@@ -46,9 +46,64 @@ const deletePackage = (id) => {
     const URL_BACKEND = `${URL_PACK}/package/delete/${id}`;
     return axios.delete(URL_BACKEND);
 }
+
+const GetRoomsByPackage = async (packageId) => {
+    const URL_BACKEND = `http://localhost:8081/api/dashboard/packages/${packageId}/rooms`;
+    try {
+        const response = await axios.get(URL_BACKEND);
+        if (response.status === 200 && response.data) {
+            return response.data;
+        } else {
+            throw new Error('Failed to fetch rooms for the package.');
+        }
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error fetching rooms.');
+    }
+};
+const paymentApi = async (
+    packageId,
+    userId,
+    totalAmount,
+    startDate,
+    endDate,
+    description,
+    packageName
+) => {
+    const payload = {
+        packageId,
+        userId,
+        buyDate: new Date().toISOString(), // Current date in ISO format
+        totalAmount,
+        startDate, // Start date as string
+        endDate,   // End date as string
+        description,
+        cancelUrl: 'http://localhost:5173/cancel', // Cancel URL
+        successUrl: 'http://localhost:5173/success', // Success URL
+        packageName,
+        currency: 'USD', // Fixed currency
+        intent: 'Sale',  // Fixed intent
+    };
+
+    try {
+        const response = await axios.post('http://localhost:8082/api/paypal/pay', payload, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        return response; // Return the response object
+    } catch (error) {
+        console.error('Error while calling payment API:', error);
+        throw error; // Rethrow the error for further handling
+    }
+};
+
+
 export {
     fetchAllPackage,
     createPackageAPI,
     updatePackage,
-    deletePackage
+    deletePackage,
+    GetRoomsByPackage,
+    paymentApi
 }

@@ -1,19 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Card, Col, Row, Badge, Modal, Button, notification, Checkbox, Layout } from 'antd';
+import { Card, Col, Row, Badge, Modal, Button, notification, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DataContext } from '../../helpers/DataContext';
-import { submitBookingRoom } from '../../../services/PackageService';
-import { fetchAllClubs } from '../../../services/ClubService';
+import { GetRoomsByPackage, submitBookingRoom } from '../../../services/PackageService';
 
 const { Meta } = Card;
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 function BookingMain() {
     const { user, isLoggedIn } = useContext(DataContext);
     const navigate = useNavigate();
     const [filteredRooms, setFilteredRooms] = useState([]); // Filtered rooms
-    const [clubs, setClubs] = useState([]); // List of clubs for filtering
-    const [selectedClubs, setSelectedClubs] = useState([]); // Selected clubs for filtering
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,33 +19,22 @@ function BookingMain() {
     }, [user]);
 
     useEffect(() => {
-        const loadClubsAndRooms = async () => {
+        const loadRoomsByPackage = async () => {
             try {
-                const clubResponse = await fetchAllClubs();
-                if (clubResponse.data && clubResponse.data.data) {
-                    setClubs(clubResponse.data.data);
-                    setFilteredRooms([]); // Initially no rooms selected
-                } else {
-                    throw new Error('Failed to fetch club data');
-                }
+                const rooms = await GetRoomsByPackage(user.workoutPackageId);
+                setFilteredRooms(rooms);
             } catch (error) {
                 notification.error({
-                    message: 'Error Fetching Data',
-                    description: error.message || 'Something went wrong while fetching data.',
+                    message: 'Error Fetching Rooms',
+                    description: error.message || 'Something went wrong while fetching rooms.',
                 });
             }
         };
 
-        loadClubsAndRooms();
-    }, []);
-
-    const handleClubFilter = (checkedValues) => {
-        setSelectedClubs(checkedValues);
-        const filtered = clubs
-            .filter((club) => checkedValues.includes(club.id)) // Filter selected clubs
-            .flatMap((club) => club.rooms); // Collect rooms from selected clubs
-        setFilteredRooms(filtered);
-    };
+        if (user && user.workoutPackageId) {
+            loadRoomsByPackage();
+        }
+    }, [user]);
 
     const openModal = (room) => {
         if (!isLoggedIn) { // Kiểm tra trạng thái đăng nhập
@@ -104,20 +90,6 @@ function BookingMain() {
     return (
         <section id="services">
             <Layout style={{ minHeight: '100vh' }}>
-                <Sider width={300} style={{ background: '#fff', padding: '20px' }}>
-                    <h3>Filter by Clubs</h3>
-                    <Checkbox.Group
-                        style={{ display: 'flex', flexDirection: 'column' }}
-                        onChange={handleClubFilter}
-                    >
-                        {clubs.map((club) => (
-                            <Checkbox key={club.id} value={club.id} style={{ marginBottom: '10px' }}>
-                                {club.name}
-                            </Checkbox>
-                        ))}
-                    </Checkbox.Group>
-                </Sider>
-
                 <Content style={{ padding: '20px' }}>
                     <h1>Rooms</h1>
                     <Row gutter={[16, 16]}>
@@ -149,7 +121,7 @@ function BookingMain() {
                                 </Col>
                             ))
                         ) : (
-                            <p>No rooms available for the selected clubs.</p>
+                            <p>No rooms available for the selected package.</p>
                         )}
                     </Row>
                 </Content>

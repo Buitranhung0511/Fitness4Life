@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Card, Button, Row, Col } from 'antd';
+import { useEffect, useState, useContext } from 'react';
+import { Card, Button, Row, Col, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllPackage } from '../../../services/PackageService';
 import '../../../assets/css/package.css';
+import { DataContext } from '../../helpers/DataContext';
 
 function PackageMain() {
     const [dataPackage, setDataPackage] = useState([]);
-    const navigate = useNavigate(); // Hook để chuyển hướng
+    const navigate = useNavigate();
+    const { user, isLoggedIn } = useContext(DataContext); // Get user from DataContext
 
     useEffect(() => {
         loadPackage();
@@ -22,7 +24,17 @@ function PackageMain() {
     };
 
     const handlePaynow = (pkg) => {
-        navigate('/payment', { state: { package: pkg } }); // Chuyển hướng với dữ liệu gói
+        if (!isLoggedIn) { // Kiểm tra trạng thái đăng nhập
+            notification.warning({
+                message: 'Authentication Required',
+                description: 'You need login before pay product',
+            });
+            setTimeout(() => navigate('/login'), 1500); // Điều hướng sau thông báo
+            return;
+        }
+
+        // Chuyển hướng đến trang PaymentPage
+        navigate('/payment', { state: { package: pkg } });
     };
 
     return (
