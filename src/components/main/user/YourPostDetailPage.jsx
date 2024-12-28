@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Divider, Spin, notification } from "antd";
-import { useParams } from "react-router-dom";
+import { Typography, Divider, Spin, notification, Button } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
 import { GetAllQuestion } from "../../../services/forumService";
 
 const { Title, Text, Paragraph } = Typography;
 
 const YourPostDetailPage = () => {
     const { postId } = useParams();
+    const navigate = useNavigate();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchPostDetail = async () => {
             try {
-                const response = await GetAllQuestion(); // Giả sử API trả về danh sách
+                const response = await GetAllQuestion();
                 if (response.status === 200) {
                     const allPosts = response.data.data;
                     const foundPost = allPosts.find((p) => p.id === Number(postId));
@@ -37,6 +38,8 @@ const YourPostDetailPage = () => {
         fetchPostDetail();
     }, [postId]);
 
+    // console.log("data: ", post);
+
     if (loading) return <Spin size="large" />;
     if (!post) return <Text>Không tìm thấy bài viết.</Text>;
 
@@ -54,19 +57,30 @@ const YourPostDetailPage = () => {
                 <br />
                 <Text type="secondary">Danh mục: {post.category?.join(", ")}</Text>
                 <Divider />
-                {post.imageQuestionUrl?.length > 0 && (
+                {post.questionImage?.length > 0 && (
                     <div>
                         <Title level={5}>Hình ảnh:</Title>
-                        {post.imageQuestionUrl.map((image, index) => (
+                        {post.questionImage.map((image, index) => (
                             <img
                                 key={index}
-                                src={image}
+                                src={image.imageUrl}
                                 alt={`Hình ảnh ${index + 1}`}
                                 style={{ maxWidth: "100%", marginBottom: "16px" }}
                             />
                         ))}
                     </div>
                 )}
+                <Button
+                    type="primary"
+                    style={{ marginTop: "16px" }}
+                    onClick={() =>
+                        navigate(`/update-question/${postId}`, {
+                            state: { post }, // Truyền dữ liệu bài viết qua route
+                        })
+                    }
+                >
+                    Update Question
+                </Button>
             </div>
         </section>
     );

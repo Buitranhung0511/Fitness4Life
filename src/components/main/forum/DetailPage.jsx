@@ -4,7 +4,7 @@ import { Typography, Spin, message, Button } from "antd";
 import moment from "moment";
 import { getQuestionById, incrementViewCount, voteQuestion } from "../../../services/forumService";
 import { DataContext } from "../../helpers/DataContext";
-import CreateComment from "./CreateCommen";
+import CreateComment from "./CreateComment";
 
 const { Title, Paragraph, Text } = Typography;
 

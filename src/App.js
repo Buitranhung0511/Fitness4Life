@@ -34,6 +34,7 @@ import ForumLayout from './components/main/forum/ForumLayout ';
 import WhatsNew from './components/main/forum/WhatsNew';
 import PostNew from './components/main/forum/PostNew';
 import CreateNewPost from './components/main/forum/CreateNewPost';
+import UpdateQuestionPage from './components/main/forum/UpdateQuestion';
 
 
 const App = () => {
@@ -67,6 +68,8 @@ const App = () => {
           <Route path="/post-thread" element={<CreatePostQuestions />} />
           <Route path="/your-posts" element={<YourPostThread />} />
           <Route path="/post/:postId" element={<YourPostDetailPage />} />
+          <Route path="/update-question/:postId" element={<UpdateQuestionPage />} />
+
         </Route>
 
         {/* Trang  Admin */}

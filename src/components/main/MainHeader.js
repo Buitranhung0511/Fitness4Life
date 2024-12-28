@@ -81,6 +81,5 @@ const MainHeader = () => {
     </header>
   );
 };
-
 export default MainHeader;
 

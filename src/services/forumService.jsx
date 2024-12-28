@@ -66,6 +66,20 @@ export const incrementViewCount = async (id, userId) => {
     }
 };
 
+
+export const updateQuestion = async (id, updateData) => {
+    try {
+        const response = await axios.put(`${smartAPI}/forums/questions/update/${id}`, updateData);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
 //============================comment=======================
 
 export const createComment = async (data) => {
