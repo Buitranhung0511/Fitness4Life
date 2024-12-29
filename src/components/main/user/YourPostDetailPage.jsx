@@ -51,8 +51,6 @@ const YourPostDetailPage = () => {
                 <Divider />
                 <Paragraph>{post.content}</Paragraph>
                 <Divider />
-                <Text type="secondary">Chủ đề: {post.topic}</Text>
-                <br />
                 <Text type="secondary">Từ khóa: {post.tag}</Text>
                 <br />
                 <Text type="secondary">Danh mục: {post.category?.join(", ")}</Text>

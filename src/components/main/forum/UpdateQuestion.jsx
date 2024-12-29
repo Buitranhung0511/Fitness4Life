@@ -11,7 +11,6 @@ const UpdateQuestion = () => {
     const { post } = location.state; // Nhận dữ liệu bài viết từ state
     const [title, setTitle] = useState(post.title);
     const [content, setContent] = useState(post.content);
-    const [topic, setTopic] = useState(post.topic);
     const [tag, setTag] = useState(post.tag);
     const [imagesUpload, setImagesUpload] = useState([]);
     const [deleteImageUrl, setDeleteImageUrl] = useState([]); // Lưu các ảnh cũ cần xóa
@@ -31,7 +30,6 @@ const UpdateQuestion = () => {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("content", content);
-        formData.append("topic", topic);
         formData.append("tag", tag);
         imagesUpload.forEach((file) => formData.append("imageQuestionUrl", file)); // Thêm ảnh mới
         deleteImageUrl.forEach((id) => formData.append("deleteImageUrl", id)); // Gửi ID ảnh cần xóa
@@ -75,12 +73,6 @@ const UpdateQuestion = () => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     rows={6}
-                    style={{ marginBottom: "16px" }}
-                />
-                <Input
-                    placeholder="Chủ đề"
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
                     style={{ marginBottom: "16px" }}
                 />
                 <Input

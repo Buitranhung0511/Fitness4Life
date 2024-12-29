@@ -32,6 +32,12 @@ const categoryOptions = [
     { value: "POWERLIFTING_DISCUSSION", label: "Powerlifting" },
 ];
 
+const statusOptions = [
+    { value: "PENDING", label: "Pending (Chờ xử lý)" },
+    { value: "UNDER_REVIEW", label: "Under Review (Đang duyệt)" },
+    { value: "APPROVED", label: "Approved (Đã duyệt)" },
+];
+
 const CreateNewPost = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
@@ -58,17 +64,18 @@ const CreateNewPost = () => {
     const initialValues = {
         authorId: user?.id || "Không xác định",
         author: user?.fullName || "Không xác định",
+        status: "PENDING",
     };
 
     const handleSubmit = async (values) => {
-        const { title, content, topic, tag, category, imageQuestionUrl, authorId, author } = values;
+        const { title, content, tag, category, imageQuestionUrl, authorId, author, status } = values;
 
         const formData = new FormData();
         formData.append("title", title);
         formData.append("content", content);
-        formData.append("topic", topic);
         formData.append("tag", tag);
         formData.append("rolePost", "PUBLICED");
+        formData.append("status", status);
         formData.append("authorId", authorId);
         formData.append("author", author);
 
@@ -91,9 +98,10 @@ const CreateNewPost = () => {
         try {
             setLoading(true);
             const response = await CreateQuestion(formData);
+            // console.log("response: ", response);
             if (response.status === 201) {
                 message.success("Tạo bài viết thành công!");
-                navigate(`/forum/post-new`);
+                navigate(`/forums/post-new`);
             } else {
                 message.error(response.message || "Tạo bài viết thất bại!");
             }
@@ -121,13 +129,7 @@ const CreateNewPost = () => {
                     >
                         <Input placeholder="Nhập tiêu đề bài viết" />
                     </Form.Item>
-                    <Form.Item
-                        label="Chủ đề"
-                        name="topic"
-                        rules={[{ required: true, message: "Vui lòng nhập chủ đề!" }]}
-                    >
-                        <Input placeholder="Nhập chủ đề" />
-                    </Form.Item>
+
                     <Form.Item
                         label="Từ khóa"
                         name="tag"
@@ -138,12 +140,14 @@ const CreateNewPost = () => {
                     <Form.Item
                         label="AuthorId"
                         name="authorId"
+                        hidden
                     >
                         <Input disabled />
                     </Form.Item>
                     <Form.Item
                         label="Author"
                         name="author"
+                        hidden
                     >
                         <Input disabled />
                     </Form.Item>
@@ -164,6 +168,17 @@ const CreateNewPost = () => {
                             mode="multiple" // Cho phép chọn nhiều mục
                             placeholder="Chọn danh mục"
                             options={categoryOptions} // Danh sách các danh mục
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Trạng thái"
+                        name="status"
+                        rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
+                        hidden
+                    >
+                        <Select
+                            placeholder="Chọn trạng thái"
+                            options={statusOptions}
                         />
                     </Form.Item>
 

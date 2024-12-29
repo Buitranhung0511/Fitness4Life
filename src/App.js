@@ -74,6 +74,7 @@ const App = () => {
 
         {/* Trang  Admin */}
         <Route path="/admin" element={<AdminLayout />}>
+
           <Route path="/admin/profile" element={<UserProfilePage />} />
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />

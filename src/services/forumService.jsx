@@ -80,6 +80,32 @@ export const updateQuestion = async (id, updateData) => {
     }
 };
 
+export const deleteQuestion = async (id) => {
+    try {
+        const response = await axios.delete(`${smartAPI}/forums/questions/delete/${id}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+export const changePublished = async (id, changeStatus) => {
+    try {
+        const response = await axios.put(`${smartAPI}/forums/Questions/changePublished/${id}`, changeStatus);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
 //============================comment=======================
 
 export const createComment = async (data) => {
@@ -98,6 +124,45 @@ export const createComment = async (data) => {
 export const GetCommentByQuestionId = async (idQuestion) => {
     try {
         const response = await axios.get(`${smartAPI}/forums/question/${idQuestion}/comment`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+export const updateComment = async (idComment, updateComment) => {
+    try {
+        const response = await axios.put(`${smartAPI}/forums/comments/update/${idComment}`, updateComment);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+export const deleteComment = async (idComment) => {
+    try {
+        const response = await axios.delete(`${smartAPI}/forums/comments/delete/${idComment}`);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.data || 'An error occurred';
+        } else {
+            return error.message || 'An unexpected error occurred';
+        }
+    }
+};
+
+export const changeStatusComment = async (idComment, changeStatus) => {
+    try {
+        const response = await axios.put(`${smartAPI}/forums/comments/change-published/${idComment}`, changeStatus);
         return response;
     } catch (error) {
         if (error.response) {

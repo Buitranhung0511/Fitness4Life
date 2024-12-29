@@ -28,14 +28,18 @@ const ForumPage = () => {
             if (response.status === 200) {
                 const allQuestions = response.data.data;
 
+                // Lọc bài viết có status = APPROVED
+                const approvedQuestions = allQuestions.filter(
+                    (q) => q.status === "APPROVED"
+                );
                 // Lọc dữ liệu theo category nếu có
                 const filteredQuestions = category
-                    ? allQuestions.filter(
+                    ? approvedQuestions.filter(
                         (q) =>
                             q.category?.length > 0 &&
                             q.category.some((cat) => cat.trim() === category.trim())
                     )
-                    : allQuestions;
+                    : approvedQuestions;
 
                 setQuestions(filteredQuestions);
                 // console.log("Filtered Questions:", filteredQuestions);
@@ -54,6 +58,8 @@ const ForumPage = () => {
     useEffect(() => {
         fetchQuestions();
     }, [category]);
+    console.log("questions : ", questions);
+
     return (
         <section id="services">
             <div className="forum-container">

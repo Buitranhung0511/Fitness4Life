@@ -19,9 +19,12 @@ const PostNew = () => {
                 const response = await GetAllQuestion();
                 if (response.status === 200) {
                     const allArticles = response.data.data;
+                    const approvedQuestions = allArticles.filter(
+                        (q) => q.status === "APPROVED"
+                    );
 
                     // Sắp xếp các bài viết theo thời gian (từ mới đến cũ)
-                    const sortedArticles = allArticles.sort((a, b) =>
+                    const sortedArticles = approvedQuestions.sort((a, b) =>
                         moment(b.createdAt, "YYYY-MM-DD HH:mm:ss").diff(moment(a.createdAt, "YYYY-MM-DD HH:mm:ss"))
                     );
 

@@ -8,7 +8,9 @@ const { Title, Text } = Typography;
 
 const YourPostThread = () => {
     const [posts, setPosts] = useState([]);
+    const [filteredPosts, setFilteredPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filterStatus, setFilterStatus] = useState("ALL"); // "ALL", "PENDING", "UNDER_REVIEW", "APPROVED"
     const { user } = useContext(DataContext);
     const navigate = useNavigate();
 
@@ -16,6 +18,7 @@ const YourPostThread = () => {
         const fetchUserPosts = async () => {
             try {
                 const response = await GetAllQuestion();
+                console.log("response: ", response);
 
                 if (response.status === 200) {
                     const allPosts = response.data.data;
@@ -34,6 +37,7 @@ const YourPostThread = () => {
                     );
 
                     setPosts(userPosts);
+                    setFilteredPosts(userPosts);
                 } else {
                     notification.error({
                         message: "Lỗi",
@@ -64,14 +68,55 @@ const YourPostThread = () => {
         return content;
     };
 
+    const handleFilterChange = (status) => {
+        setFilterStatus(status);
+        if (status === "ALL") {
+            setFilteredPosts(posts);
+        } else {
+            setFilteredPosts(posts.filter((post) => post.status === status));
+        }
+    };
+
     return (
         <div style={{ padding: "24px", maxWidth: "800px", margin: "0 auto" }}>
             <Title level={2}>Bài Viết Của Bạn</Title>
+
+            {/* Nút lọc */}
+            <div style={{ marginBottom: "16px" }}>
+                <Button
+                    type={filterStatus === "ALL" ? "primary" : "default"}
+                    onClick={() => handleFilterChange("ALL")}
+                >
+                    Tất cả
+                </Button>
+                <Button
+                    type={filterStatus === "PENDING" ? "primary" : "default"}
+                    onClick={() => handleFilterChange("PENDING")}
+                    style={{ marginLeft: "8px" }}
+                >
+                    Chờ xử lý
+                </Button>
+                <Button
+                    type={filterStatus === "UNDER_REVIEW" ? "primary" : "default"}
+                    onClick={() => handleFilterChange("UNDER_REVIEW")}
+                    style={{ marginLeft: "8px" }}
+                >
+                    Đang duyệt
+                </Button>
+                <Button
+                    type={filterStatus === "APPROVED" ? "primary" : "default"}
+                    onClick={() => handleFilterChange("APPROVED")}
+                    style={{ marginLeft: "8px" }}
+                >
+                    Đã duyệt
+                </Button>
+            </div>
+
             {loading ? (
                 <div>Loading...</div>
-            ) : posts.length > 0 ? (
+            ) : filteredPosts.length > 0 ? (
                 <List
-                    dataSource={posts}
+                    dataSource={filteredPosts}
                     renderItem={(post) => (
                         <List.Item>
                             <Card
@@ -100,6 +145,10 @@ const YourPostThread = () => {
                                     {Array.isArray(post.category)
                                         ? post.category.join(", ")
                                         : post.category || "Không có danh mục"}
+                                </Text>
+                                <br />
+                                <Text type="secondary">
+                                    <strong>Trạng thái:</strong> {post.status}
                                 </Text>
                             </Card>
                         </List.Item>

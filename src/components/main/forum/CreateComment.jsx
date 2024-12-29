@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Typography, Button, Input, Form, message } from "antd";
-import { GetCommentByQuestionId, createComment } from "../../../services/forumService";
+import { Typography, Button, Input, Form, message, Modal } from "antd";
+import { GetCommentByQuestionId, createComment, deleteComment, updateComment } from "../../../services/forumService";
 import { DataContext } from "../../helpers/DataContext";
 import moment from "moment";
 
@@ -12,6 +12,9 @@ const CreateComment = ({ questionId }) => {
     const [loading, setLoading] = useState(false);
     const [activeReplyForm, setActiveReplyForm] = useState(null);
     const [form] = Form.useForm();
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editingContent, setEditingContent] = useState("");
+
 
     // Fetch comments by question ID
     const fetchComments = async () => {
@@ -19,7 +22,7 @@ const CreateComment = ({ questionId }) => {
         try {
             const response = await GetCommentByQuestionId(questionId);
             if (response && response.data) {
-                console.log("Fetched comments:", response.data); // Kiểm tra dữ liệu trả về
+                // console.log("Fetched comments:", response.data); // Kiểm tra dữ liệu trả về
                 setComments(response.data);
             } else {
                 message.error("Không tìm thấy comment!");
@@ -44,25 +47,121 @@ const CreateComment = ({ questionId }) => {
         };
         try {
             const response = await createComment(commentData);
+
             if (response && response.status === 200) {
                 form.resetFields();
                 setActiveReplyForm(null);
 
-                // Thêm bình luận mới trực tiếp vào danh sách
                 // setComments((prevComments) => [
                 //     ...prevComments,
                 //     { ...commentData, id: response.data.id, createdAt: new Date() },
                 // ]);
+
                 setTimeout(() => {
                     fetchComments();
                 }, 3000);
+
+                // Hiển thị thông báo thành công
+                message.success("Comment created successfully!");
+            } else if (response && response.status === 400) {
+                // Xử lý lỗi khi không tìm thấy câu hỏi
+                message.error("Question not found!");
+            } else if (response && response.status === 401) {
+                // Xử lý lỗi khi không tìm thấy bình luận cha
+                message.error("Parent Comment Not Found!");
+            }
+            else if (response && response.status === 402) {
+                // Xử lý lỗi khi không tìm thấy bình luận cha
+                message.error("Comment contains spam and cannot be accepted.!");
             } else {
-                message.error("Có lỗi khi tạo comment!");
+                // Xử lý các lỗi không mong muốn
+                message.error("Unexpected error occurred!");
             }
         } catch (error) {
             console.error("Error creating comment:", error);
-            message.error("Có lỗi khi tạo comment!");
+
+            // Xử lý lỗi từ phía client hoặc network
+            if (error.response) {
+                // Lỗi từ phía server
+                message.error(error.response.data.message || "Server error occurred!");
+            } else {
+                // Lỗi từ phía client
+                message.error(error.message || "Network error occurred!");
+            }
         }
+
+    };
+
+    const handleEditComment = async (commentId) => {
+        const updatedCommentData = {
+            content: editingContent,
+        };
+
+        try {
+            const response = await updateComment(commentId, updatedCommentData);
+            if (response && response.status === 200) {
+                message.success("Cập nhật bình luận thành công!");
+                setEditingCommentId(null); // Đóng form chỉnh sửa
+                fetchComments(); // Làm mới danh sách bình luận
+            } else if (response && response.status === 400) {
+                message.error("Question not found!");
+            } else if (response && response.status === 401) {
+                message.error("Parent Comment Not Found!");
+            } else if (response && response.status === 402) {
+                message.error("Comment Cannot Be Updated After 24 Hours!");
+            }
+            else if (response && response.status === 403) {
+                message.error("Comment contains spam and cannot be accepted.!");
+            } else {
+                message.error("Unexpected error occurred!");
+            }
+        } catch (error) {
+            console.error("Error updating comment:", error);
+            // Xử lý lỗi từ phía client hoặc network
+            if (error.response) {
+                // Lỗi từ phía server
+                message.error(error.response.data.message || "Server error occurred!");
+            } else {
+                // Lỗi từ phía client
+                message.error(error.message || "Network error occurred!");
+            }
+        }
+    };
+
+    const handleDeleteComment = async (idComment) => {
+        try {
+            const response = await deleteComment(idComment);
+
+            if (response && response.status === 200) {
+                message.success("Comment deleted successfully!");
+                // Gọi lại API để cập nhật danh sách bình luận
+                fetchComments();
+            } else if (response && response.status === 400) {
+                message.error("Comment Not Found!");
+            } else if (response && response.status === 401) {
+                message.error("Comment Cannot Be Updated After 24 Hours!");
+            } else {
+                // Xử lý lỗi cụ thể nếu có thông tin
+                message.error(response || "Failed to delete the comment.");
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+            if (error.response) {
+                // Lỗi từ phía server
+                message.error(error.response.data.message || "Server error occurred!");
+            } else {
+                // Lỗi từ phía client
+                message.error(error.message || "Network error occurred!");
+            }
+        }
+    };
+    const confirmDelete = (idComment) => {
+        Modal.confirm({
+            title: "Are you sure you want to delete this comment?",
+            okText: "Yes",
+            cancelText: "No",
+            onOk: () => handleDeleteComment(idComment),
+        });
     };
 
     // Build tree structure for comments
@@ -87,7 +186,7 @@ const CreateComment = ({ questionId }) => {
                 tree.push(comment);
             }
         });
-        console.log("Built comment tree:", tree); // Log cây bình luận để kiểm tra
+        // console.log("Built comment tree:", tree); // Log cây bình luận để kiểm tra
         return tree;
     };
 
@@ -115,12 +214,54 @@ const CreateComment = ({ questionId }) => {
                         </Paragraph>
                         <div style={{ display: "flex", gap: "10px", alignItems: "center", fontSize: "12px", marginTop: "5px" }}>
                             <Text type="secondary">{moment(comment.createdAt, "YYYY-MM-DD HH:mm:ss").fromNow()}</Text>
-                            <Button type="link" size="small" style={{ padding: 0 }}>Thích</Button>
-                            <Button type="link" size="small" style={{ padding: 0 }} onClick={() => setActiveReplyForm(activeReplyForm === comment.id ? null : comment.id)}>Phản hồi</Button>
-                            <Button type="link" size="small" style={{ padding: 0 }}>Chia sẻ</Button>
+                            <Button type="link" size="small" style={{ padding: 0 }}>like</Button>
+                            <Button type="link" size="small" style={{ padding: 0 }}>dislike</Button>
+                            <Button type="link" size="small" style={{ padding: 0 }} onClick={() => setActiveReplyForm(activeReplyForm === comment.id ? null : comment.id)}>reply</Button>
+                            <Button
+                                type="link"
+                                size="small"
+                                style={{ padding: 0 }}
+                                onClick={() => {
+                                    setEditingCommentId(comment.id); // Bắt đầu chỉnh sửa
+                                    setEditingContent(comment.content); // Lấy nội dung hiện tại để chỉnh sửa
+                                }}
+                            >
+                                edit
+                            </Button>
+
+                            <Button
+                                type="link"
+                                size="small"
+                                style={{ padding: 0 }}
+                                onClick={() => confirmDelete(comment.id)}
+                            >
+                                delete
+                            </Button>
+
                         </div>
                     </div>
                 </div>
+                {editingCommentId === comment.id && (
+                    <div style={{ marginTop: "10px" }}>
+                        <Input.TextArea
+                            rows={2}
+                            value={editingContent}
+                            onChange={(e) => setEditingContent(e.target.value)}
+                            placeholder="Chỉnh sửa nội dung bình luận"
+                        />
+                        <div style={{ marginTop: "5px", display: "flex", gap: "10px" }}>
+                            <Button type="primary" size="small" onClick={() => handleEditComment(comment.id)}>
+                                Lưu
+                            </Button>
+                            <Button
+                                size="small"
+                                onClick={() => setEditingCommentId(null)}
+                            >
+                                Hủy
+                            </Button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Form trả lời */}
                 {activeReplyForm === comment.id && (
@@ -161,7 +302,7 @@ const CreateComment = ({ questionId }) => {
     }, [questionId]);
 
     useEffect(() => {
-        console.log("Updated comments state:", comments); // Kiểm tra state comments khi cập nhật
+        // console.log("Updated comments state:", comments); // Kiểm tra state comments khi cập nhật
     }, [comments]);
 
     const commentTree = buildCommentTree(comments);

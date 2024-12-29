@@ -33,7 +33,6 @@ const QuestionDetailModal = ({ isOpen, onClose, question }) => {
 
                     {/* Chủ đề, thẻ, và danh mục */}
                     <div className="question-category">
-                        <Text strong>Chủ đề:</Text> {question.topic} <br />
                         <Text strong>Thẻ:</Text> {question.tag} <br />
                         <Text strong>Danh mục:</Text> {question.category}
                     </div>
