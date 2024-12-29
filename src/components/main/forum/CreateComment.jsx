@@ -14,6 +14,11 @@ const CreateComment = ({ questionId }) => {
     const [form] = Form.useForm();
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingContent, setEditingContent] = useState("");
+    const [activeMenu, setActiveMenu] = useState(null); // Lưu trạng thái nút 3 chấm
+
+    const toggleMenu = (commentId) => {
+        setActiveMenu(activeMenu === commentId ? null : commentId); // Đổi trạng thái mở/tắt menu
+    };
 
 
     // Fetch comments by question ID
@@ -23,7 +28,14 @@ const CreateComment = ({ questionId }) => {
             const response = await GetCommentByQuestionId(questionId);
             if (response && response.data) {
                 // console.log("Fetched comments:", response.data); // Kiểm tra dữ liệu trả về
-                setComments(response.data);
+                const sortedComments = response.data.sort((a, b) => {
+                    // Chuyển `createdAt` từ chuỗi ISO-8601 thành timestamp để so sánh
+                    const dateA = new Date(a.createdAt).getTime();
+                    const dateB = new Date(b.createdAt).getTime();
+                    return dateB - dateA; // Mới nhất trước (giảm dần)
+                });
+
+                setComments(sortedComments);
             } else {
                 message.error("Không tìm thấy comment!");
             }
@@ -93,6 +105,11 @@ const CreateComment = ({ questionId }) => {
     };
 
     const handleEditComment = async (commentId) => {
+        const comment = comments.find((c) => c.id === commentId); // Lấy comment cần chỉnh sửa
+        if (comment.userId !== user.id || comment.userName !== user.fullName) {
+            message.error("Bạn không có quyền chỉnh sửa bình luận này!");
+            return;
+        }
         const updatedCommentData = {
             content: editingContent,
         };
@@ -129,6 +146,11 @@ const CreateComment = ({ questionId }) => {
     };
 
     const handleDeleteComment = async (idComment) => {
+        const comment = comments.find((c) => c.id === idComment); // Lấy comment cần xóa
+        if (comment.userId !== user.id || comment.userName !== user.fullName) {
+            message.error("Bạn không có quyền xóa bình luận này!");
+            return;
+        }
         try {
             const response = await deleteComment(idComment);
 
@@ -217,27 +239,44 @@ const CreateComment = ({ questionId }) => {
                             <Button type="link" size="small" style={{ padding: 0 }}>like</Button>
                             <Button type="link" size="small" style={{ padding: 0 }}>dislike</Button>
                             <Button type="link" size="small" style={{ padding: 0 }} onClick={() => setActiveReplyForm(activeReplyForm === comment.id ? null : comment.id)}>reply</Button>
-                            <Button
-                                type="link"
-                                size="small"
-                                style={{ padding: 0 }}
-                                onClick={() => {
-                                    setEditingCommentId(comment.id); // Bắt đầu chỉnh sửa
-                                    setEditingContent(comment.content); // Lấy nội dung hiện tại để chỉnh sửa
-                                }}
-                            >
-                                edit
-                            </Button>
+                            {comment.userId === user.id && comment.userName === user.fullName && (
+                                <>
+                                    <Button
+                                        type="link"
+                                        size="small"
+                                        style={{ padding: 0 }}
+                                        onClick={() => toggleMenu(comment.id)}
+                                    >
+                                        . . .
+                                    </Button>
+                                    {activeMenu === comment.id && (
+                                        <div style={{ display: "inline-block", marginLeft: "0px" }}>
 
-                            <Button
-                                type="link"
-                                size="small"
-                                style={{ padding: 0 }}
-                                onClick={() => confirmDelete(comment.id)}
-                            >
-                                delete
-                            </Button>
+                                            <Button
+                                                type="link"
+                                                size="small"
+                                                style={{ padding: 10 }}
+                                                onClick={() => {
+                                                    setEditingCommentId(comment.id); // Bắt đầu chỉnh sửa
+                                                    setEditingContent(comment.content); // Lấy nội dung hiện tại để chỉnh sửa
+                                                }}
+                                            >
+                                                edit
+                                            </Button>
 
+                                            <Button
+                                                type="link"
+                                                size="small"
+                                                style={{ padding: 5 }}
+                                                onClick={() => confirmDelete(comment.id)}
+                                            >
+                                                delete
+                                            </Button>
+
+                                        </div>
+                                    )}
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
