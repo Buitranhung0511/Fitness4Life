@@ -14,7 +14,10 @@ const Sidebar = ({ setMenuItems, isCollapsed }) => {
     { label: 'Trainer', icon: 'bx-message-square-dots', path: '/admin/Trainer' },
     { label: 'Booking', icon: 'bxs-hand-up', path: '/admin/Booking' },
     { label: 'Package', icon: 'bx-message-square-dots', path: '/admin/Package' },
-    { label: 'Settings', icon: 'bx-cog', path: '/admin/home' }
+    { label: 'Promotion', icon: 'bx-cog', path: '/admin/Promotion' },
+    { label: 'Post', icon: 'bx-cog', path: '/admin/post' },
+    { label: 'Settings', icon: 'bx-cog', path: '/admin/home' },
+
   ], []); // Menu items
 
   useEffect(() => {

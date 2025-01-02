@@ -39,16 +39,18 @@ const OTPVerification = () => {
     }, [email, otp]);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-            <Card style={{ width: 400, textAlign: 'center' }}>
-                <h2>OTP Verification</h2>
-                {isLoading ? (
-                    <Spin size="large" tip="Verifying OTP..." />
-                ) : (
-                    <Alert message={message} type={alertType} showIcon />
-                )}
-            </Card>
-        </div>
+        <section id="services">
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+                <Card style={{ width: 400, textAlign: 'center' }}>
+                    <h2>OTP Verification</h2>
+                    {isLoading ? (
+                        <Spin size="large" tip="Verifying OTP..." />
+                    ) : (
+                        <Alert message={message} type={alertType} showIcon />
+                    )}
+                </Card>
+            </div>
+        </section>
     );
 };
 

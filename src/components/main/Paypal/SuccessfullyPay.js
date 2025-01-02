@@ -45,10 +45,12 @@ const PaymentSuccess = () => {
     }
 
     return (
-        <div>
-            <h1>Kết quả thanh toán</h1>
-            <p>{message}</p>
-        </div>
+        <section id="services">
+            <div>
+                <h1>Kết quả thanh toán</h1>
+                <p>{message}</p>
+            </div>
+        </section>
     );
 };
 

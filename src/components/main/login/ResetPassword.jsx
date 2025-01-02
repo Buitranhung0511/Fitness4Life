@@ -1,6 +1,8 @@
 import { Input, Modal, Button, notification } from "antd";
 import { useState } from "react";
 import { GetOTP, ResetPass } from "../../../services/UsersService";
+import ChangePasswordModal from "../login/ChangePasswordModal"; // Import ChangePasswordModal
+import { useNavigate } from "react-router-dom"; // Import để chuyển hướng
 
 function ResetPassword(props) {
     const { isResetPassword, setResetPassword } = props;
@@ -9,6 +11,8 @@ function ResetPassword(props) {
     const [loading, setLoading] = useState(false);
     const [sendingOTP, setSendingOTP] = useState(false);
     const [step, setStep] = useState(1); // Bước 1: Send Email, Bước 2: Đổi mật khẩu
+    const [isChangePasswordModalVisible, setIsChangePasswordModalVisible] = useState(false); // Quản lý trạng thái của ChangePasswordModal
+    const navigate = useNavigate(); // Để chuyển hướng đến trang đăng nhập
 
     const handleSendOTP = async () => {
         if (!email) {
@@ -53,7 +57,7 @@ function ResetPassword(props) {
                 message: "Thành công",
                 description: "Mật khẩu mới đã được gửi đến email của bạn.",
             });
-            resetAndCloseModal();
+            showChangePasswordConfirmation(); // Hiển thị thông báo xác nhận
         } catch (error) {
             notification.error({
                 message: "Lỗi",
@@ -64,6 +68,22 @@ function ResetPassword(props) {
         }
     };
 
+    const showChangePasswordConfirmation = () => {
+        Modal.confirm({
+            title: "Mật khẩu đã được gửi thành công",
+            content: "Bạn có muốn đổi mật khẩu ngay không?",
+            okText: "Có",
+            cancelText: "Không",
+            onOk: () => {
+                setIsChangePasswordModalVisible(true); // Hiển thị modal đổi mật khẩu
+                setResetPassword(false); // Ẩn modal ResetPassword
+            },
+            onCancel: () => {
+                navigate("/login"); // Chuyển hướng đến trang đăng nhập
+            },
+        });
+    };
+
     const resetAndCloseModal = () => {
         setEmail("");
         setOTP("");
@@ -72,60 +92,70 @@ function ResetPassword(props) {
     };
 
     return (
-        <Modal
-            title={step === 1 ? "Send Email" : "Đổi mật khẩu"}
-            open={isResetPassword}
-            onCancel={resetAndCloseModal}
-            footer={
-                step === 2 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <Button onClick={resetAndCloseModal}>Hủy</Button>
+        <>
+            <Modal
+                title={step === 1 ? "Send Email" : "Đổi mật khẩu"}
+                open={isResetPassword}
+                onCancel={resetAndCloseModal}
+                footer={
+                    step === 2 && (
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <Button onClick={resetAndCloseModal}>Hủy</Button>
+                            <Button
+                                type="primary"
+                                loading={loading}
+                                onClick={handleResetPass}
+                            >
+                                Xác nhận
+                            </Button>
+                        </div>
+                    )
+                }
+                maskClosable={false}
+            >
+                {step === 1 ? (
+                    // Gửi email
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <Input
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                         <Button
                             type="primary"
-                            loading={loading}
-                            onClick={handleResetPass}
+                            loading={sendingOTP}
+                            onClick={handleSendOTP}
                         >
-                            Xác nhận
+                            Gửi OTP
                         </Button>
                     </div>
-                )
-            }
-            maskClosable={false}
-        >
-            {step === 1 ? (
-                // Gửi email
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <Input
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <Button
-                        type="primary"
-                        loading={sendingOTP}
-                        onClick={handleSendOTP}
-                    >
-                        Gửi OTP
-                    </Button>
-                </div>
-            ) : (
-                // Đổi mật khẩu
-                <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                    <Input
-                        placeholder="Email"
-                        value={email}
-                        disabled
-                    />
-                    <Input
-                        placeholder="OTP"
-                        value={OTP}
-                        onChange={(e) => setOTP(e.target.value)}
-                    />
-                </div>
-            )}
-        </Modal>
+                ) : (
+                    // Đổi mật khẩu
+                    <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                        <Input
+                            placeholder="Email"
+                            value={email}
+                            disabled
+                        />
+                        <Input
+                            placeholder="OTP"
+                            value={OTP}
+                            onChange={(e) => setOTP(e.target.value)}
+                        />
+                    </div>
+                )}
+            </Modal>
+
+            {/* Modal đổi mật khẩu */}
+            <ChangePasswordModal
+                open={isChangePasswordModalVisible}
+                onClose={() => setIsChangePasswordModalVisible(false)}
+                email={email}
+            />
+        </>
     );
 }
 
 export default ResetPassword;
+
 

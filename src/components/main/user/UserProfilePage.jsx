@@ -5,6 +5,7 @@ import { DataContext } from "../../helpers/DataContext";
 import { getOneUserById } from "../../../services/authService";
 import UpdateProfileModal from "./UpdateProfileModal";
 import { useNavigate } from "react-router-dom";
+import ChangePasswordModal from "../login/ChangePasswordModal";
 
 const { Title, Text } = Typography;
 
@@ -14,8 +15,7 @@ const UserProfilePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const navigate = useNavigate();
-
-    // Fetch user data
+    // Lấy dữ liệu người dùng bằng API
     useEffect(() => {
         const fetchUserData = async () => {
             if (!user?.id) {
@@ -23,9 +23,13 @@ const UserProfilePage = () => {
                 return;
             }
             try {
-                const response = await getOneUserById(user.id);
+                const response = await getOneUserById(user.id); // Gọi API lấy dữ liệu user
+                // console.log("data trước :", response);
+
                 if (response.status === 200) {
                     const userData = response.data;
+
+                    // Kiểm tra và gán giá trị mặc định nếu profile không tồn tại hoặc null
                     if (!userData.profile) {
                         userData.profile = {
                             hobbies: "No hobbies available",
@@ -34,28 +38,30 @@ const UserProfilePage = () => {
                             heightValue: "No height value available",
                             description: "No description available",
                             maritalStatus: "No marital status available",
-                            avatar: "https://via.placeholder.com/120",
+                            avatar: "https://via.placeholder.com/120", // Giá trị mặc định
                         };
                     }
-                    setUser(userData);
+
+                    setUser(userData); // Cập nhật DataContext
                 } else {
                     notification.error({
-                        message: "Error",
-                        description: response.message || "Unable to load user data.",
+                        message: "Lỗi",
+                        description: response.message || "Không thể tải dữ liệu người dùng.",
                     });
                 }
             } catch (error) {
                 notification.error({
-                    message: "Error",
-                    description: "Unable to connect to the server.",
+                    message: "Lỗi",
+                    description: "Không thể kết nối với máy chủ.",
                 });
             } finally {
-                setLoading(false);
+                setLoading(false); // Tắt trạng thái loading
             }
         };
 
         fetchUserData();
     }, [user?.id, setUser]);
+
 
     if (loading) {
         return <div style={{ textAlign: "center", padding: "24px" }}>Loading...</div>;
@@ -77,7 +83,7 @@ const UserProfilePage = () => {
         phone = "No phone available",
         role = "No role available",
         gender = "No gender available",
-        profile = {},
+        profile = {}, // Cập nhật từ profile thay vì profileDTO
     } = user;
 
     const {
@@ -87,7 +93,7 @@ const UserProfilePage = () => {
         heightValue = "No height value available",
         description = "No description available",
         maritalStatus = "No marital status available",
-        avatar = "https://via.placeholder.com/120",
+        avatar = "https://via.placeholder.com/120", // Giá trị mặc định
     } = profile;
 
     return (
@@ -122,7 +128,6 @@ const UserProfilePage = () => {
                                 <Button type="dashed" onClick={() => navigate("/your-posts")}>
                                     Your Posts
                                 </Button>
-                                {/* Nút điều hướng đến HistoryBooking */}
                                 <Button type="dashed" onClick={() => navigate("/history-booking")}>
                                     View Booking History
                                 </Button>
@@ -175,6 +180,51 @@ const UserProfilePage = () => {
                         </Col>
                     </Row>
                 </Card>
+
+                {/* Change Password Modal */}
+                <ChangePasswordModal
+                    open={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    email={user.email}
+                />
+
+                {/* Update Profile Modal */}
+                <UpdateProfileModal
+                    open={isUpdateModalOpen}
+                    onClose={async (updatedUserData) => {
+                        setIsUpdateModalOpen(false);
+                        if (updatedUserData) {
+                            try {
+                                const response = await getOneUserById(user.id); // Gọi API lấy lại dữ liệu user mới
+                                // console.log("data sau :", response);
+                                if (response.status === 200) {
+                                    setUser(response.data); // Cập nhật DataContext
+                                    localStorage.setItem("user", JSON.stringify(response.data)); // Lưu vào localStorage
+                                }
+                            } catch (error) {
+                                notification.error({
+                                    message: "Lỗi",
+                                    description: "Không thể kết nối với máy chủ để tải lại dữ liệu.",
+                                });
+                            }
+                        }
+                    }}
+                    userId={user.id}
+                    userData={{
+                        fullName,
+                        phone,
+                        gender,
+                        hobbies,
+                        address,
+                        age,
+                        maritalStatus,
+                        heightValue,
+                        description,
+                        role,
+                        avatar,
+                    }}
+                />
+
             </div>
         </section>
     );

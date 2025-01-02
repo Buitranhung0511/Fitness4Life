@@ -60,43 +60,6 @@ const GetRoomsByPackage = async (packageId) => {
         throw new Error(error.response?.data?.message || 'Error fetching rooms.');
     }
 };
-const paymentApi = async (
-    packageId,
-    userId,
-    totalAmount,
-    startDate,
-    endDate,
-    description,
-    packageName
-) => {
-    const payload = {
-        packageId,
-        userId,
-        buyDate: new Date().toISOString(), // Current date in ISO format
-        totalAmount,
-        startDate, // Start date as string
-        endDate,   // End date as string
-        description,
-        cancelUrl: 'http://localhost:5173/cancel', // Cancel URL
-        successUrl: 'http://localhost:5173/success', // Success URL
-        packageName,
-        currency: 'USD', // Fixed currency
-        intent: 'Sale',  // Fixed intent
-    };
-
-    try {
-        const response = await axios.post('http://localhost:8082/api/paypal/pay', payload, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        return response; // Return the response object
-    } catch (error) {
-        console.error('Error while calling payment API:', error);
-        throw error; // Rethrow the error for further handling
-    }
-};
 
 
 export {
@@ -105,5 +68,4 @@ export {
     updatePackage,
     deletePackage,
     GetRoomsByPackage,
-    paymentApi
 }

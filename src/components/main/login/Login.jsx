@@ -9,9 +9,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { loginUser } from '../../../services/authService';
 import { DataContext } from '../../helpers/DataContext';
 import ResetPassword from './ResetPassword';
-
 const Login = () => {
   const { handleStoreUser } = useContext(DataContext);
+
+
   const navigate = useNavigate();
 
   const [isResetPassword, setResetPassword] = useState(false);
@@ -27,7 +28,6 @@ const Login = () => {
     password: Yup.string().required('Password is required'),
   });
 
-
   const {
     register,
     handleSubmit,
@@ -41,9 +41,11 @@ const Login = () => {
       const result = await loginUser(data);
       if (result.status === 200) {
         handleStoreUser(result.data);
-        navigate('/');
-        console.log(">>>handleStoreUser123<<<<",result.data);
-        
+        if (result.data.role === "ADMIN") {
+          navigate('/admin/profile');
+        } else {
+          navigate('/');
+        }
       } else if (result.status === 400) {
         toast.error(result.message || 'Invalid input.');
       } else if (result.status === 404) {
@@ -151,4 +153,3 @@ const Login = () => {
 };
 
 export default Login;
-
