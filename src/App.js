@@ -27,7 +27,6 @@ import PaymentMain from './components/main/Paypal/PaymentMain';
 import PaymentSuccess from './components/main/Paypal/SuccessfullyPay';
 import UserProfilePage from './components/main/user/UserProfilePage';
 import HistoryBooking from './components/main/user/HistoryBooking';
-import OrderPage from './components/main/Paypal/Order';
 import PromotionPage from './components/admin/Promotion/PromotionPage';
 import PostPage from './components/admin/Post/PostPage';
 import OTPVerification from './components/main/login/OTPVerification';
@@ -42,6 +41,7 @@ import CreatePostQuestions from './components/main/user/CreatePostQuestions';
 import YourPostThread from './components/main/user/YourPostThread';
 import YourPostDetailPage from './components/main/user/YourPostDetailPage';
 import UpdateQuestion from './components/main/forum/UpdateQuestion';
+import OrderPage from './components/main/Paypal/Order';
 
 
 const App = () => {

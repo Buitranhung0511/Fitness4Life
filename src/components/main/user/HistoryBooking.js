@@ -30,10 +30,10 @@ const HistoryBooking = () => {
                             const qrResponse = await axios.get(
                                 `http://localhost:8082/api/booking/qrCode/${booking.id}`
                             );
-                            // console.log(
-                            //     `Booking ID: ${booking.id}, QR Code Response:`,
-                            //     qrResponse.data
-                            // );
+                            console.log(
+                                `Booking ID: ${booking.id}, QR Code Response:`,
+                                qrResponse.data
+                            );
                             return {
                                 ...booking,
                                 checkInQRCode: qrResponse.data.data || null, // Add QR code to booking

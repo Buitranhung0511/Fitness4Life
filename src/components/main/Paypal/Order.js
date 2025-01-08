@@ -1,87 +1,80 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
-import { notification } from 'antd';
+import React, { useEffect, useState } from "react";
+import { useSearchParams, useLocation } from "react-router-dom";
+import axios from "axios"; // Make sure to import axios
 
-function OrderPage() {
-    const location = useLocation(); // Lấy thông tin URL hiện tại
+const OrderPage = () => {
+    const [searchParams] = useSearchParams();
+    const location = useLocation();
+
+    const { package: selectedPackage } = location.state || {}; // Get package info from location.state
+    const [loading, setLoading] = useState(true);
+    const [message, setMessage] = useState("");
+    const [membershipData, setMembershipData] = useState(null); // Store membership data
 
     useEffect(() => {
-        // Hàm trích xuất query params từ URL
-        const getQueryParams = (url) => {
-            const params = new URLSearchParams(url);
-            return {
-                paymentId: params.get('paymentId'),
-                token: params.get('token'),
-                PayerID: params.get('PayerID'),
-            };
-        };
+        const paymentId = searchParams.get("paymentId");
+        const token = searchParams.get("token");
+        const payerId = searchParams.get("PayerID");
 
-        const finalizePayment = async () => {
-            const { paymentId, token, PayerID } = getQueryParams(location.search); // Lấy query params
-            console.log("Extracted Query Params:", { paymentId, token, PayerID });
+        // Check if paymentId, token, and payerId are valid
+        if (paymentId && token && payerId) {
+            setMessage("Thanh toán thành công rồi nha! Cảm ơn bạn.");
+        } else {
+            setMessage("Thông tin thanh toán không hợp lệ.");
+            setLoading(false);
+            return; // If not valid, exit the effect
+        }
 
-            if (!paymentId || !token || !PayerID) {
-                notification.error({
-                    message: 'Payment Error',
-                    description: 'Missing payment details. Please try again.',
+        // Fetch membership data using the paymentId
+        if (paymentId) {
+            axios
+                .get(`http://localhost:8082/api/paypal/getMembershipByPamentId/${paymentId}`)
+                .then((response) => {
+                    setMembershipData(response.data); // Update state with fetched data
+                })
+                .catch((error) => {
+                    console.error("Error fetching membership data:", error);
+                    setMessage("Không thể lấy thông tin thanh toán.");
+                })
+                .finally(() => {
+                    setLoading(false); // Set loading to false once the data is fetched
                 });
-                return;
-            }
+        }
+    }, [searchParams]); // Depend on searchParams to trigger the effect when it changes
 
-            try {
-                console.log("Payload being sent to API:", { paymentId, token, PayerID });
-
-                // Gửi POST request đến API
-                const response = await axios.post(
-                    `http://localhost:8082/api/paypal/success?paymentId=${paymentId}&token=${token}&PayerID=${PayerID}`
-                );
-
-                // Xử lý phản hồi từ API
-                if (response.data.success) {
-                    notification.success({
-                        message: 'Payment Successful',
-                        description: 'Your payment was completed successfully!',
-                    });
-                } else {
-                    notification.error({
-                        message: 'Payment Failed',
-                        description: response.data.message || 'Unable to finalize payment. Please contact support.',
-                    });
-                }
-            } catch (error) {
-                console.error('Error finalizing payment:', error);
-
-                if (error.response) {
-                    // Lỗi từ API (response code khác 200)
-                    notification.error({
-                        message: 'Payment Error',
-                        description: `Error from server: ${error.response.data.message || 'Unexpected error occurred.'} (Status: ${error.response.status})`,
-                    });
-                } else if (error.request) {
-                    // Không nhận được phản hồi từ server
-                    notification.error({
-                        message: 'Payment Error',
-                        description: 'No response from server. Please check your network or try again later.',
-                    });
-                } else {
-                    // Lỗi khác
-                    notification.error({
-                        message: 'Payment Error',
-                        description: `Unexpected error: ${error.message}`,
-                    });
-                }
-            }
-        };
-
-        finalizePayment();
-    }, [location.search]); // Chạy khi URL thay đổi
+    if (loading) {
+        return <p>Đang xử lý thanh toán, vui lòng đợi...</p>;
+    }
 
     return (
         <section id="services">
-            <h1>Order Pay</h1>
+            <div>
+                <h1>Kết quả thanh toán</h1>
+                <p>{message}</p>
+
+                {/* Display membership details if available */}
+                {membershipData && (
+                    <div>
+                        <h2>Thông tin gói:</h2>
+                        <p><strong>Tên gói:</strong> {membershipData.packageName}</p>
+                        <p><strong>Giá:</strong> {membershipData.totalAmount.toLocaleString('vi-VN')} VND</p>
+                        <p><strong>Mô tả:</strong> {membershipData.description}</p>
+                        <p><strong>Ngày bắt đầu:</strong> {membershipData.startDate.join('/')}</p>
+                        <p><strong>Ngày kết thúc:</strong> {membershipData.endDate.join('/')}</p>
+                    </div>
+                )}
+
+                {/* Fallback if package info is available from location.state */}
+                {selectedPackage && !membershipData && (
+                    <div>
+                        <h2>Thông tin gói:</h2>
+                        <p><strong>Tên gói:</strong> {selectedPackage.packageName}</p>
+                        <p><strong>Giá:</strong> {selectedPackage.price.toLocaleString('vi-VN')} VND</p>
+                    </div>
+                )}
+            </div>
         </section>
     );
-}
+};
 
 export default OrderPage;

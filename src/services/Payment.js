@@ -1,28 +1,17 @@
 import axios from "axios";
 
-const URL_PACK = "http://localhost:8082/api";
 
-export const paymentApi = (packageId,userId,totalAmount,startDate,endDate,description,packageName,currency,intent) => {
-    const URL_BACKEND = `${URL_PACK}/paypal/pay`;
-    const data = {
-        packageId: packageId, // Thay bằng giá trị phù hợp nếu cần
-        userId: userId, // Thay bằng giá trị phù hợp nếu cần
-        buyDate: new Date().toISOString(), // Lấy ngày giờ hiện tại
-        totalAmount: totalAmount, // Tùy chỉnh dựa trên gói đã chọn
-        startDate:startDate,
-        endDate:endDate,
-        description:description,
-        packageName: packageName, // Gắn giá trị từ gói
-        currency:currency,
-        intent:intent
-    };
-
+export const getMembershipByPamentId = async (paymentId) => {
+    const URL_BACKEND = `http://localhost:8082/api/paypal/getMembershipByPamentId/${paymentId}`;
     try {
-        const response = axios.post(URL_BACKEND, data);
-        console.log("Payment API response:", response.data);
+        const response = await axios.get(URL_BACKEND);
+        if (response.status === 200 && response.data) {
+            return response.data;
+        } else {
+            throw new Error('Failed to fetch rooms for the package.');
+        }
     } catch (error) {
-        console.error("Error calling Payment API:", error);
+        throw new Error(error.response?.data?.message || 'Error fetching rooms.');
     }
 };
 
- 
