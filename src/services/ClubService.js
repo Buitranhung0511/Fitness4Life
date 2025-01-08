@@ -48,6 +48,12 @@ const addClubImageApi = async (formData) => {
 
 };
 
+const fetchClubById = (id) => {
+    const URL_BACKEND = `${URL_CLUB}/club/${id}`;
+    return axios.get(URL_BACKEND);
+}
+
+
 
 
 
@@ -60,7 +66,8 @@ export {
     createClubApi,
     updateClubApi,
     deleteClubApi,
-    addClubImageApi
+    addClubImageApi,
+    fetchClubById
 }
 
 

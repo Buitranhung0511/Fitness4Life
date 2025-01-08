@@ -42,6 +42,8 @@ import YourPostThread from './components/main/user/YourPostThread';
 import YourPostDetailPage from './components/main/user/YourPostDetailPage';
 import UpdateQuestion from './components/main/forum/UpdateQuestion';
 import OrderPage from './components/main/Paypal/Order';
+import ClubHome from './components/main/club/clubHome';
+import ClubDetails from './components/main/club/clubDetail';
 
 
 const App = () => {
@@ -81,6 +83,9 @@ const App = () => {
         <Route path="/order" element={<OrderPage />} />
         <Route path="/user/profile" element={<UserProfilePage />} />
         <Route path="/history-booking" element={<HistoryBooking />} />
+
+        <Route path="/clubs/" element={<ClubHome />} />
+        <Route path="/clubs/:id" element={<ClubDetails />} />
 
         </Route>
 
