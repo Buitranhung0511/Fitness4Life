@@ -10,7 +10,7 @@
   }
   
   /* Blog Container */
-  #services {
+  #blog-container {
 	background-color: white;
 	min-height: 80vh;
 	padding: 100px 0;
@@ -200,3 +200,11 @@
 	  padding: 10px 15px;
 	}
   }
+  /* Placeholder Styling */
+.blog-item.placeholder {
+	background: var(--light-gray);
+	border: 1px dashed var(--medium-gray);
+	height: var(--image-height);
+	visibility: hidden; /* Hide content but maintain space */
+  }
+  

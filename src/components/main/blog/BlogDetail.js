@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import '../../../assets/css/blog.css';
+import '../../../assets/css/blogDetail.css';
+import CommentsSection from './CommentsSection';
 
 const BlogDetail = () => {
   const [blog, setBlog] = useState(null);
@@ -12,7 +13,7 @@ const BlogDetail = () => {
   useEffect(() => {
     // Fetch current blog details
     setLoading(true);
-    axios.get(`http://localhost:8080/api/blogs/${id}`)
+    axios.get(`http://localhost:8082/api/blogs/${id}`)
       .then((response) => {
         setBlog(response.data.data);
         setLoading(false);
@@ -25,7 +26,7 @@ const BlogDetail = () => {
 
   useEffect(() => {
     // Fetch other blogs (exclude the current one)
-    axios.get("http://localhost:8080/api/blogs")
+    axios.get("http://localhost:8082/api/blogs")
       .then((response) => {
         const allBlogs = response.data.data.filter((b) => b.id != id);
         const shuffledBlogs = allBlogs.sort(() => 0.5 - Math.random());
@@ -45,7 +46,8 @@ const BlogDetail = () => {
   };
 
   return (
-    <section id="services" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+    <div>
+    <div id="blogdetail-container">
       {/* Blog detail on the left side */}
       <div className="blog-detail" style={{ flex: 8, paddingLeft: '30px', paddingRight: '20px', marginRight: '50px' }}>
         {loading ? (
@@ -85,7 +87,7 @@ const BlogDetail = () => {
 
       {/* Related blog links on the right side */}
       <div className="related-blogs" style={{ flex: 3 }}>
-        <h3 style={{ borderBottom: '2px solid #F9690E', width: '144px', paddingBottom: '5px' }}>Other Blogs</h3>
+        <h3 style ={{ borderBottom: '2px solid #F9690E', width: '144px', paddingBottom: '5px' }}>Other Blogs</h3>
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {blogs.map((relatedBlog) => (
             <li key={relatedBlog.id} style={{ borderBottom: '0.4px solid #007bff', width: '320px', paddingBottom: '5px', display: 'flex', marginBottom: '15px' }}>
@@ -130,8 +132,12 @@ const BlogDetail = () => {
             </li>
           ))}
         </ul>
-      </div>
-    </section>
+      </div> 
+    </div>
+    <div>
+      <CommentsSection blogId={id} />
+    </div>
+    </div>
   );
 };
 
