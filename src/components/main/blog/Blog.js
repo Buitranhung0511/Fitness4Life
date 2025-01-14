@@ -1,40 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // import Link for navigation
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { DataContext } from '../../helpers/DataContext'; // Adjust path as needed
 import '../../../assets/css/blog.css';
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); // loading state
-  const blogsPerPage = 4;
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { user } = useContext(DataContext); // Get user context
+  const blogsPerPage = 6;
 
   useEffect(() => {
-    // Fetch blog data 
-    axios.get('http://localhost:8080/api/blogs')
+    axios.get('http://localhost:8082/api/blogs')
       .then((response) => {
         console.log(response);
         
         const sortedBlogs = response.data.data.sort((a, b) => {
-          // Compare createdAt arrays to sort in descending order
           const dateA = new Date(a.createdAt[0], a.createdAt[1] - 1, a.createdAt[2], a.createdAt[3], a.createdAt[4], a.createdAt[5]);
           const dateB = new Date(b.createdAt[0], b.createdAt[1] - 1, b.createdAt[2], b.createdAt[3], b.createdAt[4], b.createdAt[5]);
-          return dateB - dateA; // Sort in descending order (latest first)
+          return dateB - dateA;
         });
         
         setBlogs(sortedBlogs);
-        setLoading(false); 
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching blog data:', error);
-        setLoading(false); 
+        setLoading(false);
       });
   }, []);
 
+  const handleBlogClick = (blogId) => {
+    if (!user) {
+      // If user is not logged in, redirect to login page
+      navigate('/login');
+    } else {
+      // If user is logged in, navigate to blog detail page
+      navigate(`/blog/${blogId}`);
+    }
+  };
+
   const formatDateTime = (createdAt) => {
     const date = new Date(createdAt[0], createdAt[1] - 1, createdAt[2], createdAt[3], createdAt[4], createdAt[5]);
-    const formattedDate = date.toLocaleDateString(); // Format date as MM/DD/YYYY
-    const formattedTime = date.toLocaleTimeString(); // Format time as HH:MM:SS
+    const formattedDate = date.toLocaleDateString();
+    const formattedTime = date.toLocaleTimeString();
     return `${formattedDate} ${formattedTime}`;
   };
 
@@ -57,9 +68,9 @@ const Blog = () => {
   return (
     <section id="services">
       <div style={{ textAlign: "center", marginTop: "50px", marginBottom: "40px" }}>
-      <div href="#" className="logo">
-                <div className="logo-name"><span>Daily</span> Blogs</div>
-            </div>
+        <div href="#" className="logo">
+        <span className="daily-text">Daily</span> <span className="blogs-text">Blogs</span>
+        </div>
       </div>
 
       {loading ? (
@@ -70,31 +81,35 @@ const Blog = () => {
       ) : (
         <div className="blog-list">
           {currentBlogs.map((blog) => (
-            <div key={blog.id} className="blog-item">
-              <img
-                src={blog.thumbnailUrl[0].imageUrl}
-                alt={blog.title}
-                className="blog-thumbnail"
-                style={{
-                  width: '550px', // Chiều rộng cố định
-                  height: '300px', // Chiều cao cố định
-                  borderRadius: '8px',
-                  objectFit: 'cover', // Đảm bảo ảnh được cắt hoặc co giãn đúng tỷ lệ
-                }}
-              />
-              <h3>
-                <Link to={`/blog/${blog.id}`}>{blog.title}</Link>
-              </h3>
-              <p>{blog.content.substring(0, 150)}...</p>
-              <p><strong>Category:</strong> {blog.category}</p>
-              <p><strong>Tags:</strong> {blog.tags}</p>
-              <p><strong>Created At:</strong> {formatDateTime(blog.createdAt)}</p>
+            <div 
+              key={blog.id} 
+              className="blog-item" 
+              onClick={() => handleBlogClick(blog.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="blog-thumbnail-container">
+                <img
+                  src={blog.thumbnailUrl[0].imageUrl}
+                  alt={blog.title}
+                  className="blog-thumbnail"
+                />
+              </div>
+              <div className="blog-content">
+                <h3>{blog.title}</h3>
+                <p>{blog.content.substring(0, 150)}...</p>
+                <p><strong>Category:</strong> {blog.category}</p>
+                <p><strong>Tags:</strong> {blog.tags}</p>
+                <p><strong>Created At:</strong> {formatDateTime(blog.createdAt)}</p>
+                <div className="blog-stats">
+                  <span className="blog-likes">{blog.likesCount} Likes</span>
+                  <span className="blog-views">{blog.viewCount} Views</span>
+                </div>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Pagination */}
       <div className="pagination" style={{ textAlign: 'center', marginTop: '20px' }}>
         <button onClick={prevPage} disabled={currentPage === 1}>
           Previous
