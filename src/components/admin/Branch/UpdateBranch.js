@@ -165,62 +165,80 @@ const UpdateBranch = (props) => {
             maskClosable={false}
         >
             <div style={{ display: "flex", gap: "15px", flexDirection: "column" }}>
-                <Input
-                    value={branchName}
-                    placeholder="Branch Name"
-                    onChange={(e) => handleChange("branchName", e.target.value)}
-                />
-                {error.branchName && <span style={{ color: "red" }}>{error.branchName}</span>}
 
-                <Input
-                    value={slug}
-                    placeholder="Slug"
-                    onChange={(e) => handleChange("slug", e.target.value)}
-                />
-                {error.slug && <span style={{ color: "red" }}>{error.slug}</span>}
-
-                <Input
-                    value={address}
-                    placeholder="Address"
-                    onChange={(e) => handleChange("address", e.target.value)}
-                />
-                {error.address && <span style={{ color: "red" }}>{error.address}</span>}
-
-                <Input
-                    value={phoneNumber}
-                    placeholder="Phone Number"
-                    onChange={(e) => handleChange("phoneNumber", e.target.value)}
-                />
-                {error.phoneNumber && <span style={{ color: "red" }}>{error.phoneNumber}</span>}
-
-                <Input
-                    value={email}
-                    placeholder="Email"
-                    onChange={(e) => handleChange("email", e.target.value)}
-                />
-                {error.email && <span style={{ color: "red" }}>{error.email}</span>}
-
-                <TimePicker
-                    value={openHours}
-                    format="HH:mm"
-                    onChange={(time) => handleChange("openHours", time)}
-                />
-                {error.openHours && <span style={{ color: "red" }}>{error.openHours}</span>}
-
-                <TimePicker
-                    value={closeHours}
-                    format="HH:mm"
-                    onChange={(time) => handleChange("closeHours", time)}
-                />
-                {error.closeHours && <span style={{ color: "red" }}>{error.closeHours}</span>}
-                {error.hours && <span style={{ color: "red" }}>{error.hours}</span>}
-
-                <Checkbox.Group
-                    options={serviceOptions}
-                    value={services}
-                    onChange={(value) => handleChange("services", value)}
-                />
-                {error.services && <span style={{ color: "red" }}>{error.services}</span>}
+                <div>
+                    <span>Branch Name</span>
+                    <Input
+                        value={branchName}
+                        placeholder="Branch Name"
+                        onChange={(e) => handleChange("branchName", e.target.value)}
+                    />
+                    {error.branchName && <span style={{ color: "red" }}>{error.branchName}</span>}
+                </div>
+                <div>
+                    <span>Slug</span>
+                    <Input
+                        value={slug}
+                        placeholder="Slug"
+                        onChange={(e) => handleChange("slug", e.target.value)}
+                    />
+                    {error.slug && <span style={{ color: "red" }}>{error.slug}</span>}
+                </div>
+                <div>
+                    <span>Address</span>
+                    <Input
+                        value={address}
+                        placeholder="Address"
+                        onChange={(e) => handleChange("address", e.target.value)}
+                    />
+                    {error.address && <span style={{ color: "red" }}>{error.address}</span>}
+                </div>
+                <div>
+                    <span>Phone Number</span>
+                    <Input
+                        value={phoneNumber}
+                        placeholder="Phone Number"
+                        onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                    />
+                    {error.phoneNumber && <span style={{ color: "red" }}>{error.phoneNumber}</span>}
+                </div>
+                <div>
+                    <span>Email</span>
+                    <Input
+                        value={email}
+                        placeholder="Email"
+                        onChange={(e) => handleChange("email", e.target.value)}
+                    />
+                    {error.email && <span style={{ color: "red" }}>{error.email}</span>}
+                </div>
+                <div>
+                    <span>openHours</span>
+                    <TimePicker
+                        value={openHours}
+                        format="HH:mm"
+                        onChange={(time) => handleChange("openHours", time)}
+                    />
+                    {error.openHours && <span style={{ color: "red" }}>{error.openHours}</span>}
+                </div>
+                <div>
+                    <span>closeHours</span>
+                    <TimePicker
+                        value={closeHours}
+                        format="HH:mm"
+                        onChange={(time) => handleChange("closeHours", time)}
+                    />
+                    {error.closeHours && <span style={{ color: "red" }}>{error.closeHours}</span>}
+                    {error.hours && <span style={{ color: "red" }}>{error.hours}</span>}
+                </div>
+                <div>
+                    <span>serviceOptions</span>
+                    <Checkbox.Group
+                        options={serviceOptions}
+                        value={services}
+                        onChange={(value) => handleChange("services", value)}
+                    />
+                    {error.services && <span style={{ color: "red" }}>{error.services}</span>}
+                </div>
             </div>
         </Modal>
     );

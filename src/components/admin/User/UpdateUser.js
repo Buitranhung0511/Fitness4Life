@@ -80,25 +80,22 @@ const UpdateUser = (props) => {
         validateField(field, value);
     };
 
-   useEffect(() => {
-    if (dataUpdate) {
-        setFullName(dataUpdate.fullName || "");
-        setRole(dataUpdate.role || "");
-        setGender(dataUpdate.gender || "");
-        setStatus(dataUpdate.active || false); // Lấy từ `active` trong `dataUpdate`
-        setPhone(dataUpdate.phone || "");
+    useEffect(() => {
+        if (dataUpdate) {
+            setFullName(dataUpdate.fullName || "");
+            setRole(dataUpdate.role || "");
+            setGender(dataUpdate.gender || "");
+            setStatus(dataUpdate.active || false);
+            setPhone(dataUpdate.phone || "");
 
-        // Lấy giá trị từ profileDTO
-        const profile = dataUpdate.profileDTO || {};
-        setHobbies(profile.hobbies || "");
-        setAddress(profile.address || "");
-        setAge(profile.age || "");
-        setMaritalStatus(profile.maritalStatus || "");
-        setDescription(profile.description || "");
-    }
-}, [dataUpdate]);
-    console.log(">>> CHeck>>>>", dataUpdate);
-    
+            const profile = dataUpdate.profileDTO || {};
+            setHobbies(profile.hobbies || "");
+            setAddress(profile.address || "");
+            setAge(profile.age || "");
+            setMaritalStatus(profile.maritalStatus || "");
+            setDescription(profile.description || "");
+        }
+    }, [dataUpdate]);
 
     const handleSubmitBtn = async () => {
         const hasErrors = validateAllFields();
@@ -181,75 +178,116 @@ const UpdateUser = (props) => {
                         unCheckedChildren="Lock"
                     />
                 </Space>
-                <Input
-                    value={fullName}
-                    placeholder="Full Name"
-                    onChange={(e) => handleChange("fullName", e.target.value)}
-                />
-                <Select
-                    value={role}
-                    placeholder="Role"
-                    onChange={(value) => handleChange("role", value)}
-                >
-                    <Select.Option value="ADMIN">Admin</Select.Option>
-                    <Select.Option value="USER">User</Select.Option>
-                    <Select.Option value="MANAGER">Manager</Select.Option>
-                    <Select.Option value="TRAINER">Trainer</Select.Option>
-                </Select>
-                <Select
-                    value={gender}
-                    placeholder="Gender"
-                    onChange={(value) => handleChange("gender", value)}
-                >
-                    <Select.Option value="MALE">Male</Select.Option>
-                    <Select.Option value="FEMALE">Female</Select.Option>
-                    <Select.Option value="OTHER">Other</Select.Option>
-                </Select>
-                <Input
-                    value={phone}
-                    placeholder="Phone"
-                    onChange={(e) => handleChange("phone", e.target.value)}
-                />
-                <Input
-                    value={hobbies}
-                    placeholder="Hobbies"
-                    onChange={(e) => handleChange("hobbies", e.target.value)}
-                />
-                <Input
-                    value={address}
-                    placeholder="Address"
-                    onChange={(e) => handleChange("address", e.target.value)}
-                />
-                <Input
-                    value={age}
-                    type="number"
-                    placeholder="Age"
-                    onChange={(e) => handleChange("age", e.target.value)}
-                />
-                <Input
-                    value={description}
-                    placeholder="Description"
-                    onChange={(e) => handleChange("description", e.target.value)}
-                />
-                <Select
-                    value={maritalStatus}
-                    placeholder="Marital Status"
-                    onChange={(value) => handleChange("maritalStatus", value)}
-                >
-                    <Select.Option value="SINGLE">Single</Select.Option>
-                    <Select.Option value="MARRIED">Married</Select.Option>
-                    <Select.Option value="FA">Forever Alone</Select.Option>
-                </Select>
-                <Input
-                    type="file"
-                    onChange={(e) => handleChange("file", e.target.files[0])}
-                />
+                <div>
+                    <span htmlFor="fullName">Full Name:</span>
+                    <Input
+                        id="fullName"
+                        value={fullName}
+                        placeholder="Full Name"
+                        onChange={(e) => handleChange("fullName", e.target.value)}
+                    />
+                </div>
+                <div>
+
+                    <span htmlFor="phone">Phone:</span>
+                    <Input
+                        id="phone"
+                        value={phone}
+                        placeholder="Phone"
+                        onChange={(e) => handleChange("phone", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span htmlFor="hobbies">Hobbies:</span>
+                    <Input
+                        id="hobbies"
+                        value={hobbies}
+                        placeholder="Hobbies"
+                        onChange={(e) => handleChange("hobbies", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span htmlFor="address">Address:</span>
+                    <Input
+                        id="address"
+                        value={address}
+                        placeholder="Address"
+                        onChange={(e) => handleChange("address", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span htmlFor="age">Age:</span>
+                    <Input
+                        id="age"
+                        value={age}
+                        type="number"
+                        placeholder="Age"
+                        onChange={(e) => handleChange("age", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span htmlFor="description">Description:</span>
+                    <Input
+                        id="description"
+                        value={description}
+                        placeholder="Description"
+                        onChange={(e) => handleChange("description", e.target.value)}
+                    />
+                </div>
+                <div style={{ display: "flex", gap: "15px" }}>
+                    <div style={{ flex: 1 }}>
+                        <span htmlFor="maritalStatus">Marital:</span>
+                        <Select
+                            id="maritalStatus"
+                            value={maritalStatus}
+                            placeholder="Marital Status"
+                            onChange={(value) => handleChange("maritalStatus", value)}
+                        >
+                            <Select.Option value="SINGLE">Single</Select.Option>
+                            <Select.Option value="MARRIED">Married</Select.Option>
+                            <Select.Option value="FA">Forever Alone</Select.Option>
+                        </Select>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <span htmlFor="role">Role: </span>
+                        <Select
+                            id="role"
+                            value={role}
+                            placeholder="Role"
+                            onChange={(value) => handleChange("role", value)}
+                        >
+                            <Select.Option value="ADMIN">Admin</Select.Option>
+                            <Select.Option value="USER">User</Select.Option>
+                            <Select.Option value="MANAGER">Manager</Select.Option>
+                            <Select.Option value="TRAINER">Trainer</Select.Option>
+                        </Select>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <span htmlFor="gender">Gender: </span>
+                        <Select
+                            id="gender"
+                            value={gender}
+                            placeholder="Gender"
+                            onChange={(value) => handleChange("gender", value)}
+                        >
+                            <Select.Option value="MALE">Male</Select.Option>
+                            <Select.Option value="FEMALE">Female</Select.Option>
+                            <Select.Option value="OTHER">Other</Select.Option>
+                        </Select>
+                    </div>
+                </div>
+                <div>
+                    <span htmlFor="file">Profile Picture:</span>
+                    <Input
+                        id="file"
+                        type="file"
+                        onChange={(e) => handleChange("file", e.target.files[0])}
+                    />
+                </div>
                 {error.file && <span style={{ color: "red" }}>{error.file}</span>}
             </div>
         </Modal>
     );
-
-
 };
 
 export default UpdateUser;

@@ -151,29 +151,40 @@ const UpdatePackage = (props) => {
                     </Select>
                     {error.packageName && <span style={{ color: "red" }}>{error.packageName}</span>}
                 </div>
+                <div>
+                    <span>Description</span>
+                    <Input
+                        value={description}
+                        placeholder="Description"
+                        onChange={(e) => handleChange("description", e.target.value)}
+                    />
+                    {error.description && <span style={{ color: "red" }}>{error.description}</span>}
+                </div>
+                <div>
+                    <span>Duration Month</span>
+                    <Input
+                        type="number"
+                        value={durationMonth}
+                        placeholder="Duration (months)"
+                        onChange={(e) => handleChange("durationMonth", e.target.value)}
+                    />
+                    {error.durationMonth && <span style={{ color: "red" }}>{error.durationMonth}</span>}
+                </div>
+                <div>
+                    <span>Price</span>
+                    <Input
+                        type="number"
+                        value={price}
+                        placeholder="Price"
+                        onChange={(e) => handleChange("price", e.target.value)}
+                    />
+                    {error.price && <span style={{ color: "red" }}>{error.price}</span>}
+                </div>
 
-                <Input
-                    value={description}
-                    placeholder="Description"
-                    onChange={(e) => handleChange("description", e.target.value)}
-                />
-                {error.description && <span style={{ color: "red" }}>{error.description}</span>}
 
-                <Input
-                    type="number"
-                    value={durationMonth}
-                    placeholder="Duration (months)"
-                    onChange={(e) => handleChange("durationMonth", e.target.value)}
-                />
-                {error.durationMonth && <span style={{ color: "red" }}>{error.durationMonth}</span>}
 
-                <Input
-                    type="number"
-                    value={price}
-                    placeholder="Price"
-                    onChange={(e) => handleChange("price", e.target.value)}
-                />
-                {error.price && <span style={{ color: "red" }}>{error.price}</span>}
+
+
             </div>
         </Modal>
     );

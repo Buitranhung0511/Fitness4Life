@@ -15,7 +15,6 @@ const UpdateClub = (props) => {
 
     const [error, setErrors] = useState({});
 
-    // Validate từng field
     const validateField = (field, value) => {
         const newErrors = { ...error };
         switch (field) {
@@ -116,7 +115,6 @@ const UpdateClub = (props) => {
             return;
         }
 
-        // Gửi dữ liệu cập nhật Club
         const res = await updateClubApi(id, name, address, contactPhone, description, openHour, closeHour);
         if (res.data.data) {
             notification.success({
@@ -124,7 +122,6 @@ const UpdateClub = (props) => {
                 description: "Club updated successfully.",
             });
 
-            // Nếu có ảnh, gửi API upload ảnh
             if (file) {
                 const imageFormData = new FormData();
                 imageFormData.append("clubId", id);
@@ -178,41 +175,68 @@ const UpdateClub = (props) => {
             maskClosable={false}
         >
             <div style={{ display: "flex", gap: "15px", flexDirection: "column" }}>
-                <Input value={id} disabled />
-                <Input
-                    value={name}
-                    placeholder="Club Name"
-                    onChange={(e) => handleChange("name", e.target.value)}
-                />
-                <Input
-                    value={address}
-                    placeholder="Address"
-                    onChange={(e) => handleChange("address", e.target.value)}
-                />
-                <Input
-                    value={contactPhone}
-                    placeholder="Contact Phone"
-                    onChange={(e) => handleChange("contactPhone", e.target.value)}
-                />
-                <Input
-                    value={description}
-                    placeholder="Description"
-                    onChange={(e) => handleChange("description", e.target.value)}
-                />
-                <Input
-                    type="time"
-                    value={openHour}
-                    onChange={(e) => handleChange("openHour", e.target.value)}
-                />
-                <Input
-                    type="time"
-                    value={closeHour}
-                    onChange={(e) => handleChange("closeHour", e.target.value)}
-                />
-                <Input
-                    type="file"
-                    onChange={(e) => handleChange("file", e.target.files[0])}
-                />
+                <div>
+                    <span>ID</span>
+                    <Input value={id} disabled />
+                </div>
+                <div>
+                    <span>Club Name</span>
+                    <Input
+                        value={name}
+                        placeholder="Club Name"
+                        onChange={(e) => handleChange("name", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span>Address</span>
+                    <Input
+                        value={address}
+                        placeholder="Address"
+                        onChange={(e) => handleChange("address", e.target.value)}
+                    />
+                </div>
+                <div>
+
+                    <span>Contact Phone</span>
+                    <Input
+                        value={contactPhone}
+                        placeholder="Contact Phone"
+                        onChange={(e) => handleChange("contactPhone", e.target.value)}
+                    />
+                </div>
+                <div>
+
+
+                    <span>Description</span>
+                    <Input
+                        value={description}
+                        placeholder="Description"
+                        onChange={(e) => handleChange("description", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span>Open Hour</span>
+                    <Input
+                        type="time"
+                        value={openHour}
+                        onChange={(e) => handleChange("openHour", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span>Close Hour</span>
+                    <Input
+                        type="time"
+                        value={closeHour}
+                        onChange={(e) => handleChange("closeHour", e.target.value)}
+                    />
+                </div>
+                <div>
+                    <span>Upload Image</span>
+                    <Input
+                        type="file"
+                        onChange={(e) => handleChange("file", e.target.files[0])}
+                    />
+                </div>
                 {error.file && <span style={{ color: "red" }}>{error.file}</span>}
             </div>
         </Modal>

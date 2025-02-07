@@ -1,6 +1,27 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Card, Avatar, Button, Row, Col, Typography, Divider, Space, notification } from "antd";
-import { PhoneOutlined, EnvironmentOutlined, GlobalOutlined } from "@ant-design/icons";
+import {
+    Card,
+    Avatar,
+    Button,
+    Row,
+    Col,
+    Typography,
+    Divider,
+    Space,
+    notification,
+    Modal,
+    theme
+} from "antd";
+import {
+    PhoneOutlined,
+    EnvironmentOutlined,
+    GlobalOutlined,
+    EditOutlined,
+    HistoryOutlined,
+    FileTextOutlined,
+    PlusOutlined,
+    UserOutlined
+} from "@ant-design/icons";
 import { DataContext } from "../../helpers/DataContext";
 import { getOneUserById } from "../../../services/authService";
 import UpdateProfileModal from "./UpdateProfileModal";
@@ -9,11 +30,74 @@ import ChangePasswordModal from "../login/ChangePasswordModal";
 
 const { Title, Text } = Typography;
 
+const styles = {
+    profileContainer: {
+        padding: "24px",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        fontFamily: "'Poppins', sans-serif",
+        background: "#f5f5f5",
+        minHeight: "100vh",
+    },
+    mainCard: {
+        borderRadius: "15px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        overflow: "hidden",
+    },
+    avatarSection: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        cursor: "pointer",
+        transition: "transform 0.3s ease",
+        "&:hover": {
+            transform: "scale(1.05)",
+        },
+    },
+    avatar: {
+        border: "4px solid #F9690E",
+        boxShadow: "0 4px 12px rgba(249, 105, 14, 0.2)",
+    },
+    buttonGroup: {
+        display: "flex",
+        gap: "10px",
+        flexWrap: "wrap",
+    },
+    actionButton: {
+        borderRadius: "6px",
+        height: "40px",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+    },
+    infoSection: {
+        background: "#fff",
+        padding: "24px",
+        borderRadius: "12px",
+        marginTop: "16px",
+    },
+    infoLabel: {
+        color: "#666",
+        marginRight: "8px",
+    },
+    infoValue: {
+        color: "#333",
+        fontWeight: "500",
+    },
+    sectionTitle: {
+        color: "#F9690E",
+        marginBottom: "16px",
+        fontSize: "20px",
+    },
+};
+
 const UserProfilePage = () => {
     const { user, setUser } = useContext(DataContext);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [isImageModalVisible, setIsImageModalVisible] = useState(false);
     const navigate = useNavigate();
     // Lấy dữ liệu người dùng bằng API
     useEffect(() => {
@@ -98,113 +182,174 @@ const UserProfilePage = () => {
 
     return (
         <section id="services">
-            <div style={{ padding: "24px", maxWidth: "1200px", margin: "0 auto", fontFamily: "Arial, sans-serif" }}>
-                <Card>
-                    <Row gutter={[16, 16]} align="middle">
-                        <Col span={6}>
-                            <Avatar
-                                size={120}
-                                src={`${avatar?.startsWith("http") ? avatar : "https://via.placeholder.com/120"}?t=${Date.now()}`}
-                                style={{
-                                    border: "3px solid #1890ff",
-                                }}
-                            />
+            <div style={styles.profileContainer}>
+                <Card style={styles.mainCard}>
+                    <Row gutter={[24, 24]} align="middle">
+                        <Col xs={24} sm={8} md={6}>
+                            <div
+                                style={styles.avatarSection}
+                                onClick={() => setIsImageModalVisible(true)}
+                            >
+                                <Avatar
+                                    size={150}
+                                    src={`${avatar?.startsWith("http") ? avatar : "https://via.placeholder.com/150"}?t=${Date.now()}`}
+                                    style={styles.avatar}
+                                    icon={<UserOutlined />}
+                                />
+                            </div>
                         </Col>
-                        <Col span={18}>
-                            <Space direction="vertical" size="small">
-                                <Title level={3}>{fullName}</Title>
-                                <Text type="secondary" strong>
-                                    {role}
-                                </Text>
-                                <Button type="primary" onClick={() => setIsModalOpen(true)}>
-                                    Change Password
-                                </Button>
-                                <Button type="primary" onClick={() => setIsUpdateModalOpen(true)}>
-                                    Update Profile
-                                </Button>
-                                <Button type="dashed" onClick={() => navigate("/post-thread")}>
-                                    Create Post
-                                </Button>
-                                <Button type="dashed" onClick={() => navigate("/your-posts")}>
-                                    Your Posts
-                                </Button>
-                                <Button type="dashed" onClick={() => navigate("/history-booking")}>
-                                    View Booking History
-                                </Button>
+                        <Col xs={24} sm={16} md={18}>
+                            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+                                <div>
+                                    <Title level={2} style={{ color: '#F9690E', margin: 0 }}>{fullName}</Title>
+                                    <Text style={{ fontSize: '18px', color: '#666' }}>{role}</Text>
+                                </div>
+                                <Space wrap style={styles.buttonGroup}>
+                                    {/* <Button type="primary" 
+                                    onClick={() => setIsModalOpen(true)}>
+                                        Change Password
+                                    </Button> */}
+                                    <Button
+                                        type="primary"
+                                        icon={<EditOutlined />}
+                                        style={{ ...styles.actionButton, backgroundColor: '#F9690E', borderColor: '#F9690E' }}
+                                        onClick={() => setIsModalOpen(true)}
+                                    >
+                                        Change Password
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        icon={<EditOutlined />}
+                                        style={{ ...styles.actionButton, backgroundColor: '#F9690E', borderColor: '#F9690E' }}
+                                        onClick={() => setIsUpdateModalOpen(true)}
+                                    >
+                                        Update Profile
+                                    </Button>
+                                    <Button
+                                        type="default"
+                                        icon={<FileTextOutlined />}
+                                        style={styles.actionButton}
+                                        onClick={() => navigate("/post-thread")}
+                                    >
+                                        Create Post
+                                    </Button>
+                                    <Button
+                                        type="dashed"
+                                        icon={<FileTextOutlined />}
+                                        style={styles.actionButton}
+                                        onClick={() => navigate("/your-posts")}
+                                    >
+                                        Your Posts
+                                    </Button>
+                                    <Button
+                                        type="default"
+                                        icon={<HistoryOutlined />}
+                                        style={styles.actionButton}
+                                        onClick={() => navigate("/history-booking")}
+                                    >
+                                        Booking History
+                                    </Button>
+                                </Space>
                             </Space>
                         </Col>
                     </Row>
 
-                    <Divider />
+                    <Divider style={{ borderColor: '#f0f0f0' }} />
 
-                    <Row>
-                        <Col span={12}>
-                            <Title level={5}>Contact Information</Title>
-                            <p>
-                                <PhoneOutlined /> <Text>{phone}</Text>
-                            </p>
-                            <p>
-                                <EnvironmentOutlined /> <Text>{address}</Text>
-                            </p>
-                            <p>
-                                <GlobalOutlined /> <Text>{email}</Text>
-                            </p>
+                    <Row gutter={[24, 24]}>
+                        <Col xs={24} md={12}>
+                            <div style={styles.infoSection}>
+                                <Title level={4} style={styles.sectionTitle}>Contact Information</Title>
+                                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <div>
+                                        <PhoneOutlined style={{ color: '#F9690E', marginRight: '8px' }} />
+                                        <Text style={styles.infoValue}>{phone}</Text>
+                                    </div>
+                                    <div>
+                                        <EnvironmentOutlined style={{ color: '#F9690E', marginRight: '8px' }} />
+                                        <Text style={styles.infoValue}>{address}</Text>
+                                    </div>
+                                    <div>
+                                        <GlobalOutlined style={{ color: '#F9690E', marginRight: '8px' }} />
+                                        <Text style={styles.infoValue}>{email}</Text>
+                                    </div>
+                                </Space>
+                            </div>
                         </Col>
 
-                        <Col span={12}>
-                            <Title level={5}>Additional Details</Title>
-                            <p>
-                                <Text strong>Gender:</Text> <Text>{gender}</Text>
-                            </p>
-                            <p>
-                                <Text strong>Age:</Text> <Text>{age}</Text>
-                            </p>
-                            <p>
-                                <Text strong>Height:</Text> <Text>{heightValue} cm</Text>
-                            </p>
-                            <p>
-                                <Text strong>Marital Status:</Text> <Text>{maritalStatus}</Text>
-                            </p>
-                            <p>
-                                <Text strong>Hobbies:</Text> <Text>{hobbies}</Text>
-                            </p>
+                        <Col xs={24} md={12}>
+                            <div style={styles.infoSection}>
+                                <Title level={4} style={styles.sectionTitle}>Personal Details</Title>
+                                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                                    <div>
+                                        <Text style={styles.infoLabel}>Gender:</Text>
+                                        <Text style={styles.infoValue}>{gender}</Text>
+                                    </div>
+                                    <div>
+                                        <Text style={styles.infoLabel}>Age:</Text>
+                                        <Text style={styles.infoValue}>{age}</Text>
+                                    </div>
+                                    <div>
+                                        <Text style={styles.infoLabel}>Height:</Text>
+                                        <Text style={styles.infoValue}>{heightValue} cm</Text>
+                                    </div>
+                                    <div>
+                                        <Text style={styles.infoLabel}>Marital Status:</Text>
+                                        <Text style={styles.infoValue}>{maritalStatus}</Text>
+                                    </div>
+                                </Space>
+                            </div>
                         </Col>
                     </Row>
 
-                    <Divider />
-
-                    <Row>
+                    <Row style={{ marginTop: '24px' }}>
                         <Col span={24}>
-                            <Title level={5}>About</Title>
-                            <Text>{description}</Text>
+                            <div style={styles.infoSection}>
+                                <Title level={4} style={styles.sectionTitle}>About Me</Title>
+                                <Text style={{ fontSize: '16px', lineHeight: '1.6' }}>{description}</Text>
+                            </div>
                         </Col>
                     </Row>
                 </Card>
 
-                {/* Change Password Modal */}
+                {/* Image Modal */}
+                <Modal
+                    visible={isImageModalVisible}
+                    footer={null}
+                    onCancel={() => setIsImageModalVisible(false)}
+                    width={600}
+                    style={{ top: 20 }}
+                    bodyStyle={{ padding: 0 }}
+                >
+                    <img
+                        src={`${avatar?.startsWith("http") ? avatar : "https://via.placeholder.com/600"}?t=${Date.now()}`}
+                        alt="Profile"
+                        style={{ width: '100%', height: 'auto' }}
+                    />
+                </Modal>
+
+                {/* Existing modals */}
                 <ChangePasswordModal
                     open={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     email={user.email}
                 />
 
-                {/* Update Profile Modal */}
                 <UpdateProfileModal
                     open={isUpdateModalOpen}
                     onClose={async (updatedUserData) => {
                         setIsUpdateModalOpen(false);
                         if (updatedUserData) {
                             try {
-                                const response = await getOneUserById(user.id); // Gọi API lấy lại dữ liệu user mới
-                                // console.log("data sau :", response);
+                                const response = await getOneUserById(user.id);
                                 if (response.status === 200) {
-                                    setUser(response.data); // Cập nhật DataContext
-                                    localStorage.setItem("user", JSON.stringify(response.data)); // Lưu vào localStorage
+                                    setUser(response.data);
+                                    localStorage.setItem("user", JSON.stringify(response.data));
                                 }
                             } catch (error) {
                                 notification.error({
-                                    message: "Lỗi",
-                                    description: "Không thể kết nối với máy chủ để tải lại dữ liệu.",
+                                    message: "Error",
+                                    description: "Could not connect to server to reload data.",
                                 });
                             }
                         }
@@ -224,7 +369,6 @@ const UserProfilePage = () => {
                         avatar,
                     }}
                 />
-
             </div>
         </section>
     );

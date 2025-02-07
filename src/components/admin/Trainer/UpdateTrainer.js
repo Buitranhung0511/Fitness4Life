@@ -115,7 +115,7 @@ const UpdateTrainer = (props) => {
         const fileName = url.split('/').pop(); // Lấy tên file từ URL
         return new File([blob], fileName, { type: blob.type }); // Tạo đối tượng File
     };
-    
+
     const handleSubmitBtn = async () => {
         const hasErrors = validateAllFields();
         if (hasErrors) {
@@ -125,7 +125,7 @@ const UpdateTrainer = (props) => {
             });
             return;
         }
-    
+
         let fileToUpdate = null;
         if (!file) {
             if (currentFile.startsWith("http")) {
@@ -136,7 +136,7 @@ const UpdateTrainer = (props) => {
         } else {
             fileToUpdate = file; // Nếu có file mới, sử dụng file mới
         }
-    
+
         try {
             const res = await updateTrainer(
                 dataUpdate.id,
@@ -150,7 +150,7 @@ const UpdateTrainer = (props) => {
                 scheduleTrainers,
                 branch
             );
-    
+
             if (res.status === 200) {
                 notification.success({
                     message: "Update Trainer",
@@ -172,7 +172,7 @@ const UpdateTrainer = (props) => {
             });
         }
     };
-    
+
 
 
 
@@ -201,72 +201,107 @@ const UpdateTrainer = (props) => {
             maskClosable={false}
         >
             <div style={{ display: "flex", gap: "15px", flexDirection: "column" }}>
-                <Input
-                    value={fullName}
-                    placeholder="Full Name"
-                    onChange={(e) => handleChange("fullName", e.target.value)}
-                />
-                <Input
-                    value={slug}
-                    placeholder="Slug"
-                    onChange={(e) => handleChange("slug", e.target.value)}
-                />
-                <Input
-                    value={specialization}
-                    placeholder="Specialization"
-                    onChange={(e) => handleChange("specialization", e.target.value)}
-                />
-                <Input
-                    value={experienceYear}
-                    placeholder="Experience Year"
-                    onChange={(e) => handleChange("experienceYear", e.target.value)}
-                />
-                <Input
-                    value={certificate}
-                    placeholder="Certificate"
-                    onChange={(e) => handleChange("certificate", e.target.value)}
-                />
-                <Input
-                    value={phoneNumber}
-                    placeholder="Phone Number"
-                    onChange={(e) => handleChange("phoneNumber", e.target.value)}
-                />
-                <Select
-                    mode="multiple"
-                    value={scheduleTrainers}
-                    placeholder="Schedule"
-                    onChange={(value) => handleChange("scheduleTrainers", value)}
-                >
-                    <Select.Option value="MONDAY">Monday</Select.Option>
-                    <Select.Option value="TUESDAY">Tuesday</Select.Option>
-                    <Select.Option value="WEDNESDAY">Wednesday</Select.Option>
-                    <Select.Option value="THURSDAY">Thursday</Select.Option>
-                    <Select.Option value="FRIDAY">Friday</Select.Option>
-                    <Select.Option value="SATURDAY">Saturday</Select.Option>
-                    <Select.Option value="SUNDAY">Sunday</Select.Option>
-                </Select>
-                <Select
-                    value={branch}
-                    placeholder="Branch"
-                    onChange={(value) => handleChange("branch", value)}
-                >
-                    {branches.map((branchItem) => (
-                        <Select.Option key={branchItem.id} value={branchItem.id}>
-                            {branchItem.branchName}
-                        </Select.Option>
-                    ))}
-                </Select>
                 <div>
+                    <span>Full Name</span>
+                    <Input
+                        value={fullName}
+                        placeholder="Full Name"
+                        onChange={(e) => handleChange("fullName", e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <span>Slug</span>
+                    <Input
+                        value={slug}
+                        placeholder="Slug"
+                        onChange={(e) => handleChange("slug", e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <span>Specialization</span>
+                    <Input
+                        value={specialization}
+                        placeholder="Specialization"
+                        onChange={(e) => handleChange("specialization", e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <span>Experience Year</span>
+                    <Input
+                        value={experienceYear}
+                        placeholder="Experience Year"
+                        onChange={(e) => handleChange("experienceYear", e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <span>Certificate</span>
+                    <Input
+                        value={certificate}
+                        placeholder="Certificate"
+                        onChange={(e) => handleChange("certificate", e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <span>Phone Number</span>
+                    <Input
+                        value={phoneNumber}
+                        placeholder="Phone Number"
+                        onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <span>Schedule</span>
+                    <Select
+                        mode="multiple"
+                        value={scheduleTrainers}
+                        placeholder="Schedule"
+                        onChange={(value) => handleChange("scheduleTrainers", value)}
+                    >
+                        <Select.Option value="MONDAY">Monday</Select.Option>
+                        <Select.Option value="TUESDAY">Tuesday</Select.Option>
+                        <Select.Option value="WEDNESDAY">Wednesday</Select.Option>
+                        <Select.Option value="THURSDAY">Thursday</Select.Option>
+                        <Select.Option value="FRIDAY">Friday</Select.Option>
+                        <Select.Option value="SATURDAY">Saturday</Select.Option>
+                        <Select.Option value="SUNDAY">Sunday</Select.Option>
+                    </Select>
+                </div>
+
+                <div>
+                    <span>Branch</span>
+                    <Select
+                        value={branch}
+                        placeholder="Branch"
+                        onChange={(value) => handleChange("branch", value)}
+                        dropdownStyle={{ minWidth: 250 }}
+                    >
+                        {branches.map((branchItem) => (
+                            <Select.Option key={branchItem.id} 
+                                        value={branchItem.id}
+                                        placeholder={"SELECT BRANCH"}
+                                        >
+                                {branchItem.branchName}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </div>
+
+                <div>
+                    <span>Photo</span>
                     <div>
                         {file ? (
-                            // Hiển thị file mới khi người dùng chọn
                             <img
                                 src={URL.createObjectURL(file)}
                                 alt="Selected File"
                                 style={{ width: '100px', height: '100px', objectFit: 'cover', marginBottom: '10px' }}
                             />
                         ) : currentFile ? (
-                            // Hiển thị ảnh hiện tại từ URL nếu không có file mới
                             <img
                                 src={currentFile}
                                 alt="Current Photo"
@@ -286,9 +321,9 @@ const UpdateTrainer = (props) => {
                     />
                 </div>
 
-                {error.file && <span style={{ color: "red" }}>{error.file}</span>}
             </div>
-        </Modal>
+            {error.file && <span style={{ color: "red" }}>{error.file}</span>}
+        </Modal >
     );
 };
 

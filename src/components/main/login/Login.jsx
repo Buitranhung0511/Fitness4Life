@@ -40,8 +40,13 @@ const Login = () => {
     try {
       const result = await loginUser(data);
       if (result.status === 200) {
-        handleStoreUser(result.data);
-        if (result.data.role === "ADMIN") {
+        const user = result.data;
+        if (!user.active) {
+          toast.error('Bạn cần phải xác thực tài khoản');
+          return;
+        }
+        handleStoreUser(user);
+        if (user.role === 'ADMIN') {
           navigate('/admin/profile');
         } else {
           navigate('/');
@@ -57,7 +62,7 @@ const Login = () => {
       toast.error('Oops, something went wrong!!');
     }
   };
-
+  
   return (
     <section id="services">
       <div style={{ textAlign: 'center', marginTop: '50px' }}>

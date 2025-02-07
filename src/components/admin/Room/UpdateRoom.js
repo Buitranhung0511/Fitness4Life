@@ -179,6 +179,7 @@ const UpdateRoom = (props) => {
             maskClosable={false}
         >
             <div style={{ display: "flex", gap: "15px", flexDirection: "column" }}>
+                {/* Club Select */}
                 <Select
                     value={club}
                     placeholder="Select Club"
@@ -192,6 +193,7 @@ const UpdateRoom = (props) => {
                 </Select>
                 {error.club && <span style={{ color: "red" }}>{error.club}</span>}
 
+                {/* Trainer Select */}
                 <Select
                     value={trainer}
                     placeholder="Select Trainer"
@@ -205,56 +207,83 @@ const UpdateRoom = (props) => {
                 </Select>
                 {error.trainer && <span style={{ color: "red" }}>{error.trainer}</span>}
 
-                <Input
-                    value={roomName}
-                    placeholder="Room Name"
-                    onChange={(e) => handleChange("roomName", e.target.value)}
-                />
-                {error.roomName && <span style={{ color: "red" }}>{error.roomName}</span>}
+                {/* Room Name */}
+                <div>
+                    <span>Room Name</span>
+                    <Input
+                        value={roomName}
+                        placeholder="Room Name"
+                        onChange={(e) => handleChange("roomName", e.target.value)}
+                    />
+                    {error.roomName && <span style={{ color: "red" }}>{error.roomName}</span>}
+                </div>
 
-                <Input
-                    value={slug}
-                    placeholder="Slug"
-                    onChange={(e) => handleChange("slug", e.target.value)}
-                />
-                {error.slug && <span style={{ color: "red" }}>{error.slug}</span>}
+                {/* Slug */}
+                <div>
+                    <span>Slug</span>
+                    <Input
+                        value={slug}
+                        placeholder="Slug"
+                        onChange={(e) => handleChange("slug", e.target.value)}
+                    />
+                    {error.slug && <span style={{ color: "red" }}>{error.slug}</span>}
+                </div>
 
-                <Input
-                    type="number"
-                    value={capacity}
-                    placeholder="Capacity"
-                    onChange={(e) => handleChange("capacity", e.target.value)}
-                />
-                {error.capacity && <span style={{ color: "red" }}>{error.capacity}</span>}
+                {/* Capacity */}
+                <div>
+                    <span>Capacity</span>
+                    <Input
+                        type="number"
+                        value={capacity}
+                        placeholder="Capacity"
+                        onChange={(e) => handleChange("capacity", e.target.value)}
+                    />
+                    {error.capacity && <span style={{ color: "red" }}>{error.capacity}</span>}
+                </div>
 
-                <Input
-                    value={facilities}
-                    placeholder="Facilities"
-                    onChange={(e) => handleChange("facilities", e.target.value)}
-                />
+                {/* Facilities */}
+                <div>
+                    <span>Facilities</span>
+                    <Input
+                        value={facilities}
+                        placeholder="Facilities"
+                        onChange={(e) => handleChange("facilities", e.target.value)}
+                    />
+                </div>
 
-                <Select
-                    value={status ? "Active" : "Inactive"}
-                    placeholder="Status"
-                    onChange={(value) => handleChange("status", value === "Active")}
-                >
-                    <Option value="Active">Active</Option>
-                    <Option value="Inactive">Inactive</Option>
-                </Select>
+                {/* Status */}
+                <div>
+                    <span>Status</span>
+                    <Select
+                        value={status ? "Active" : "Inactive"}
+                        placeholder="Status"
+                        onChange={(value) => handleChange("status", value === "Active")}
+                    >
+                        <Option value="Active">Active</Option>
+                        <Option value="Inactive">Inactive</Option>
+                    </Select>
+                </div>
 
-                <Input
-                    type="time"
-                    value={startTime}
-                    placeholder="Start Time"
-                    onChange={(e) => handleChange("startTime", e.target.value)}
-                />
+                {/* Time */}
+                <div>
+                    <span>Start Time</span>
+                    <Input
+                        type="time"
+                        value={startTime}
+                        placeholder="Start Time"
+                        onChange={(e) => handleChange("startTime", e.target.value)}
+                    />
+                </div>
 
-                <Input
-                    type="time"
-                    value={endTime}
-                    placeholder="End Time"
-                    onChange={(e) => handleChange("endTime", e.target.value)}
-                />
+                <div>
+                    <span>End Time</span>
+                    <Input
+                        type="time"
+                        value={endTime}
+                        placeholder="End Time"
+                        onChange={(e) => handleChange("endTime", e.target.value)}
+                    />
+                </div>
             </div>
         </Modal>
     );
