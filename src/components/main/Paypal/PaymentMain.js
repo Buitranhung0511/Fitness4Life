@@ -67,6 +67,9 @@ console.log(">>TotalPrice",calculateTotalPrice);
 
       const response = await axios.post('http://localhost:8082/api/paypal/pay', payload);
 
+      console.log("response",response);
+      
+      
       if (response.data && response.data.redirectUrl) {
         window.location.href = response.data.redirectUrl;
       } else {

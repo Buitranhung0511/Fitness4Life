@@ -84,6 +84,7 @@ const PackageMain = () => {
     };
 
     const currentPrices = selectedPackage ? calculatePrices(selectedPackage) : {};
+    
     const packageFeatures = [
         { feature: "Tập luyện tại GT CLUB đã chọn", packages: ["CLASSIC", "CLASSIC-PLUS", "CITIFITSPORT", "ROYAL", "SIGNATURE"] },
         { feature: "Tham gia Yoga và Group X tại 01 CLUB đã chọn", packages: ["CLASSIC", "CLASSIC-PLUS"] },

@@ -194,7 +194,7 @@ const UserProfilePage = () => {
                                     size={150}
                                     src={`${avatar?.startsWith("http") ? avatar : "https://via.placeholder.com/150"}?t=${Date.now()}`}
                                     style={styles.avatar}
-                                    icon={<UserOutlined />}
+                                    icon={<UserOutlined />} 
                                 />
                             </div>
                         </Col>
@@ -202,13 +202,8 @@ const UserProfilePage = () => {
                             <Space direction="vertical" size="large" style={{ width: '100%' }}>
                                 <div>
                                     <Title level={2} style={{ color: '#F9690E', margin: 0 }}>{fullName}</Title>
-                                    <Text style={{ fontSize: '18px', color: '#666' }}>{role}</Text>
                                 </div>
                                 <Space wrap style={styles.buttonGroup}>
-                                    {/* <Button type="primary" 
-                                    onClick={() => setIsModalOpen(true)}>
-                                        Change Password
-                                    </Button> */}
                                     <Button
                                         type="primary"
                                         icon={<EditOutlined />}
