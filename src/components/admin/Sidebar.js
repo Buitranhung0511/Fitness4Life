@@ -7,16 +7,18 @@ const Sidebar = ({ setMenuItems, isCollapsed }) => {
   const menuItems = useMemo(() => [
     { label: 'Dashboard', icon: 'bxs-dashboard', path: '/admin/dashboard' },
     { label: 'User', icon: 'bxs-user-rectangle', path: '/admin/users' },
-    { label: 'Blogs', icon: 'bx-analyse', path: '/admin/Blogs' },
+    // { label: 'Blogs', icon: 'bx-analyse', path: '/admin/Blogs' },
     { label: 'Club', icon: 'bx-buildings', path: '/admin/Club' },
     { label: 'Room', icon: 'bx-message-square-dots', path: '/admin/Room' },
     { label: 'Branch', icon: 'bx-message-square-dots', path: '/admin/Branch' },
     { label: 'Trainer', icon: 'bx-message-square-dots', path: '/admin/Trainer' },
-    { label: 'Booking', icon: 'bxs-hand-up', path: '/admin/Booking' },
+    // { label: 'Booking', icon: 'bxs-hand-up', path: '/admin/Booking' },
     { label: 'Package', icon: 'bx-message-square-dots', path: '/admin/Package' },
     { label: 'Promotion', icon: 'bx-cog', path: '/admin/Promotion' },
     { label: 'Post', icon: 'bx-cog', path: '/admin/post' },
     { label: 'Settings', icon: 'bx-cog', path: '/admin/home' },
+    { label: 'Statistics', icon: 'bxs-hand-up', path: '/admin/Statistics' },
+
 
   ], []); // Menu items
 

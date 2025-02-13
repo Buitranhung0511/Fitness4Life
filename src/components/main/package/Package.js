@@ -13,12 +13,15 @@ const PackageMain = () => {
     const [selectedMonths, setSelectedMonths] = useState(3); // Default to 3 months
     const navigate = useNavigate();
     const { user, isLoggedIn } = useContext(DataContext);
+    const [loading, setLoading] = useState(true);
 
     // Available month options
     const monthOptions = [3, 6, 9, 12];
 
     useEffect(() => {
         loadPackage();
+        const timeout = setTimeout(() => setLoading(false), 5000);
+        return () => clearTimeout(timeout);
     }, []);
 
     const loadPackage = async () => {
@@ -30,6 +33,8 @@ const PackageMain = () => {
             }
         } catch (error) {
             console.error('Error fetching packages:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -84,7 +89,7 @@ const PackageMain = () => {
     };
 
     const currentPrices = selectedPackage ? calculatePrices(selectedPackage) : {};
-    
+
     const packageFeatures = [
         { feature: "Tập luyện tại GT CLUB đã chọn", packages: ["CLASSIC", "CLASSIC-PLUS", "CITIFITSPORT", "ROYAL", "SIGNATURE"] },
         { feature: "Tham gia Yoga và Group X tại 01 CLUB đã chọn", packages: ["CLASSIC", "CLASSIC-PLUS"] },
@@ -140,11 +145,11 @@ const PackageMain = () => {
     }));
     return (
         <section id="services">
-            <div style={{width:'100%'}}>
-                <img 
+            <div style={{ width: '100%' }}>
+                <img
                     src={packageHeaderPage} // Sử dụng hình ảnh đã import
                     alt="Package"
-                    style={{ width: '100%',height: '400px', objectFit: 'cover' }}
+                    style={{ width: '100%', height: '400px', objectFit: 'cover' }}
                 />
             </div>
             <div className="package-background">

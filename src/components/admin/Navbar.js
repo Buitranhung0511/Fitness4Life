@@ -1,32 +1,28 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DataContext } from '../helpers/DataContext';
 
 const Navbar = ({ menuItems, onToggleSidebar }) => {
+  const { user } = useContext(DataContext); // Lấy user từ context
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
-  const navigate = useNavigate();  // Initialize useNavigate hook
+  const navigate = useNavigate();
+
+  console.log("User:", user);
+  console.log("Avatar:", user?.profile?.avatar);
 
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-
-    if (term) {
-      const filtered = menuItems.filter((item) =>
-        item.label.toLowerCase().includes(term.toLowerCase())
-      );
-      setFilteredItems(filtered);
-    } else {
-      setFilteredItems([]);
-    }
+    setFilteredItems(
+      term ? menuItems.filter((item) => item.label.toLowerCase().includes(term.toLowerCase())) : []
+    );
   };
 
-  const handleSuggestionClick = (path) => {
-    navigate(path);  // Navigate to the clicked path
-  };
+  const handleSuggestionClick = (path) => navigate(path);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && filteredItems.length > 0) {
-      // Navigate to the first filtered suggestion
       navigate(filteredItems[0].path);
     }
   };
@@ -34,22 +30,21 @@ const Navbar = ({ menuItems, onToggleSidebar }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (filteredItems.length > 0) {
-      // Redirect to the first filtered suggestion if form is submitted
       navigate(filteredItems[0].path);
     }
   };
 
   return (
     <nav>
-      <i className="bx bx-menu" onClick={onToggleSidebar}></i> {/* Call onToggleSidebar when clicked */}
-      <form action="" onSubmit={handleSubmit}>
+      <i className="bx bx-menu" onClick={onToggleSidebar}></i>
+      <form onSubmit={handleSubmit}>
         <div className="form-input">
           <input
             type="search"
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearch}
-            onKeyDown={handleKeyDown}  // Handle 'Enter' key press
+            onKeyDown={handleKeyDown}
           />
           <button className="search-btn" type="submit">
             <i className="bx bx-search"></i>
@@ -59,10 +54,7 @@ const Navbar = ({ menuItems, onToggleSidebar }) => {
           <ul className="search-suggestions">
             {filteredItems.map((item, index) => (
               <li key={index}>
-                <a
-                  href="#"
-                  onClick={() => handleSuggestionClick(item.path)}
-                >
+                <a href="#" onClick={() => handleSuggestionClick(item.path)}>
                   {item.label}
                 </a>
               </li>
@@ -76,8 +68,8 @@ const Navbar = ({ menuItems, onToggleSidebar }) => {
         <i className="bx bx-bell"></i>
         <span className="count">12</span>
       </a>
-      <a href="#" className="profile">
-        <img src="././logo192.png" alt="Profile" />
+      <a href="/user/profile" className="profile">
+        <img src={user?.profile?.avatar} alt="Profile" />
       </a>
     </nav>
   );

@@ -1,8 +1,13 @@
-import React, { useContext } from 'react';
-import { Card, Button, notification, Row, Col, Typography, Tag, Divider } from 'antd';
+import React, { useContext, useState } from 'react';
+import { Card, Button, notification, Row, Col, Typography, Tag, Divider, Space } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataContext } from '../../helpers/DataContext';
 import axios from 'axios';
+import {
+  SyncOutlined
+} from '@ant-design/icons';
+import stickman from '../../../assets/images/Stickman.gif';
+
 
 const { Title, Text } = Typography;
 
@@ -11,15 +16,16 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { package: selectedPackage, months: selectedMonths } = location.state || {};
   const { user } = useContext(DataContext);
+  const [isLoading, setIsLoading] = useState(false);
 
-  console.log("location.state>>>",location.state);
-  
+  console.log("location.state>>>", location.state);
+
   if (!selectedPackage) {
     return (
       <div className="p-8 text-center">
         <Text className="text-xl">No package selected. Please go back and choose a package.</Text>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           onClick={() => navigate(-1)}
           className="mt-4"
         >
@@ -32,7 +38,7 @@ const PaymentPage = () => {
   const calculateTotalPrice = () => {
     const basePrice = selectedPackage.price;
     const totalPrice = basePrice * selectedMonths;
-    
+
     let discount = 0;
     if (selectedMonths >= 12) {
       discount = 0.2;
@@ -43,16 +49,16 @@ const PaymentPage = () => {
     } else if (selectedMonths >= 3) {
       discount = 0.05;
     }
-    console.log(">>>totalPrice",totalPrice);
+    console.log(">>>totalPrice", totalPrice);
 
     return Math.round(totalPrice * (1 - discount));
   };
-console.log(">>TotalPrice",calculateTotalPrice);
 
   const handleSubmitPayment = async () => {
+    setIsLoading(true);
     try {
       const totalAmount = calculateTotalPrice();
-      console.log(">>Total Amount",totalAmount)
+      console.log(">>Total Amount", totalAmount)
       const payload = {
         packageId: selectedPackage.id,
         userId: user.id,
@@ -64,12 +70,8 @@ console.log(">>TotalPrice",calculateTotalPrice);
         intent: "Sale",
       };
 
-
       const response = await axios.post('http://localhost:8082/api/paypal/pay', payload);
 
-      console.log("response",response);
-      
-      
       if (response.data && response.data.redirectUrl) {
         window.location.href = response.data.redirectUrl;
       } else {
@@ -80,6 +82,8 @@ console.log(">>TotalPrice",calculateTotalPrice);
         message: 'Payment Error',
         description: 'An error occurred while processing your payment. Please try again later.',
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -136,10 +140,10 @@ console.log(">>TotalPrice",calculateTotalPrice);
                 <div className="flex justify-between items-center">
                   <Text className="text-gray-600">Discount Applied:</Text>
                   <Tag color="green">
-                    {selectedMonths >= 12 ? '20%' : 
-                     selectedMonths >= 9 ? '15%' : 
-                     selectedMonths >= 6 ? '10%' : 
-                     selectedMonths >= 3 ? '5%' : '0%'}
+                    {selectedMonths >= 12 ? '20%' :
+                      selectedMonths >= 9 ? '15%' :
+                        selectedMonths >= 6 ? '10%' :
+                          selectedMonths >= 3 ? '5%' : '0%'}
                   </Tag>
                 </div>
               </div>
@@ -170,8 +174,16 @@ console.log(">>TotalPrice",calculateTotalPrice);
               block
               onClick={handleSubmitPayment}
               className="h-14 text-lg font-semibold"
+              disabled={isLoading}
             >
-              Proceed to Payment
+              {isLoading ? (
+                <Space>
+                  <SyncOutlined/>
+                  <img src={stickman}width={38} height={30} />
+                </Space>
+              ) : (
+                'Proceed to Payment'
+              )}
             </Button>
           </Card>
         </Col>

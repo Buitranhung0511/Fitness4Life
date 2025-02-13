@@ -6,7 +6,7 @@ import { Modal, Dropdown, Menu } from 'antd';
 const MainHeader = () => {
   const { isLoggedIn, handleLogout } = useContext(DataContext);
   const navigate = useNavigate();
-
+  const { user } = useContext(DataContext);
   const confirmLogout = () => {
     Modal.confirm({
       title: 'Bạn có chắc chắn muốn đăng xuất?',
@@ -93,7 +93,7 @@ const MainHeader = () => {
               <li className="scroll">
                 <Dropdown overlay={menuB} trigger={['click']}>
                   <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                   Branches <span className="caret"></span>
+                    Branches <span className="caret"></span>
                   </a>
                 </Dropdown>
               </li>
@@ -104,7 +104,7 @@ const MainHeader = () => {
               <li className="scroll">
                 <Link to="/packageMain">Membership</Link>
               </li>
-          
+
               <li className="scroll">
                 <Dropdown overlay={menuExplore} trigger={['click']}>
                   <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
@@ -129,7 +129,18 @@ const MainHeader = () => {
                 <li className="scroll">
                   <Dropdown overlay={profileMenu} trigger={['click']}>
                     <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                      Account <span className="caret"></span>
+                      <a className="profile">
+                        <img
+                          src={user?.profile?.avatar}
+                          alt="Profile"
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </a>
                     </a>
                   </Dropdown>
                 </li>

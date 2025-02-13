@@ -24,7 +24,6 @@ import BookingMain from './components/main/booking/Booking';
 import Package from './components/admin/Package/Package';
 import PackageMain from './components/main/package/Package';
 import PaymentMain from './components/main/Paypal/PaymentMain';
-import PaymentSuccess from './components/main/Paypal/SuccessfullyPay';
 import UserProfilePage from './components/main/user/UserProfilePage';
 import HistoryBooking from './components/main/user/HistoryBooking';
 import PromotionPage from './components/admin/Promotion/PromotionPage';
@@ -44,6 +43,7 @@ import UpdateQuestion from './components/main/forum/UpdateQuestion';
 import OrderPage from './components/main/Paypal/Order';
 import ClubHome from './components/main/club/clubHome';
 import ClubDetails from './components/main/club/clubDetail';
+import StatisticsPage from './components/admin/Statistics/Statistics';
 
 
 const App = () => {
@@ -79,7 +79,6 @@ const App = () => {
         <Route path='/bookingMain' element={<BookingMain />} />
         <Route path="/packageMain/" element={<PackageMain />} />
         <Route path="/payment" element={<PaymentMain />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/order" element={<OrderPage />} />
         <Route path="/user/profile" element={<UserProfilePage />} />
         <Route path="/history-booking" element={<HistoryBooking />} />
@@ -105,7 +104,7 @@ const App = () => {
           <Route path="Promotion" element={<PromotionPage />} />
           <Route path="Post" element={<PostPage />} />
           <Route path="/admin/profile" element={<UserProfilePage />} />
-
+          <Route path="Statistics" element={<StatisticsPage />} />
         </Route>
       </Routes>
     </Router>
