@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL_CLUB = "http://localhost:8081/api/dashboard";
+const URL_CLUB = "http://localhost:9000/api/dashboard";
 
 const createClubApi = (name, address, contactPhone, description, openHour, closeHour) => {
     const URL_BACKEND = `${URL_CLUB}/club/add`;
@@ -28,10 +28,28 @@ const updateClubApi = (id, name, address, contactPhone, description, openHour, c
     return axios.put(URL_BACKEND, data);
 }
 
-const fetchAllClubs = () => {
-    const URL_BACKEND = `${URL_CLUB}/clubs`;
-    return axios.get(URL_BACKEND);
-}
+
+const fetchAllClubs = async (token) => {
+    try {
+        const response = await fetch('http://localhost:8081/api/dashboard/clubs', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+  
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch clubs');
+      }
+  
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching clubs:', error);
+      throw new Error(error.message || 'Failed to fetch clubs');
+    }
+  };
 
 const deleteClubApi = (id) => {
     const URL_BACKEND = `${URL_CLUB}/club/delete/${id}`;

@@ -27,6 +27,9 @@ import { getOneUserById } from "../../../services/authService";
 import UpdateProfileModal from "./UpdateProfileModal";
 import { useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../login/ChangePasswordModal";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
+import { getUserByEmail } from "../../../serviceToken/authService";
 
 const { Title, Text } = Typography;
 
@@ -102,18 +105,28 @@ const UserProfilePage = () => {
     // Lấy dữ liệu người dùng bằng API
     useEffect(() => {
         const fetchUserData = async () => {
-            if (!user?.id) {
+            const tokenData = localStorage.getItem("tokenData");
+            if (!tokenData) {
                 setLoading(false);
                 return;
             }
+
             try {
-                const response = await getOneUserById(user.id); // Gọi API lấy dữ liệu user
-                // console.log("data trước :", response);
+                const { access_token } = JSON.parse(tokenData);
+                const decodedToken = jwtDecode(access_token); // Giải mã token
+                const userEmail = decodedToken?.sub; // Lấy email từ token
 
-                if (response.status === 200) {
-                    const userData = response.data;
+                if (!userEmail) {
+                        toast.error('Invalid token.');
+                        return;
+                      }
+                const response = await getUserByEmail(userEmail, access_token); // Gọi API lấy dữ liệu user
+                console.log("dataa",response);
+                
+                if (response) {
+                    const userData = response;                    
 
-                    // Kiểm tra và gán giá trị mặc định nếu profile không tồn tại hoặc null
+                    // Kiểm tra nếu profile không tồn tại, gán giá trị mặc định
                     if (!userData.profile) {
                         userData.profile = {
                             hobbies: "No hobbies available",
@@ -122,11 +135,12 @@ const UserProfilePage = () => {
                             heightValue: "No height value available",
                             description: "No description available",
                             maritalStatus: "No marital status available",
-                            avatar: "https://via.placeholder.com/120", // Giá trị mặc định
+                            avatar: "https://via.placeholder.com/120", // Avatar mặc định
                         };
                     }
 
                     setUser(userData); // Cập nhật DataContext
+                    localStorage.setItem("user", JSON.stringify(userData)); // Lưu user vào localStorage
                 } else {
                     notification.error({
                         message: "Lỗi",
@@ -139,12 +153,12 @@ const UserProfilePage = () => {
                     description: "Không thể kết nối với máy chủ.",
                 });
             } finally {
-                setLoading(false); // Tắt trạng thái loading
+                setLoading(false);
             }
         };
 
         fetchUserData();
-    }, [user?.id, setUser]);
+    }, [setUser]);
 
 
     if (loading) {

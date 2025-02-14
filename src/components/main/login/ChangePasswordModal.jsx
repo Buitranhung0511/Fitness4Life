@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button, notification } from 'antd';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { changePassword } from '../../../services/authService';
+import { changePassword } from '../../../serviceToken/authService';
 import { useNavigate } from 'react-router-dom'; // Dùng để chuyển hướng
 
 const ChangePasswordModal = ({ open, onClose, email }) => {
     const navigate = useNavigate(); // Điều hướng đến trang đăng nhập
     const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+
+    const tokenData = localStorage.getItem("tokenData");
+    const token = tokenData ? JSON.parse(tokenData).access_token : null;
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
@@ -32,7 +35,7 @@ const ChangePasswordModal = ({ open, onClose, email }) => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const result = await changePassword(values);
+                const result = await changePassword(values,token);
                 if (result.status === 200) {
                     setIsSuccessModalVisible(true); // Hiển thị modal xác nhận thành công
                 } else {

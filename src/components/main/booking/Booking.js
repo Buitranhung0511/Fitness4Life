@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { DataContext } from '../../helpers/DataContext';
 import { GetRoomsByPackage, submitBookingRoom } from '../../../services/PackageService';
 import stickman from '../../../assets/images/Stickman.gif';
+import { jwtDecode } from 'jwt-decode';
+import { getUserByEmail } from '../../../serviceToken/authService';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -17,10 +19,17 @@ const BookingMain = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [loading, setLoading] = useState(true);
+    const tokenData = localStorage.getItem("tokenData");
+    const { access_token } = JSON.parse(tokenData);
 
     useEffect(() => {
         const loadRoomsByPackage = async () => {
             try {
+                const decodeuser = jwtDecode(access_token);
+                const user = await getUserByEmail(decodeuser.sub,access_token);
+                console.log("user",user);
+
+                
                 const rooms = await GetRoomsByPackage(user?.workoutPackageId);
                 setFilteredRooms(rooms);
             } catch (error) {

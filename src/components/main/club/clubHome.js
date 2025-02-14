@@ -9,6 +9,7 @@ function ClubHome() {
     const [dataClub, setDataClub] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchText, setSearchText] = useState('');
+    const tokenData = localStorage.getItem("tokenData");
 
     useEffect(() => {
         loadClub();
@@ -16,9 +17,27 @@ function ClubHome() {
 
     const loadClub = async () => {
         try {
-            const res = await fetchAllClubs();
-            setDataClub(res.data.data);
-            setFilteredData(res.data.data);
+            
+            const { access_token } = JSON.parse(tokenData);
+            console.log("token", access_token);
+
+            const response = await fetch('http://localhost:8081/api/dashboard/clubs', {
+                headers: {
+                  'Authorization': `Bearer ${access_token}`,
+                  'Content-Type': 'application/json'
+                }
+              });
+      
+              if (!response.ok) {
+                throw new Error('Failed to fetch clubs');
+              }
+              const data = await response.json();
+              
+      
+            setDataClub(data.data);
+            setFilteredData(data.data);
+            console.log(dataClub);
+            
         } catch (error) {
             console.error('Error loading clubs:', error);
         }

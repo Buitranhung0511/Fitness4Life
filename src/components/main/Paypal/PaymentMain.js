@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Card, Button, notification, Row, Col, Typography, Tag, Divider, Space } from 'antd';
+import { Card, Button, notification, Row, Col, Typography, Tag, Divider, Space, message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataContext } from '../../helpers/DataContext';
 import axios from 'axios';
@@ -58,35 +58,169 @@ const PaymentPage = () => {
     setIsLoading(true);
     try {
       const totalAmount = calculateTotalPrice();
-      console.log(">>Total Amount", totalAmount)
+      console.log(">> Starting payment process with amount:", totalAmount);
+      
+      // Validate required data
+      if (!selectedPackage?.id || !user?.id) {
+        console.error("Validation Error:", {
+          selectedPackage: selectedPackage,
+          user: user,
+          message: "Package or user information is missing"
+        });
+        throw new Error("Package or user information is missing");
+      }
+  
       const payload = {
         packageId: selectedPackage.id,
         userId: user.id,
         totalAmount: totalAmount,
-        description: selectedPackage.description,
+        description: selectedPackage.description || "Package Subscription",
         cancelUrl: "http://localhost:5173/cancel",
         successUrl: "http://localhost:3000/order",
         currency: "USD",
         intent: "Sale",
       };
-
-      const response = await axios.post('http://localhost:8082/api/paypal/pay', payload);
-
-      if (response.data && response.data.redirectUrl) {
-        window.location.href = response.data.redirectUrl;
-      } else {
-        window.location.href = response.data;
+      console.log(">> Payment payload:", payload);
+  
+      // Get and validate token
+      const tokenData = localStorage.getItem("tokenData");
+      if (!tokenData) {
+        console.error("Token Error: No token data found in localStorage");
+        notification.error({
+          message: 'Authentication Error',
+          description: 'Please log in again to continue.',
+        });
+        return;
       }
+  
+      let parsedTokenData;
+      try {
+        parsedTokenData = JSON.parse(tokenData);
+        console.log(">> Token parsed successfully");
+      } catch (error) {
+        console.error("Token Parse Error:", {
+          error: error,
+          tokenData: tokenData
+        });
+        notification.error({
+          message: 'Session Error',
+          description: 'Your session is invalid. Please log in again.',
+        });
+        return;
+      }
+  
+      const { access_token } = parsedTokenData;
+      if (!access_token) {
+        console.error("Token Validation Error: No access_token in parsed data", parsedTokenData);
+        notification.error({
+          message: 'Authentication Error',
+          description: 'Invalid session. Please log in again.',
+        });
+        return;
+      }
+  
+      console.log(">> Making API request to PayPal service...");
+      // Use message.loading instead of notification.loading
+      const hide = message.loading('Processing payment...', 0);
+  
+      try {
+        const response = await axios.post(
+          'http://localhost:9000/api/paypal/pay', 
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`
+
+            },
+            timeout: 10000,
+          }
+        );
+  
+        console.log(">> API Response:", response.data);
+        // Hide loading message
+        hide();
+  
+        const redirectUrl = response.data?.redirectUrl || response.data;
+        if (!redirectUrl) {
+          console.error("Redirect URL Error:", {
+            responseData: response.data,
+            message: "No redirect URL received from payment service"
+          });
+          throw new Error("No redirect URL received from payment service");
+        }
+  
+        console.log(">> Redirect URL received:", redirectUrl);
+        notification.success({
+          message: 'Payment Initiated',
+          description: 'Redirecting to PayPal...',
+          duration: 2,
+        });
+  
+        setTimeout(() => {
+          console.log(">> Redirecting to PayPal...");
+          window.location.href = redirectUrl;
+        }, 1000);
+  
+      } catch (error) {
+        // Hide loading message in case of error
+        hide();
+        console.error("API Error Details:", {
+          error: error,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          config: {
+            url: error.config?.url,
+            method: error.config?.method,
+            headers: error.config?.headers,
+            data: error.config?.data
+          }
+        });
+  
+        if (error.response) {
+          console.error("Server Error Response:", {
+            status: error.response.status,
+            data: error.response.data
+          });
+          notification.error({
+            message: 'Payment Error',
+            description: error.response.data?.message || 'Server error occurred during payment processing.',
+          });
+        } else if (error.request) {
+          console.error("Network Error:", {
+            request: error.request,
+            message: "No response received from server"
+          });
+          notification.error({
+            message: 'Connection Error',
+            description: 'Unable to connect to payment service. Please check your internet connection.',
+          });
+        } else {
+          console.error("General Error:", {
+            error: error,
+            message: error.message
+          });
+          notification.error({
+            message: 'Payment Error',
+            description: error.message || 'An unexpected error occurred during payment.',
+          });
+        }
+      }
+  
     } catch (error) {
+      console.error("General Process Error:", {
+        error: error,
+        stack: error.stack
+      });
       notification.error({
-        message: 'Payment Error',
-        description: 'An error occurred while processing your payment. Please try again later.',
+        message: 'Error',
+        description: 'An unexpected error occurred. Please try again.',
       });
     } finally {
+      console.log(">> Payment process completed. Loading state reset.");
       setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <Row justify="center">

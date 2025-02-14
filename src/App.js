@@ -44,6 +44,7 @@ import OrderPage from './components/main/Paypal/Order';
 import ClubHome from './components/main/club/clubHome';
 import ClubDetails from './components/main/club/clubDetail';
 import StatisticsPage from './components/admin/Statistics/Statistics';
+import LoginToken from './components/main/login/LoginToken';
 
 
 const App = () => {
@@ -57,12 +58,12 @@ const App = () => {
         </Route>
 
         <Route element={<><MainHeader/><Outlet /><Footer /></>}>
-        <Route path='/login' element={<Login />} />
+        <Route path='/login' element={<LoginToken/>} />
         <Route path='/registration' element={<Registration />} />
         <Route path='/blog' element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/contact-us/" element={<ContactForm />} />
-        <Route path="/verify-account/:email/:otp" element={<OTPVerification />} />
+        <Route path="/verify-otp/:email" element={<OTPVerification />} />
         <Route path="/forums" element={<ForumLayout />}>
             <Route index element={<CategoryPage />} />
             <Route path="forum" element={<ForumPage />} />

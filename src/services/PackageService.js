@@ -3,14 +3,21 @@ import axios from "axios";
 const URL_PACK = "http://localhost:8082/api/booking";
 
 const URL_PAY = "http://localhost:8082/api";
+const tokenData = localStorage.getItem("tokenData");
+
 const fetchAllPackage = () => {
     const URL_BACKEND = `${URL_PACK}/packages`;
     return axios.get(URL_BACKEND);
 }
 export const submitBookingRoom = async (bookingData) => {
     try {
+        console.log(bookingData);
+        
+        const { access_token } = JSON.parse(tokenData);
+
         const response = await axios.post(`${URL_PACK}/bookingRoom/add`, bookingData, {
             headers: {
+                'Authorization': `Bearer ${access_token}`,
                 'Content-Type': 'application/json', // Đảm bảo gửi dữ liệu dạng JSON
             },
         });
@@ -48,16 +55,40 @@ const deletePackage = (id) => {
 }
 
 const GetRoomsByPackage = async (packageId) => {
-    const URL_BACKEND = `http://localhost:8081/api/dashboard/packages/${packageId}/rooms`;
     try {
-        const response = await axios.get(URL_BACKEND);
-        if (response.status === 200 && response.data) {
-            return response.data;
-        } else {
-            throw new Error('Failed to fetch rooms for the package.');
+        if (!tokenData) {
+            throw new Error("Vui lòng đăng nhập để xem phòng");
         }
+        
+        const { access_token } = JSON.parse(tokenData);
+        const response = await fetch(`http://localhost:8081/api/dashboard/packages/${packageId}/rooms`, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to fetch rooms.');
+        }
+
+        const data = await response.json();
+        
+        // If the API returns an array directly
+        if (Array.isArray(data)) {
+            return data;
+        }
+        
+        // If the API wraps the data in an object
+        if (data.data && Array.isArray(data.data)) {
+            return data.data;
+        }
+
+        throw new Error('Invalid data format received from server');
+
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Error fetching rooms.');
+        console.error('Error fetching rooms:', error);
+        throw new Error(error.message || 'Error fetching rooms.');
     }
 };
 
