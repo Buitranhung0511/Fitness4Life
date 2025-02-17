@@ -52,7 +52,6 @@ const PaymentPage = () => {
 
     return Math.round(totalPrice * (1 - discount));
   };
-  console.log("totalAmount", calculateTotalPrice);
 
 
 
@@ -60,7 +59,7 @@ const PaymentPage = () => {
     setIsLoading(true);
     try {
       const totalAmount = calculateTotalPrice();
-      console.log("totalAmount", totalAmount);
+      console.log("totalAmount1212", totalAmount);
 
       // Validate required data
       if (!selectedPackage?.id || !user?.id) {
@@ -75,7 +74,6 @@ const PaymentPage = () => {
       const payload = {
         packageId: selectedPackage.id,
         userId: user.id,
-        totalAmount: totalAmount,
         description: selectedPackage.description || "Package Subscription",
         cancelUrl: "http://localhost:5173/cancel",
         successUrl: "http://localhost:3000/order",
@@ -113,8 +111,8 @@ const PaymentPage = () => {
 
       const { access_token } = parsedTokenData;
       const decodedToken = jwtDecode(access_token);
-      console.log("decodedToken",decodedToken);
-      
+
+
       if (!access_token) {
         console.error("Token Validation Error: No access_token in parsed data", parsedTokenData);
         notification.error({
@@ -293,7 +291,7 @@ const PaymentPage = () => {
               <div className="flex justify-between items-center">
                 <Text className="text-gray-600">Monthly Base Price:</Text>
                 <Text className="text-lg">
-                  {selectedPackage.price.toLocaleString('vi-VN')} VND
+                  {selectedPackage.price} $
                 </Text>
               </div>
 

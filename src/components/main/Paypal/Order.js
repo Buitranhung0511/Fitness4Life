@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams, useLocation, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { notification, Spin } from 'antd';
 
@@ -10,7 +10,10 @@ const OrderPage = () => {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [membershipData, setMembershipData] = useState(null);
+ const navigate = useNavigate();
 
+ console.log("membershipData",membershipData);
+ 
     useEffect(() => {
         const paymentId = searchParams.get("paymentId");
         const token = searchParams.get("token");
@@ -64,10 +67,14 @@ const OrderPage = () => {
                             }
                         }
                     );
-                    console.log("Membership API Response:", membershipResponse.data);
+                    console.log("Membership API Response:", membershipResponse);
+                    console.log("Membership API Response BODY:", membershipResponse.data.body.fullName);
+
         
-                    if (membershipResponse.data) {
-                        setMembershipData(membershipResponse.data);
+                    if (membershipResponse.data.body) {
+                        setMembershipData(membershipResponse.data.body);
+                    console.log("Membership DATA BODY:", setMembershipData);
+
                         setMessage("Thanh toán thành công! Cảm ơn bạn đã sử dụng dịch vụ.");
                         notification.success({
                             message: 'Thanh toán thành công',
@@ -106,7 +113,7 @@ const OrderPage = () => {
             setMessage("Thông tin thanh toán không hợp lệ.");
             setLoading(false);
         }
-    }, [searchParams]);
+    }, [searchParams,navigate]);
 
     if (loading) {
         return (
@@ -134,7 +141,7 @@ const OrderPage = () => {
                         <p><strong>Tên gói:</strong> {membershipData.packageName}</p>
                         <p><strong>Giá:</strong> {membershipData.totalAmount} VND</p>
                         <p><strong>Mô tả:</strong> {membershipData.description}</p>
-                        <p><strong>Trạng thái:</strong> {membershipData.status}</p>
+                        <p><strong>Trạng thái:</strong> {membershipData.payStatusType}</p>
                         <p><strong>Ngày bắt đầu:</strong> {new Date(membershipData.startDate).toLocaleDateString('vi-VN')}</p>
                         <p><strong>Ngày kết thúc:</strong> {new Date(membershipData.endDate).toLocaleDateString('vi-VN')}</p>
                     </div>

@@ -7,7 +7,7 @@ import { updateRoom } from "../../../services/RoomService";
 const { Option } = Select;
 
 const UpdateRoom = (props) => {
-    const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadRoom } = props;
+    const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadRoom, token } = props;
 
     const [club, setClub] = useState(null);
     const [trainer, setTrainer] = useState(null);
@@ -26,8 +26,14 @@ const UpdateRoom = (props) => {
         // Fetch Clubs
         const fetchAllClubs = async () => {
             try {
-                const response = await axios.get("http://localhost:8081/api/dashboard/clubs");
-                setClubs(response.data.data);
+                const response = await fetch("http://localhost:8081/api/dashboard/clubs",{
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                setClubs(data.data);
             } catch (error) {
                 console.error("Error fetching clubs:", error);
             }
@@ -36,8 +42,14 @@ const UpdateRoom = (props) => {
         // Fetch Trainers
         const fetchAllTrainer = async () => {
             try {
-                const response = await axios.get("http://localhost:8081/api/dashboard/trainers");
-                setTrainers(response.data.data);
+                const response = await fetch("http://localhost:8081/api/dashboard/trainers",{
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                setTrainers(data.data);
             } catch (error) {
                 console.error("Error fetching trainers:", error);
             }

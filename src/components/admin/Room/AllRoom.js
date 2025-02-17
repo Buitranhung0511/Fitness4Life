@@ -8,7 +8,7 @@ import UpdateRoom from './UpdateRoom';
 import '../../../assets/css/club.css';
 
 function AllRoom(props) {
-    const { loadRoom, dataRoom, filteredData, setFilteredData, setIsModalOpen } = props;
+    const { loadRoom, dataRoom, filteredData, setFilteredData, setIsModalOpen,token } = props;
 
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -127,17 +127,25 @@ function AllRoom(props) {
     };
 
     const handleDeleteRoom = async (id) => {
-        const res = await deleteRoom(id);
-        if (res.data.data && res.data.data == 200) {
-            notification.success({
-                message: 'Delete Room',
-                description: 'Delete Room successfully....!',
-            });
-            await loadRoom();
-        } else {
+        try {
+            const res = await deleteRoom(id);
+            if (res.status === 200 || res.data?.status === 200) {
+                notification.success({
+                    message: 'Delete Room',
+                    description: 'Delete Room successfully!',
+                });
+                await loadRoom();
+            } else {
+                notification.error({
+                    message: 'Error deleting room',
+                    description: res.data?.message || 'Failed to delete room',
+                });
+            }
+        } catch (error) {
+            console.error("Delete room error:", error);
             notification.error({
                 message: 'Error deleting room',
-                description: JSON.stringify(res.message),
+                description: error.response?.data?.message || 'An error occurred while deleting room',
             });
         }
     };
@@ -184,6 +192,7 @@ function AllRoom(props) {
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
                 loadRoom={loadRoom}
+                token={token} 
             />
 
             <DetailRoom
@@ -191,6 +200,7 @@ function AllRoom(props) {
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
                 setIsDataDetailOpen={setIsDataDetailOpen}
+                token={token} 
             />
         </>
     );

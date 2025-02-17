@@ -1,24 +1,40 @@
-
 import { useEffect, useState } from "react"
 import { fetchAllClubs } from "../../../services/ClubService";
 import CreateClub from "./CreateClub";
 import AllClubs from "./AllClubs";
 
-
 function Club() {
-
     const [dataClubs, setDataClubs] = useState([]);
-    const [filteredData, setFilteredData] = useState(dataClubs);
+    const [filteredData, setFilteredData] = useState([]); 
     const [isModalOpen, setIsModelOpen] = useState(false);
+    const tokenData = localStorage.getItem("tokenData");
+    const { access_token } = JSON.parse(tokenData);
+
+
+    const loadClubs = async () => {
+        try {
+            const data = await fetchAllClubs(access_token); // Now fetchAllClubs returns parsed data
+            console.log("Response data:", data); // Log to see the structure
+
+            if (data && Array.isArray(data.data)) {
+                setDataClubs(data.data);
+                setFilteredData(data.data);
+                console.log("Clubs loaded successfully:", data.data);
+            } else {
+                console.error("Invalid data format received:", data);
+                setDataClubs([]);
+                setFilteredData([]);
+            }
+        } catch (error) {
+            console.error("Error loading clubs:", error);
+            setDataClubs([]);
+            setFilteredData([]);
+        }
+    };
+
     useEffect(() => {
         loadClubs();
     }, []);
-
-    const loadClubs = async () => {
-        const res = await fetchAllClubs();
-        setFilteredData(res.data.data);
-        setDataClubs(res.data.data);
-    }
 
     return (
         <div style={{ padding: "20px" }}>
@@ -26,6 +42,7 @@ function Club() {
                 loadClubs={loadClubs}
                 isModalOpen={isModalOpen}
                 setIsModelOpen={setIsModelOpen}
+                token={access_token}
             />
 
             <AllClubs
@@ -34,7 +51,7 @@ function Club() {
                 filteredData={filteredData}
                 setFilteredData={setFilteredData}
                 setIsModelOpen={setIsModelOpen}
-
+                token={access_token}
             />
         </div>
     )

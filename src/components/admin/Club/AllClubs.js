@@ -8,8 +8,7 @@ import '../../../assets/css/club.css';
 import moment from 'moment';
 
 function AllClubs(props) {
-    const { dataClubs, loadClubs, setFilteredData, filteredData, setIsModelOpen } = props;
-    console.log(">>>Check DATA",dataClubs);
+    const { dataClubs, loadClubs, setFilteredData, filteredData, setIsModelOpen,token } = props;
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -19,6 +18,8 @@ function AllClubs(props) {
     const [searchText, setSearchText] = useState('');
 
     const [addressFilters, setAddressFilters] = useState([]);
+
+
     useEffect(() => {
         const uniqueAddresses = [...new Set(dataClubs.map((club) => club.address))];
         const filters = uniqueAddresses.map((address) => ({
@@ -126,17 +127,23 @@ function AllClubs(props) {
     };
 
     const handleDeleteUser = async (id) => {
-        const res = await deleteClubApi(id);
-        if (res.data.data) {
-            notification.success({
-                message: 'Delete Club',
-                description: 'Delete Club successfully....!',
-            });
-            await loadClubs();
-        } else {
+        try {
+            const res = await deleteClubApi(id, token);
+            console.log("Delete response:", res); // Thêm log để debug
+    
+            // Kiểm tra response có tồn tại
+            if (res && res.data) {
+                notification.success({
+                    message: 'Delete Club',
+                    description: 'Delete Club successfully....!',
+                });
+                await loadClubs(); // Reload danh sách sau khi xóa
+            }
+        } catch (error) {
+            console.error("Delete error:", error); // Thêm log error
             notification.error({
-                message: 'Error delete user',
-                description: JSON.stringify(res.message),
+                message: 'Error deleting club',
+                description: error.message || 'Failed to delete club',
             });
         }
     };
@@ -183,6 +190,7 @@ function AllClubs(props) {
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
                 loadClubs={loadClubs}
+                token={token} 
             />
 
             <ViewClubDetail
@@ -190,6 +198,7 @@ function AllClubs(props) {
                 setDataDetail={setDataDetail}
                 isDataDetailOpen={isDataDetailOpen}
                 setIsDataDetailOpen={setIsDataDetailOpen}
+                token={token} 
             />
         </>
     );

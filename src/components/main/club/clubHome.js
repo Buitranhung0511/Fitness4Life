@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
-import { Input, notification, Popconfirm, Image } from 'antd';
-import'../../../assets/css/branch.css'
+import { Input, Image } from 'antd';
+import '../../../assets/css/branch.css'
 import moment from 'moment';
-import { fetchAllClubs } from '../../../services/ClubService';
 
 function ClubHome() {
     const [dataClub, setDataClub] = useState([]);
@@ -15,29 +13,34 @@ function ClubHome() {
         loadClub();
     }, []);
 
+
+    console.log("dataClub",dataClub);
+    
     const loadClub = async () => {
         try {
-            
+
             const { access_token } = JSON.parse(tokenData);
-            console.log("token", access_token);
+            console.log("Access_OutSide",access_token);
+
 
             const response = await fetch('http://localhost:8081/api/dashboard/clubs', {
                 headers: {
-                  'Authorization': `Bearer ${access_token}`,
-                  'Content-Type': 'application/json'
+                    'Authorization': `Bearer ${access_token}`,
+                    'Content-Type': 'application/json'
                 }
-              });
-      
-              if (!response.ok) {
+            });
+            console.log("res",response);
+            
+            if (!response.ok) {
                 throw new Error('Failed to fetch clubs');
-              }
-              const data = await response.json();
-              
-      
+            }
+            const data = await response.json();
+
+
             setDataClub(data.data);
             setFilteredData(data.data);
             console.log(dataClub);
-            
+
         } catch (error) {
             console.error('Error loading clubs:', error);
         }
@@ -88,7 +91,7 @@ function ClubHome() {
                                 )}
                             </p>
                             <p><strong>Address:<br /></strong> {club.address}</p>
-<p><strong>Phone Number:<br /></strong> {club.contactPhone}</p>
+                            <p><strong>Phone Number:<br /></strong> {club.contactPhone}</p>
                             <p>
                                 <strong>Open Hour:</strong> {moment(club.openHour, 'HH:mm').format('HH:mm')}
                             </p>

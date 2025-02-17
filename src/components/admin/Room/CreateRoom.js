@@ -6,7 +6,7 @@ import { createRoom } from "../../../services/RoomService";
 const { Option } = Select;
 
 function CreateRoom(props) {
-    const { loadRoom, isModalOpen, setIsModalOpen } = props;
+    const { loadRoom, isModalOpen, setIsModalOpen,token } = props;
 
     const [club, setClub] = useState(0);
     const [trainer, setTrainer] = useState(0);
@@ -25,8 +25,14 @@ function CreateRoom(props) {
         // Fetch Clubs
         const fetchAllClubs = async () => {
             try {
-                const response = await axios.get("http://localhost:8081/api/dashboard/clubs");
-                setClubs(response.data.data);
+                const response = await fetch("http://localhost:8081/api/dashboard/clubs",{
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                setClubs(data.data);
             } catch (error) {
                 console.error("Error fetching clubs:", error);
             }
@@ -35,8 +41,14 @@ function CreateRoom(props) {
         // Fetch Trainers
         const fetchAllTrainer = async () => {
             try {
-                const response = await axios.get("http://localhost:8081/api/dashboard/trainers");
-                setTrainers(response.data.data);
+                const response = await fetch("http://localhost:8081/api/dashboard/trainers",{
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                setTrainers(data.data);
             } catch (error) {
                 console.error("Error fetching trainers:", error);
             }

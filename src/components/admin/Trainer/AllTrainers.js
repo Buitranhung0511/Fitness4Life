@@ -8,7 +8,7 @@ import '../../../assets/css/club.css';
 import { fetchAllBranch } from '../../../services/BrandService';
 
 function AllTrainers(props) {
-    const { dataTrainer, loadTrainers, setFilteredData, filteredData, setIsModelOpen } = props;
+    const { dataTrainer, loadTrainers, setFilteredData, filteredData, setIsModelOpen, token } = props;
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
@@ -118,7 +118,7 @@ function AllTrainers(props) {
 
     const handleDeleteTrainer = async (id) => {
         try {
-            const res = await deleteTrainer(id);
+            const res = await deleteTrainer(id); // Không cần truyền token vì đã xử lý trong service
             if (res.data && res.data.data) {
                 notification.success({
                     message: 'Delete Trainer',
@@ -138,7 +138,6 @@ function AllTrainers(props) {
             });
         }
     };
-
     return (
         <>
             <div>
