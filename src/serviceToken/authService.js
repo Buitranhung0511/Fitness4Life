@@ -21,35 +21,35 @@ export const loginUser = async (email, password) => {
 };
 
 export const getUserByEmail = async (email, token) => {
-    const response = await fetch(`${userAPI}/users/get-by-email?email=${email}`, {
-      method: 'GET',
-      headers: {
-         'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-      },
-    });
-  
-    if (!response.ok) {
-      throw new Error('Failed to fetch user details');
-    }
-  
-    return response.json();
-  };
+  const response = await fetch(`${userAPI}/users/get-by-email?email=${email}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+  });
 
-  export const changePassword = async (data, token) => {
-    const response = await fetch(`${userAPI}/users/change-pass`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'  // Added this header
-      },
-      body: JSON.stringify(data)
-    });
-  
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to change password');
-    }
-  
-    return response.json();
-  };
+  if (!response.ok) {
+    throw new Error('Failed to fetch user details');
+  }
+
+  return response.json();
+};
+
+export const changePassword = async (data, token) => {
+  const response = await fetch(`${userAPI}/users/change-pass`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'  // Added this header
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to change password');
+  }
+
+  return response.json();
+};

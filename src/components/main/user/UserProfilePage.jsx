@@ -114,6 +114,8 @@ const UserProfilePage = () => {
             try {
                 const { access_token } = JSON.parse(tokenData);
                 const decodedToken = jwtDecode(access_token); // Giải mã token
+                console.log("decodedToken",decodedToken);
+                
                 const userEmail = decodedToken?.sub; // Lấy email từ token
 
                 if (!userEmail) {

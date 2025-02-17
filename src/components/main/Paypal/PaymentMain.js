@@ -7,6 +7,7 @@ import {
   SyncOutlined
 } from '@ant-design/icons';
 import stickman from '../../../assets/images/Stickman.gif';
+import { jwtDecode } from 'jwt-decode';
 
 
 const { Title, Text } = Typography;
@@ -18,7 +19,6 @@ const PaymentPage = () => {
   const { user } = useContext(DataContext);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log("location.state>>>", location.state);
 
   if (!selectedPackage) {
     return (
@@ -49,17 +49,19 @@ const PaymentPage = () => {
     } else if (selectedMonths >= 3) {
       discount = 0.05;
     }
-    console.log(">>>totalPrice", totalPrice);
 
     return Math.round(totalPrice * (1 - discount));
   };
+  console.log("totalAmount", calculateTotalPrice);
+
+
 
   const handleSubmitPayment = async () => {
     setIsLoading(true);
     try {
       const totalAmount = calculateTotalPrice();
-      console.log(">> Starting payment process with amount:", totalAmount);
-      
+      console.log("totalAmount", totalAmount);
+
       // Validate required data
       if (!selectedPackage?.id || !user?.id) {
         console.error("Validation Error:", {
@@ -69,7 +71,7 @@ const PaymentPage = () => {
         });
         throw new Error("Package or user information is missing");
       }
-  
+
       const payload = {
         packageId: selectedPackage.id,
         userId: user.id,
@@ -81,7 +83,7 @@ const PaymentPage = () => {
         intent: "Sale",
       };
       console.log(">> Payment payload:", payload);
-  
+
       // Get and validate token
       const tokenData = localStorage.getItem("tokenData");
       if (!tokenData) {
@@ -92,7 +94,7 @@ const PaymentPage = () => {
         });
         return;
       }
-  
+
       let parsedTokenData;
       try {
         parsedTokenData = JSON.parse(tokenData);
@@ -108,8 +110,11 @@ const PaymentPage = () => {
         });
         return;
       }
-  
+
       const { access_token } = parsedTokenData;
+      const decodedToken = jwtDecode(access_token);
+      console.log("decodedToken",decodedToken);
+      
       if (!access_token) {
         console.error("Token Validation Error: No access_token in parsed data", parsedTokenData);
         notification.error({
@@ -118,14 +123,14 @@ const PaymentPage = () => {
         });
         return;
       }
-  
+
       console.log(">> Making API request to PayPal service...");
       // Use message.loading instead of notification.loading
       const hide = message.loading('Processing payment...', 0);
-  
+
       try {
         const response = await axios.post(
-          'http://localhost:9000/api/paypal/pay', 
+          'http://localhost:8082/api/paypal/pay',
           payload,
           {
             headers: {
@@ -135,11 +140,10 @@ const PaymentPage = () => {
             timeout: 10000,
           }
         );
-  
-        console.log(">> API Response:", response.data);
+
         // Hide loading message
         hide();
-  
+
         const redirectUrl = response.data?.redirectUrl || response.data;
         if (!redirectUrl) {
           console.error("Redirect URL Error:", {
@@ -148,19 +152,41 @@ const PaymentPage = () => {
           });
           throw new Error("No redirect URL received from payment service");
         }
-  
+
         console.log(">> Redirect URL received:", redirectUrl);
         notification.success({
           message: 'Payment Initiated',
           description: 'Redirecting to PayPal...',
           duration: 2,
         });
-  
+
         setTimeout(() => {
           console.log(">> Redirecting to PayPal...");
           window.location.href = redirectUrl;
         }, 1000);
-  
+
+        // Thành như sau:
+        const approvalUrl = response.data?.approvalUrl;
+        if (!approvalUrl) {
+          console.error("Approval URL Error:", {
+            responseData: response.data,
+            message: "No approval URL received from PayPal service"
+          });
+          throw new Error("No approval URL received from PayPal service");
+        }
+
+        console.log(">> Approval URL received:", approvalUrl);
+        notification.success({
+          message: 'Payment Initiated',
+          description: 'Redirecting to PayPal Sandbox...',
+          duration: 2,
+        });
+
+        setTimeout(() => {
+          console.log(">> Redirecting to PayPal Sandbox...");
+          window.location.href = approvalUrl;
+        }, 1000);
+
       } catch (error) {
         // Hide loading message in case of error
         hide();
@@ -176,7 +202,7 @@ const PaymentPage = () => {
             data: error.config?.data
           }
         });
-  
+
         if (error.response) {
           console.error("Server Error Response:", {
             status: error.response.status,
@@ -206,7 +232,7 @@ const PaymentPage = () => {
           });
         }
       }
-  
+
     } catch (error) {
       console.error("General Process Error:", {
         error: error,
@@ -221,6 +247,8 @@ const PaymentPage = () => {
       setIsLoading(false);
     }
   };
+
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <Row justify="center">
@@ -312,8 +340,8 @@ const PaymentPage = () => {
             >
               {isLoading ? (
                 <Space>
-                  <SyncOutlined/>
-                  <img src={stickman}width={38} height={30} />
+                  <SyncOutlined />
+                  <img src={stickman} width={38} height={30} />
                 </Space>
               ) : (
                 'Proceed to Payment'
