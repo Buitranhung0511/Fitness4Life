@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, getUserByEmail } from '../../../serviceToken/authService';
 import { jwtDecode } from 'jwt-decode';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../../../assets/css/Main/login.css'
+import '../../../assets/css/Main/login.css';
 
-const Login = () => {
+const LoginToken = () => {
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -16,6 +16,58 @@ const Login = () => {
     acceptTerms: false
   });
   const navigate = useNavigate();
+
+  // Check for token expiration on component mount
+  useEffect(() => {
+    checkTokenExpiration();
+    // Set up interval to check token expiration every minute
+    const tokenCheckInterval = setInterval(checkTokenExpiration, 60000);
+    
+    return () => clearInterval(tokenCheckInterval);
+  }, []);
+
+  const checkTokenExpiration = () => {
+    const tokenData = localStorage.getItem('tokenData');
+    if (!tokenData) return;
+    
+    try {
+      const { access_token, refresh_token, expires_in } = JSON.parse(tokenData);
+      const decodedToken = jwtDecode(access_token);
+      
+      // Check if token is expired or about to expire (within 5 minutes)
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decodedToken.exp && decodedToken.exp - currentTime < 300) {
+        // Token is expired or about to expire
+        if (refresh_token) {
+          refreshAuthToken(refresh_token);
+        } else {
+          handleAutoLogout('Your session has expired. Please login again.');
+        }
+      }
+    } catch (error) {
+      handleAutoLogout('Authentication error. Please login again.');
+    }
+  };
+
+  const refreshAuthToken = async (refreshToken) => {
+    try {
+      // Implement refresh token API call here
+      // For now, we'll just log out as the endpoint isn't provided
+      handleAutoLogout('Session expired. Please login again.');
+      
+      // When you implement the refresh token API:
+      // const response = await refreshTokenAPI(refreshToken);
+      // localStorage.setItem('tokenData', JSON.stringify(response.data));
+    } catch (error) {
+      handleAutoLogout('Failed to refresh session. Please login again.');
+    }
+  };
+
+  const handleAutoLogout = (message) => {
+    localStorage.removeItem('tokenData');
+    toast.info(message);
+    navigate('/login');
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -35,40 +87,70 @@ const Login = () => {
 
     try {
       const data = await loginUser(formData.email, formData.password);
-      const { access_token } = data;
+      const { access_token, refresh_token, expires_in } = data;
+      
+      if (!access_token) {
+        toast.error('Login failed: Invalid credentials or server error');
+        return;
+      }
       
       const decodedToken = jwtDecode(access_token);
       const userEmail = decodedToken?.sub;
 
       if (!userEmail) {
-        toast.error('Invalid token.');
+        toast.error('Invalid token: User information missing');
         return;
       }
 
-      const userDetails = await getUserByEmail(userEmail, access_token);
+      try {
+        const userDetails = await getUserByEmail(userEmail, access_token);
 
-      if (!userDetails.active) {
-        toast.warning('⚠️ Your account is not active, please contact admin!');
-        return;
-      }
-
-      localStorage.setItem('tokenData', JSON.stringify(data));
-      toast.success('Login successful! Redirecting...');
-
-      setTimeout(() => {
-        switch (decodedToken.role) {
-          case 'ADMIN':
-            navigate('/admin/profile');
-            break;
-          case 'USER':
-            navigate('/user/profile');
-            break;
-          default:
-            toast.error('You have not been granted permission.');
+        if (!userDetails) {
+          toast.error('Failed to retrieve user details');
+          return;
         }
-      }, 1500);
+
+        if (!userDetails.active) {
+          toast.warning('⚠️ Your account is not active, please contact admin!');
+          return;
+        }
+
+        // Store token data with expiration info
+        const tokenInfo = {
+          ...data,
+          user: userDetails,
+          timestamp: Date.now()
+        };
+        
+        localStorage.setItem('tokenData', JSON.stringify(tokenInfo));
+        toast.success('Login successful! Redirecting...');
+
+        setTimeout(() => {
+          switch (decodedToken.role) {
+            case 'ADMIN':
+              navigate('/admin/profile');
+              break;
+            case 'USER':
+              navigate('/user/profile');
+              break;
+            default:
+              toast.error('You have not been granted permission to access the system.');
+          }
+        }, 1500);
+      } catch (userError) {
+        toast.error(`User verification failed: ${userError.message || 'Unknown error'}`);
+      }
     } catch (err) {
-      toast.error(err.message);
+      // Enhanced error handling with specific messages
+      if (err.message.includes('401')) {
+        toast.error('Invalid email or password. Please try again.');
+      } else if (err.message.includes('403')) {
+        toast.error('Your account has been locked. Please contact administrator.');
+      } else if (err.message.includes('server')) {
+        toast.error('Server is currently unavailable. Please try again later.');
+      } else {
+        toast.error(`Login failed: ${err.message}`);
+      }
     }
   };
 
@@ -185,102 +267,4 @@ const Login = () => {
   );
 };
 
-export default Login;
-
-// import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { loginUser } from '../../../serviceToken/authService';
-// import { jwtDecode } from 'jwt-decode';
-// import { toast,ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-// import { getUserByEmail } from '../../../serviceToken/authService';
-
-// const LoginToken = () => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const navigate = useNavigate();
-
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     if (!email || !password) {
-//       toast.error(' Please fill in email or password!');
-//       return;
-//     }
-
-//     try {
-//       const data = await loginUser(email, password);
-//       const { access_token } = data;
-//       console.log(data);
-      
-
-//       const decodedToken = jwtDecode(access_token);
-//       const userEmail = decodedToken?.sub;
-
-//       if (!userEmail) {
-//         toast.error('Invalid token.');
-//         return;
-//       }
-
-//       const userDetails = await getUserByEmail(userEmail, access_token);
-
-//       if (!userDetails.active) {
-//         toast.warning('⚠️ Your account is not active, please contact admin!');
-//         return;
-//       }
-
-//       localStorage.setItem('tokenData', JSON.stringify(data));
-//       toast.success('Login successful! Redirecting...');
-
-//       setTimeout(() => {
-//         switch (decodedToken.role) {
-//           case 'ADMIN':
-//             navigate('/admin/profile');
-//             break;
-//           case 'USER':
-//             navigate('/user/profile');
-//             break;
-//           default:
-//             toast.error('You have not been granted permission.');
-//         }
-//       }, 1500);
-//     } catch (err) {
-//       toast.error(`${err.message}`);
-//     }
-//   };
-
-//   return (
-//     <section id="services">
-//       <div className="login-container">
-//         <h2>Login</h2>
-//         <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
-//         <form onSubmit={handleSubmit}>
-//           <div className="input-group">
-//             <label htmlFor="email">Email</label>
-//             <input
-//               type="email"
-//               id="email"
-//               value={email}
-//               onChange={(e) => setEmail(e.target.value)}
-//               placeholder="Enter your email"
-//             />
-//           </div>
-//           <div className="input-group">
-//             <label htmlFor="password">Password</label>
-//             <input
-//               type="password"
-//               id="password"
-//               value={password}
-//               onChange={(e) => setPassword(e.target.value)}
-//               placeholder="Enter your password"
-//             />
-//           </div>
-//           <button type="submit" className="submit-button">Login</button>
-//         </form>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default LoginToken;
+export default LoginToken;
