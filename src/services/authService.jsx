@@ -72,9 +72,9 @@ export const UpdateProflie = async (id, editData) => {
     }
 };
 
-export const verifyOTP   = async (email, otp) => {
+export const verifyOTP   = async ( otp) => {
     try {
-        const response = await axios.get(`${userAPI}/users/verify-account/${email}/${otp}`)
+        const response = await axios.get(`${userAPI}/users/verify-account/${otp}`)
         return response;
     } catch (error) {
         if (error.response) {

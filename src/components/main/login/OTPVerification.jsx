@@ -37,7 +37,7 @@ const OTPVerification = () => {
       setLoading(true);
       console.log(otpCode);
       
-      const response = await verifyOTP(email,otpCode);
+      const response = await verifyOTP(otpCode);
 
       if (response.status === 200) {
         toast.success("OTP Verified Successfully! Redirecting...");
