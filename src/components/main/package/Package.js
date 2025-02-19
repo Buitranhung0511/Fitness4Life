@@ -1,74 +1,48 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Tabs, Button, Row, Col, notification, Card, Table } from 'antd';
+import { Button, Row, Col, notification, Card, Table } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllPackage } from '../../../services/PackageService';
 import { DataContext } from '../../helpers/DataContext';
 import '../../../assets/css/Main/PackageMain.css';
-import packageImage from '../../../assets/images/RunningMan.png'; // Import hình ảnh
-import packageHeaderPage from '../../../assets/images/Tow_Person_Play_Gym.webp'
+import packageHeaderPage from '../../../assets/images/Tow_Person_Play_Gym.webp';
+
+// Import placeholder images for packages
+import classicImage from '../../..//assets//images/img3.jpg';
+import classicPlusImage from '../../..//assets//images/img3.jpg';
+import citifitsportImage from '../../..//assets//images/img3.jpg';
+import royalImage from '../../..//assets//images/img3.jpg';
+import signatureImage from '../../..//assets//images/img3.jpg';
 
 const PackageMain = () => {
     const [dataPackage, setDataPackage] = useState([]);
-    const [selectedPackage, setSelectedPackage] = useState(null);
-    const [selectedMonths, setSelectedMonths] = useState(3); // Default to 3 months
     const navigate = useNavigate();
-    const { user, isLoggedIn } = useContext(DataContext);
+    const { isLoggedIn } = useContext(DataContext);
     const [loading, setLoading] = useState(true);
 
-    // Available month options
-    const monthOptions = [3, 6, 9, 12];
+    // Package image mapping
+    const packageImages = {
+        'CLASSIC': classicImage,
+        'CLASSIC-PLUS': classicPlusImage,
+        'CITIFITSPORT': citifitsportImage,
+        'ROYAL': royalImage,
+        'SIGNATURE': signatureImage,
+        // Default image for any other package
+        'default': classicImage
+    };
 
     useEffect(() => {
         loadPackage();
-        const timeout = setTimeout(() => setLoading(false), 5000);
-        return () => clearTimeout(timeout);
     }, []);
 
     const loadPackage = async () => {
         try {
             const result = await fetchAllPackage();
             setDataPackage(result.data.data);
-            if (result.data.data.length > 0) {
-                setSelectedPackage(result.data.data[0]); // Store the entire package object
-            }
         } catch (error) {
             console.error('Error fetching packages:', error);
         } finally {
             setLoading(false);
         }
-    };
-
-    const calculatePrices = (pkg) => {
-        if (!pkg) return {};
-
-        // Base price per month from the package
-        const basePrice = pkg.price; // Price for 1 month
-
-        // Calculate total price based on selected months
-        const totalPrice = basePrice * selectedMonths;
-
-        // Apply discount based on duration
-        let discount = 0;
-        if (selectedMonths >= 12) {
-            discount = 0.2; // 20% discount for 12 months
-        } else if (selectedMonths >= 9) {
-            discount = 0.15; // 15% discount for 9 months
-        } else if (selectedMonths >= 6) {
-            discount = 0.1; // 10% discount for 6 months
-        } else if (selectedMonths >= 3) {
-            discount = 0.05; // 5% discount for 3 months
-        }
-
-        const discountedTotalPrice = Math.round(totalPrice * (1 - discount));
-        const pricePerMonth = Math.round(discountedTotalPrice / selectedMonths);
-        const pricePerDay = Math.round(pricePerMonth / 30);
-
-        return {
-            totalPrice: discountedTotalPrice,
-            pricePerMonth,
-            pricePerDay,
-            discount: discount * 100 // Convert to percentage for display
-        };
     };
 
     const handlePaynow = (pkg) => {
@@ -83,12 +57,21 @@ const PackageMain = () => {
         navigate('/payment', {
             state: {
                 package: pkg,
-                months: selectedMonths,
+                months: 3, // Default to 3 months
             }
         });
     };
 
-    const currentPrices = selectedPackage ? calculatePrices(selectedPackage) : {};
+    // Function to get package image
+    const getPackageImage = (packageName) => {
+        return packageImages[packageName] || packageImages['default'];
+    };
+
+    // Group packages into rows of 3
+    const packageRows = [];
+    for (let i = 0; i < dataPackage.length; i += 3) {
+        packageRows.push(dataPackage.slice(i, i + 3));
+    }
 
     const packageFeatures = [
         { feature: "Tập luyện tại GT CLUB đã chọn", packages: ["CLASSIC", "CLASSIC-PLUS", "CITIFITSPORT", "ROYAL", "SIGNATURE"] },
@@ -133,7 +116,6 @@ const PackageMain = () => {
             )
         }))
     ];
-
     const dataSource = packageFeatures.map((item, index) => ({
         key: index,
         feature: item.feature,
@@ -143,130 +125,88 @@ const PackageMain = () => {
             [pkg]: true
         }), {})
     }));
+
     return (
         <section id="services">
             <div style={{ width: '100%' }}>
                 <img
-                    src={packageHeaderPage} // Sử dụng hình ảnh đã import
-                    alt="Package"
+                    src={packageHeaderPage}
+                    alt="Package Header"
                     style={{ width: '100%', height: '400px', objectFit: 'cover' }}
                 />
             </div>
             <div className="package-background">
                 <div className="package-container">
+                    <h2 style={{ textAlign: 'center', marginBottom: '40px', color: '#F9690E', fontSize: '49px' }}>PACKAGES</h2>
 
-                    <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#F9690E', fontSize: '49px' }}>PACKAGES</h2>
-                    <Row gutter={[16, 16]} justify="center">
-                        {/* Cột bên trái: Thông tin các package */}
-                        <Col span={14}>
-                            <div className="month-selector" style={{ marginBottom: '20px', textAlign: 'left' }}>
-                                {monthOptions.map((months) => (
-                                    <Button
-                                        key={months}
-                                        onClick={() => setSelectedMonths(months)}
-                                        className="px-4 py-1 text-sm hover:bg-[#F9690E] hover:border-[#F9690E] hover:text-white transition-colors"
-                                        style={{
-                                            backgroundColor: selectedMonths === months ? '#F9690E' : 'blanchedalmond',
-                                            borderColor: selectedMonths === months ? '#F9690E' : 'blanchedalmond',
-                                            color: 'black'
-                                        }}
-                                    >
-                                        {months} Months
-                                    </Button>
-                                ))}
-                            </div>
-
-                            {/* Packages Tabs */}
-                            <Tabs
-                                activeKey={selectedPackage?.packageName}
-                                onChange={(key) => {
-                                    const selected = dataPackage.find(pkg => pkg.packageName === key);
-                                    setSelectedPackage(selected);
-                                }}
-                                items={dataPackage.map((pkg) => ({
-                                    key: pkg.packageName,
-                                    label: (
-                                        <span style={{ color: selectedPackage?.packageName === pkg.packageName ? '#F9690E' : 'inherit' }}>
-                                            {pkg.packageName}
-                                        </span>
-                                    ),
-                                    children: (
-                                        <Card
-                                            className="custom-card"
-                                            title={<div className="card-header"><span>{pkg.packageName}</span></div>}
-                                            bordered={false}
-                                            hoverable
-                                        >
-                                            <p className="card-description"><strong>Description:</strong> {pkg.description}</p>
-                                            <p className="card-duration"><strong>Duration:</strong> {selectedMonths} months</p>
-                                            <p className="card-price">
-                                                Base Price: {pkg.price.toLocaleString('vi-VN')} VND/month
-                                            </p>
-                                            {currentPrices.discount > 0 && (
-                                                <p className="card-discount">
-                                                    Discount: {currentPrices.discount}% for {selectedMonths} months package
-                                                </p>
-                                            )}
-                                            <div className="card-footer">
-                                                <Button
-                                                    type="primary"
-                                                    onClick={() => handlePaynow(pkg)}
-                                                    className="paynow-btn"
-                                                >
-                                                    Pay Now
-                                                </Button>
-                                            </div>
-                                            {currentPrices.totalPrice && (
-                                                <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm mt-4">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="text-gray-600">Training Period: {selectedMonths} MONTHS</div>
+                    {loading ? (
+                        <div style={{ textAlign: 'center', padding: '40px' }}>Loading packages...</div>
+                    ) : (
+                        <>
+                            {packageRows.map((row, rowIndex) => (
+                                <Row gutter={[24, 24]} key={`row-${rowIndex}`}>
+                                    {row.map((pkg) => (
+                                        <Col span={8} key={pkg.packageId}>
+                                            <Card
+                                                hoverable
+                                                className="package-card"
+                                                cover={
+                                                    <div className="package-image-container">
+                                                        <img
+                                                            alt={pkg.packageName}
+                                                            src={getPackageImage(pkg.packageName)}
+                                                            className="package-image"
+                                                        />
                                                     </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="text-gray-600">Total Cost: {currentPrices.totalPrice.toLocaleString()} VND</div>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="text-gray-600">Cost / Month:  {currentPrices.pricePerMonth.toLocaleString()} VND</div>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="text-gray-600">Cost / Day: {currentPrices.pricePerDay.toLocaleString()} VND</div>
-                                                    </div>
+                                                }
+                                            >
+                                                <div className="package-card-content">
+                                                    <h3 className="package-name">{pkg.packageName}</h3>
+                                                    <p className="package-description">{pkg.description}</p>
+                                                    <p className="package-price">
+                                                        {pkg.price.toLocaleString('vi-VN')} VND/month
+                                                    </p>
+                                                    <Button
+                                                        type="primary"
+                                                        onClick={() => handlePaynow(pkg)}
+                                                        className="package-btn"
+                                                    >
+                                                        Pay Now
+                                                    </Button>
                                                 </div>
-                                            )}
-                                        </Card>
-                                    ),
-                                }))}
-                            />
-                        </Col>
+                                            </Card>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            ))}
 
-                        {/* Cột bên phải: Hình ảnh */}
-                        <Col span={10}>
-                            <div style={{ marginLeft: '20px' }}>
-                                <img
-                                    src={packageImage} // Sử dụng hình ảnh đã import
-                                    alt="Package"
-                                    style={{ width: '130%' }}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row>
+                            <Row>
+                                <div className="comparison-section">
+                                    <h2 className="comparison-title">Package Comparison</h2>
+                                    <Table
+                                        columns={columns}
+                                        dataSource={dataSource}
+                                        pagination={false}
+                                        scroll={{ x: 1000 }}
+                                        bordered
+                                        size="middle"
+                                    />
+                                </div>
+                            </Row>
+                        </>
+                    )}
+
+                    {/* Package Comparison section remains unchanged */}
+                    <Row style={{ marginTop: '60px' }}>
                         <div className="comparison-section">
                             <h2 className="comparison-title">Package Comparison</h2>
-                            <Table
-                                columns={columns}
-                                dataSource={dataSource}
-                                pagination={false}
-                                scroll={{ x: 1000 }}
-                                bordered
-                                size="middle"
-                            />
+                            {/* Table component from original code */}
                         </div>
                     </Row>
-
                 </div>
-
             </div>
         </section>
     );
 };
+
 export default PackageMain;

@@ -1,130 +1,100 @@
-
- /* package.css */
-.package-container {
-    background-color: white; /* Nền trắng, không trong suốt */
-    border: none !important;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    text-align: left; /* Căn trái toàn bộ nội dung */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Căn nội dung lên trên */
-    align-items: flex-start; /* Căn trái */
-    min-height: 100vh;
-    padding: 20px;
-    width: 80%; /* Tăng chiều rộng để phù hợp với nội dung */
-    margin: 0 auto; /* Căn giữa màn hình */
-    margin-top: 5%;
-    border-radius: 10px;
-    position: static; /* Bỏ absolute để nội dung không bị lệch */
-    transform: none; /* Bỏ transform */
-}
+/* Add these styles to your PackageMain.css file */
 
 .package-background {
-    background: white; /* Bỏ hình nền */
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.ant-tabs {
+    background-color: #f5f5f5;
+    padding: 60px 0;
+  }
+  
+  .package-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .package-card {
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  
+  .package-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .package-image-container {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .package-image {
     width: 100%;
-    max-width: 100%; /* Chiều rộng tối đa */
-    margin-top: 20px;
-}
-
-.ant-tabs-tab {
-    color: #333 !important; /* Màu chữ đen */
-    font-size: 16px; /* Tăng kích thước font */
-    font-weight: 500; /* Độ đậm vừa phải */
-}
-
-
-.ant-tabs-tab-active {
-    color: #F9690E !important; /* Màu chữ của tab active */
-}
-
-.ant-tabs-ink-bar {
-    background-color: #F9690E !important; /* Màu của thanh indicator */
-}
-
-.custom-card {
-    background: white !important; /* Nền trắng */
-    border: 1px solid #e8e8e8 !important; /* Viền mềm */
-    border-radius: 8px; /* Bo góc */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Bóng nhẹ */
-    padding: 20px;
-}
-
-.card-header {
-    color: #F9690E; /* Màu chữ đen */
-    text-shadow: none; /* Bỏ bóng đổ */
-    font-size: 24px; /* Tăng kích thước font */
-    font-weight: 600; /* Độ đậm */
-    text-align: left; /* Căn trái */
-}
-
-.card-description,
-.card-duration,
-.card-price {
-    color: #555; /* Màu chữ xám đậm */
-    text-shadow: none; /* Bỏ bóng đổ */
-    font-size: 16px; /* Kích thước font */
-    margin-bottom: 10px; /* Khoảng cách giữa các dòng */
-}
-
-.card-discount {
-    color: #F9690E; /* Màu cam */
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.space-y-6 {
-    color: #F9690E; /* Màu cam */
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.paynow-btn {
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  
+  .package-card:hover .package-image {
+    transform: scale(1.05);
+  }
+  
+  .package-card-content {
+    padding: 10px 5px;
+  }
+  
+  .package-name {
+    color: #F9690E;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .package-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+    height: 60px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+  
+  .package-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .package-btn {
+    width: 100%;
+    background-color: #F9690E;
+    border-color: #F9690E;
     color: white;
-    background-color: #F9690E;
-    border-color: #F9690E;
-    font-size: 16px;
+    height: 40px;
     font-weight: 500;
-    padding: 8px 20px; /* Thêm padding cho nút */
-}
-
-.paynow-btn:hover {
-    background-color: #F9690E;
-    border-color: #F9690E;
-}
-
-.month-selector {
-    display: flex; /* Hiển thị các nút trên cùng một hàng */
-    gap: 10px; /* Khoảng cách giữa các nút */
-    margin-bottom: 20px; /* Khoảng cách với phần dưới */
-}
-
-.month-selector button {
-    width: 80px; /* Giảm kích thước nút */
-    height: 40px; /* Chiều cao nhỏ hơn */
-    font-size: 14px; /* Kích thước font nhỏ hơn */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 5px;
+    transition: all 0.3s;
+  }
+  
+  .package-btn:hover {
+    background-color: #e85a00;
+    border-color: #e85a00;
+  }
+  
+  .comparison-section {
+    width: 100%;
+    margin-top: 80px;
+  }
+  
+  .comparison-title {
     text-align: center;
-    border-radius: 4px; /* Bo góc */
-}
-.month-selector button:hover {
-    background-color: #F9690E !important; /* Màu nền khi hover */
-    border-color: #F9690E !important; /* Màu viền khi hover */
-    color: white !important; /* Màu chữ khi hover */
-}
-
-.month-selector button {
-    background-color: blanchedalmond ; /* Màu nền khi hover */
-    border-color: blanchedalmond; /* Màu viền khi hover */
-    color: white ; /* Màu chữ khi hover */
-}
-/*  */
+    color: #F9690E;
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
 .comparison-section {
     margin-top: 48px;
     padding: 24px;
@@ -132,7 +102,6 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-
 .comparison-title {
     color: #F9690E;
     text-align: center;
@@ -140,50 +109,19 @@
     margin-bottom: 24px;
     font-weight: bold;
 }
-
-.ant-table-wrapper {
-    margin-top: 16px;
-}
-
-.ant-table-thead > tr > th {
-    background: #f7f7f7 !important;
-    color: #F9690E;
-    font-weight: 600;
-    text-align: center;
-    padding: 16px 8px;
-}
-
-.ant-table-tbody > tr > td {
-    padding: 12px 8px;
-}
-
-.feature-cell {
-    min-width: 300px;
-    padding-right: 24px !important;
-}
-
 .check-icon {
     color: #52c41a;
     font-size: 18px;
     font-weight: bold;
 }
-
 .dash-icon {
     color: #d9d9d9;
 }
-
 .package-cell {
     text-align: center;
     width: 120px;
 }
-
-.ant-table-tbody > tr:hover > td {
-    background: #fff7e6 !important;
+.feature-cell {
+    min-width: 300px;
+    padding-right: 24px !important;
 }
-
-.ant-table {
-    border: 1px solid #f0f0f0;
-    border-radius: 8px;
-}
-
-
