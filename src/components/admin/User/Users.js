@@ -2,28 +2,41 @@ import { useEffect, useState } from "react";
 import { fetchAllUsers } from "../../../services/UsersService";
 import AllUsers from "./AllUsers";
 import CreateUser from "./CreateUser";
-
-
-
+import { logDOM } from "@testing-library/react";
 
 function Users() {
     const [dataUsers, setDataUsers] = useState([]);
-    const [filteredData, setFilteredData] = useState(dataUsers);
+    const [filteredData, setFilteredData] = useState([]);
     const [isModalOpen, setIsModelOpen] = useState(false);
-    // const [userDetail,setUserDetail] = useState();
+    const tokenData = localStorage.getItem("tokenData");
+    const { access_token } = JSON.parse(tokenData);
+
+    console.log("access_token",access_token);
+    console.log("dataUsers",dataUsers);
+
+    const loadUsers = async () => {
+        try {
+            const res = await fetchAllUsers(access_token);
+            
+            if (res && Array.isArray(res.data)) {
+                setDataUsers(res.data);
+                setFilteredData(res.data);
+                console.log("Users loaded successfully:", res.data);
+            } else {
+                console.error("Invalid data format received:", res);
+                setDataUsers([]);
+                setFilteredData([]);
+            }
+        } catch (error) {
+            console.error("Error loading users:", error);
+            setDataUsers([]);
+            setFilteredData([]);
+        }
+    };
+
     useEffect(() => {
         loadUsers();
     }, []);
-
-
-    const loadUsers = async () => {
-        const res = await fetchAllUsers();
-        setFilteredData(res.data);
-
-        setDataUsers(res.data);
-        console.log(">>check data", res);
-
-    }
 
     return (
         <div style={{ padding: "20px" }}>
@@ -31,7 +44,7 @@ function Users() {
                 loadUsers={loadUsers}
                 isModalOpen={isModalOpen}
                 setIsModelOpen={setIsModelOpen}
-
+                token={access_token}
             />
 
             <AllUsers
@@ -40,13 +53,9 @@ function Users() {
                 filteredData={filteredData}
                 setFilteredData={setFilteredData}
                 setIsModelOpen={setIsModelOpen}
-
-            // loadUserDetail={loadUserDetail}
-            // userDetail={userDetail}
-            // setUserDetail={setUserDetail}
+                token={access_token}
             />
         </div>
-
     )
 }
 

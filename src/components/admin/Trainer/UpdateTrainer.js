@@ -4,7 +4,7 @@ import axios from "axios";
 import { updateTrainer } from "../../../services/TrainerService";
 
 const UpdateTrainer = (props) => {
-    const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadTrainers } = props;
+    const { isModalUpdateOpen, setIsModalUpdateOpen, dataUpdate, setDataUpdate, loadTrainers, token } = props;
     const [fullName, setFullName] = useState("");
     const [slug, setSlug] = useState("");
     const [specialization, setSpecialization] = useState("");
@@ -23,8 +23,15 @@ const UpdateTrainer = (props) => {
     useEffect(() => {
         const fetchAllBranch = async () => {
             try {
-                const response = await axios.get("http://localhost:8081/api/dashboard/branchs");
-                setBranches(response.data.data);  // Store the fetched branches
+                const response = await fetch("http://localhost:8081/api/dashboard/branchs",{
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                setBranches(data.data);
+
             } catch (error) {
                 console.error("Error fetching branches:", error);
             }

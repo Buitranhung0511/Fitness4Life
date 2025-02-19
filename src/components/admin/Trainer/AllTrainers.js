@@ -118,8 +118,8 @@ function AllTrainers(props) {
 
     const handleDeleteTrainer = async (id) => {
         try {
-            const res = await deleteTrainer(id); // Không cần truyền token vì đã xử lý trong service
-            if (res.data && res.data.data) {
+            const res = await deleteTrainer(id);
+            if (res.status === 200 || res.data?.status === 200) {
                 notification.success({
                     message: 'Delete Trainer',
                     description: 'Delete Trainer successfully!',
@@ -180,6 +180,7 @@ function AllTrainers(props) {
                 dataUpdate={dataUpdate}
                 setDataUpdate={setDataUpdate}
                 loadTrainers={loadTrainers}
+                token={token}
             />
 
             <DetailTrainer

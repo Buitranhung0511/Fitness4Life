@@ -9,7 +9,8 @@ function Club() {
     const [isModalOpen, setIsModelOpen] = useState(false);
     const tokenData = localStorage.getItem("tokenData");
     const { access_token } = JSON.parse(tokenData);
-
+    console.log("access_token",access_token);
+    console.log("dataUsers",dataClubs);
 
     const loadClubs = async () => {
         try {

@@ -6,7 +6,7 @@ import axios from "axios";
 const { Option } = Select;
 
 function CreateTrainer(props) {
-    const { loadTrainers, isModalOpen, setIsModelOpen } = props;
+    const { loadTrainers, isModalOpen, setIsModelOpen,token } = props;
 
     const [fullName, setFullName] = useState("");
     const [slug, setSlug] = useState("");
@@ -24,8 +24,14 @@ function CreateTrainer(props) {
         // Fetch Branch data when component is mounted
         const fetchAllBranch = async () => {
             try {
-                const response = await axios.get("http://localhost:8081/api/dashboard/branchs");
-                setBranches(response.data.data);
+                const response = await fetch("http://localhost:8081/api/dashboard/branchs",{
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                setBranches(data.data);
                 console.log(">>Chack Data", setBranches);
 
             } catch (error) {
