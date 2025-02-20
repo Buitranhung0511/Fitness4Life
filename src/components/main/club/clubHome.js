@@ -29,6 +29,7 @@ function ClubHome() {
                     'Content-Type': 'application/json'
                 }
             });
+            
             console.log("res",response);
             
             if (!response.ok) {
