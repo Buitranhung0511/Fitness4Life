@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     Avatar,
@@ -9,8 +9,7 @@ import {
     Divider,
     Space,
     notification,
-    Modal,
-    theme
+    Modal
 } from "antd";
 import {
     PhoneOutlined,
@@ -19,16 +18,12 @@ import {
     EditOutlined,
     HistoryOutlined,
     FileTextOutlined,
-    PlusOutlined,
     UserOutlined
 } from "@ant-design/icons";
-import { DataContext } from "../../helpers/DataContext";
-import { getOneUserById } from "../../../services/authService";
-import UpdateProfileModal from "./UpdateProfileModal";
 import { useNavigate } from "react-router-dom";
-import ChangePasswordModal from "../login/ChangePasswordModal";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "react-toastify";
+import UpdateProfileModal from "./UpdateProfileModal";
+import ChangePasswordModal from "../login/ChangePasswordModal";
 import { getUserByEmail } from "../../../serviceToken/authService";
 
 const { Title, Text } = Typography;
@@ -96,13 +91,13 @@ const styles = {
 };
 
 const UserProfilePage = () => {
-    const { user, setUser } = useContext(DataContext);
+    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [isImageModalVisible, setIsImageModalVisible] = useState(false);
     const navigate = useNavigate();
-    // Lấy dữ liệu người dùng bằng API
+
     useEffect(() => {
         const fetchUserData = async () => {
             const tokenData = localStorage.getItem("tokenData");
@@ -113,46 +108,47 @@ const UserProfilePage = () => {
 
             try {
                 const { access_token } = JSON.parse(tokenData);
-                const decodedToken = jwtDecode(access_token); // Giải mã token
-                console.log("decodedToken",decodedToken);
+                const decodedToken = jwtDecode(access_token);
+                const userEmail = decodedToken?.sub;
                 
-                const userEmail = decodedToken?.sub; // Lấy email từ token
-
                 if (!userEmail) {
-                        toast.error('Invalid token.');
-                        return;
-                      }
-                const response = await getUserByEmail(userEmail, access_token); // Gọi API lấy dữ liệu user
-                console.log("dataa",response);
+                    notification.error({
+                        message: "Error",
+                        description: "Invalid token data"
+                    });
+                    return;
+                }
+
+                const response = await getUserByEmail(userEmail, access_token);
+                console.log("response123",response);
                 
                 if (response) {
-                    const userData = response;                    
-
-                    // Kiểm tra nếu profile không tồn tại, gán giá trị mặc định
-                    if (!userData.profile) {
-                        userData.profile = {
+                    // Ensure profile data exists with default values if needed
+                    const userDataWithDefaults = {
+                        ...response,
+                        profile: response.profile || {
                             hobbies: "No hobbies available",
                             address: "No address available",
                             age: "No age available",
                             heightValue: "No height value available",
                             description: "No description available",
                             maritalStatus: "No marital status available",
-                            avatar: "https://via.placeholder.com/120", // Avatar mặc định
-                        };
-                    }
+                            avatar: "https://via.placeholder.com/120",
+                        }
+                    };
 
-                    setUser(userData); // Cập nhật DataContext
-                    localStorage.setItem("user", JSON.stringify(userData)); // Lưu user vào localStorage
+                    setUserData(userDataWithDefaults);
+                    localStorage.setItem("user", JSON.stringify(userDataWithDefaults));
                 } else {
                     notification.error({
-                        message: "Lỗi",
-                        description: response.message || "Không thể tải dữ liệu người dùng.",
+                        message: "Error",
+                        description: "Could not load user data."
                     });
                 }
             } catch (error) {
                 notification.error({
-                    message: "Lỗi",
-                    description: "Không thể kết nối với máy chủ.",
+                    message: "Error",
+                    description: "Could not connect to server."
                 });
             } finally {
                 setLoading(false);
@@ -160,14 +156,37 @@ const UserProfilePage = () => {
         };
 
         fetchUserData();
-    }, [setUser]);
+    }, []);
 
+    const handleProfileUpdate = async () => {
+        const tokenData = localStorage.getItem("tokenData");
+        if (!tokenData) return;
+
+        try {
+            const { access_token } = JSON.parse(tokenData);
+            const decodedToken = jwtDecode(access_token);
+            const userEmail = decodedToken?.sub;
+
+            if (!userEmail) return;
+
+            const response = await getUserByEmail(userEmail, access_token);
+            if (response) {
+                setUserData(response);
+                localStorage.setItem("user", JSON.stringify(response));
+            }
+        } catch (error) {
+            notification.error({
+                message: "Error",
+                description: "Could not refresh user data."
+            });
+        }
+    };
 
     if (loading) {
         return <div style={{ textAlign: "center", padding: "24px" }}>Loading...</div>;
     }
 
-    if (!user) {
+    if (!userData) {
         return (
             <div style={{ padding: "24px", textAlign: "center" }}>
                 <div className="alert alert-warning" role="alert">
@@ -183,8 +202,8 @@ const UserProfilePage = () => {
         phone = "No phone available",
         role = "No role available",
         gender = "No gender available",
-        profile = {}, // Cập nhật từ profile thay vì profileDTO
-    } = user;
+        profile = {}
+    } = userData;
 
     const {
         hobbies = "No hobbies available",
@@ -193,7 +212,7 @@ const UserProfilePage = () => {
         heightValue = "No height value available",
         description = "No description available",
         maritalStatus = "No marital status available",
-        avatar = "https://via.placeholder.com/120", // Giá trị mặc định
+        avatar = "https://via.placeholder.com/120"
     } = profile;
 
     return (
@@ -210,7 +229,7 @@ const UserProfilePage = () => {
                                     size={150}
                                     src={`${avatar?.startsWith("http") ? avatar : "https://via.placeholder.com/150"}?t=${Date.now()}`}
                                     style={styles.avatar}
-                                    icon={<UserOutlined />} 
+                                    icon={<UserOutlined />}
                                 />
                             </div>
                         </Col>
@@ -323,7 +342,7 @@ const UserProfilePage = () => {
                     </Row>
                 </Card>
 
-                {/* Image Modal */}
+                {/* Modals */}
                 <Modal
                     visible={isImageModalVisible}
                     footer={null}
@@ -339,33 +358,21 @@ const UserProfilePage = () => {
                     />
                 </Modal>
 
-                {/* Existing modals */}
                 <ChangePasswordModal
                     open={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    email={user.email}
+                    email={email}
                 />
 
                 <UpdateProfileModal
                     open={isUpdateModalOpen}
-                    onClose={async (updatedUserData) => {
+                    onClose={(updatedData) => {
                         setIsUpdateModalOpen(false);
-                        if (updatedUserData) {
-                            try {
-                                const response = await getOneUserById(user.id);
-                                if (response.status === 200) {
-                                    setUser(response.data);
-                                    localStorage.setItem("user", JSON.stringify(response.data));
-                                }
-                            } catch (error) {
-                                notification.error({
-                                    message: "Error",
-                                    description: "Could not connect to server to reload data.",
-                                });
-                            }
+                        if (updatedData) {
+                            handleProfileUpdate();
                         }
                     }}
-                    userId={user.id}
+                    userId={userData.id}
                     userData={{
                         fullName,
                         phone,

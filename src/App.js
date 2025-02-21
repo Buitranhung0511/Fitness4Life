@@ -18,8 +18,6 @@ import Booking from './components/admin/Booking/Booking';
 import Room from './components/admin/Room/Room';
 import Branch from './components/admin/Branch/Branch';
 import Trainer from './components/admin/Trainer/Trainer';
-import Login from './components/main/login/Login';
-import Registration from './components/main/login/Registration';
 import BookingMain from './components/main/booking/Booking';
 import Package from './components/admin/Package/Package';
 import PackageMain from './components/main/package/Package';
@@ -58,35 +56,36 @@ const App = () => {
       <Routes>
         {/* Public Routes - Accessible without login */}
         <Route path="/" element={<MainLayout />} />
-        
-        <Route element={<><MainHeader/><Outlet /><Footer /></>}>
+
+        <Route element={<><MainHeader /><Outlet /><Footer /></>}>
           {/* Public routes */}
           <Route path='/login' element={<LoginToken />} />
-          <Route path='/registration' element={<Registration />} />
           <Route path='/blog' element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact-us/" element={<ContactForm />} />
-          <Route path="/verify-otp/:email" element={<OTPVerification />} />
+          <Route path="/verify-otp/:email/:code?" element={<OTPVerification />} />
           <Route path="/clubs/" element={<ClubHome />} />
           <Route path="/clubs/:id" element={<ClubDetails />} />
+          <Route path="/packageMain/" element={<PackageMain />} />
+          <Route path="/forums" element={<ForumLayout />}>
+            <Route index element={<CategoryPage />} />
+            <Route path="forum" element={<ForumPage />} />
+            <Route path="category" element={<CategoryPage />} />
+            <Route path="whats-new" element={<WhatsNew />} />
+            <Route path="post-new" element={<PostNew />} />
+          </Route>
 
           {/* Auth Required Routes - User & Admin can access */}
           <Route element={<AuthenticatedRoute />}>
             <Route path="/forums" element={<ForumLayout />}>
-              <Route index element={<CategoryPage />} />
-              <Route path="forum" element={<ForumPage />} />
-              <Route path="category" element={<CategoryPage />} />
-              <Route path="whats-new" element={<WhatsNew />} />
-              <Route path="post-new" element={<PostNew />} />
               <Route path="create-new-post" element={<CreateNewPost />} />
             </Route>
             <Route path="forum/:id" element={<DetailPage />} />
             <Route path="/post-thread" element={<CreatePostQuestions />} />
             <Route path="/your-posts" element={<YourPostThread />} />
             <Route path="/post/:postId" element={<YourPostDetailPage />} />
-            <Route path="/update-question/:postId" element={<UpdateQuestion/>} />
+            <Route path="/update-question/:postId" element={<UpdateQuestion />} />
             <Route path='/bookingMain' element={<BookingMain />} />
-            <Route path="/packageMain/" element={<PackageMain />} />
             <Route path="/payment" element={<PaymentMain />} />
             <Route path="/order" element={<OrderPage />} />
           </Route>
@@ -104,14 +103,14 @@ const App = () => {
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="home" element={<Home />} />
-            <Route path="Users" element={<Users/>} />
-            <Route path="Blogs" element={<Blogs/>} />
-            <Route path="Club" element={<Club/>} />
-            <Route path="Booking" element={<Booking/>} />
-            <Route path="Room" element={<Room/>} />
-            <Route path="Branch" element={<Branch/>} />
-            <Route path="Trainer" element={<Trainer/>} />
-            <Route path="Package" element={<Package/>} />
+            <Route path="Users" element={<Users />} />
+            <Route path="Blogs" element={<Blogs />} />
+            <Route path="Club" element={<Club />} />
+            <Route path="Booking" element={<Booking />} />
+            <Route path="Room" element={<Room />} />
+            <Route path="Branch" element={<Branch />} />
+            <Route path="Trainer" element={<Trainer />} />
+            <Route path="Package" element={<Package />} />
             <Route path="Promotion" element={<PromotionPage />} />
             <Route path="Post" element={<PostPage />} />
             <Route path="profile" element={<UserProfilePage />} />
@@ -121,7 +120,7 @@ const App = () => {
 
         {/* Error Pages */}
         <Route path="/forbidden" element={<ForbiddenPage />} />
-        
+
         {/* Catch all other routes and show 404 page */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

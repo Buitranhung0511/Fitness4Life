@@ -259,11 +259,6 @@ const MainHeader = () => {
                       Login
                     </Link>
                   </li>
-                  <li className="scroll">
-                    <Link className="btn btn-light" to="/registration">
-                      Register
-                    </Link>
-                  </li>
                 </>
               ) : (
                 <li className="scroll">

@@ -5,7 +5,7 @@ import { fetchPaymentStatistics } from "../../../services/Payment";
 
 const StatisticsPage = () => {
   const [dataByMonth, setDataByMonth] = useState([]);
-  const [dataByDay, setDataByDay] = useState([]);
+  const [dataByDay, setDataByDay] = useState([])
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [years, setYears] = useState([]);
 
