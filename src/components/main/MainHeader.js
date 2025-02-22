@@ -28,16 +28,16 @@ const MainHeader = () => {
   useEffect(() => {
     // Check authentication status and load user data on component mount
     checkAuthAndLoadUser();
-    
+
     // Listen for localStorage changes
     window.addEventListener('storage', handleStorageChange);
-    
+
     // Cleanup event listener
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
-  
+
   // Re-check auth when location changes (e.g., after login redirect)
   useEffect(() => {
     checkAuthAndLoadUser();
@@ -63,13 +63,13 @@ const MainHeader = () => {
       // Decode token to get user email
       const decodedToken = jwtDecode(access_token);
       const currentTime = Math.floor(Date.now() / 1000);
-      
+
       // Check if token is expired
       if (decodedToken.exp && decodedToken.exp < currentTime) {
         handleLogout('Your session has expired');
         return;
       }
-      
+
       const userEmail = decodedToken?.sub;
       if (!userEmail) {
         handleLogout('Invalid user data');
@@ -88,20 +88,20 @@ const MainHeader = () => {
           const userData = await getUserByEmail(userEmail, access_token);
           if (userData) {
             setUser(userData);
-            
+
             // Update token data with user info for future use
             const updatedTokenData = {
               ...parsedTokenData,
               user: userData
             };
-            
+
             // Update localStorage without triggering the storage event for this component
             const currentListening = window.removeEventListener('storage', handleStorageChange);
             localStorage.setItem('tokenData', JSON.stringify(updatedTokenData));
             if (currentListening) {
               window.addEventListener('storage', handleStorageChange);
             }
-            
+
             setIsLoggedIn(true);
           } else {
             handleLogout('Could not retrieve user data');
@@ -123,7 +123,7 @@ const MainHeader = () => {
     localStorage.removeItem('tokenData');
     setIsLoggedIn(false);
     setUser(null);
-    
+
     if (message) {
       // Display message if provided
       Modal.info({
@@ -182,19 +182,7 @@ const MainHeader = () => {
     </Menu>
   );
 
-  const menuB = (
-    <Menu>
-      <Menu.Item key="trainers">
-        <a href="#our-team">Trainers</a>
-      </Menu.Item>
-      <Menu.Item key="clubs">
-        <Link to="/clubs">Clubs</Link>
-      </Menu.Item>
-      <Menu.Item key="gallery">
-        <a href="#portfolio">Gallery</a>
-      </Menu.Item>
-    </Menu>
-  );
+
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -227,15 +215,11 @@ const MainHeader = () => {
 
           <div className="collapse navbar-collapse navbar-right">
             <ul className="nav navbar-nav">
-              <li className="scroll active">
-                <a href="#home">Home</a>
+            <li>
+                <Link to="/">Home</Link>
               </li>
-              <li className="scroll">
-                <Dropdown overlay={menuB} trigger={['click']}>
-                  <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                    Branches <span className="caret"></span>
-                  </a>
-                </Dropdown>
+              <li>
+                <Link to="/clubs">Clubs</Link>
               </li>
               <li className="scroll">
                 <Link to="/bookingMain">Booking</Link>
@@ -243,7 +227,7 @@ const MainHeader = () => {
 
               <li className="scroll">
                 <Link to="/packageMain">Membership</Link>
-              </li>
+              </li> 
 
               <li className="scroll">
                 <Dropdown overlay={menuExplore} trigger={['click']}>

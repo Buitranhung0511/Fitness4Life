@@ -13,19 +13,9 @@ import OurTeam from '../main/OurTeam';
 import Portfolio from '../main/Portfolio';
 import PricingSection from '../main/PricingSection';
 import Contact from '../main/Contact';
-import { DataContext } from '../helpers/DataContext';
 import { toast, ToastContainer } from 'react-toastify';
 
 function MainLayout(props) {
-  const { notificationMessage, clearNotification } = useContext(DataContext);
-
-  // Hiển thị thông báo khi trạng thái notificationMessage thay đổi
-  useEffect(() => {
-    if (notificationMessage) {
-      toast.success(notificationMessage);
-      clearNotification(); // Reset thông báo sau khi hiển thị
-    }
-  }, [notificationMessage, clearNotification]);
 
   return (
     <div id='home'>

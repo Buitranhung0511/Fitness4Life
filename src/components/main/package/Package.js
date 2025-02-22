@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Button, Row, Col, notification, Card, Table } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllPackage } from '../../../services/PackageService';
-import { DataContext } from '../../helpers/DataContext';
 import '../../../assets/css/Main/PackageMain.css';
 import packageHeaderPage from '../../../assets/images/Tow_Person_Play_Gym.webp';
 
@@ -16,7 +15,6 @@ import signatureImage from '../../..//assets//images/img3.jpg';
 const PackageMain = () => {
     const [dataPackage, setDataPackage] = useState([]);
     const navigate = useNavigate();
-    const { isLoggedIn } = useContext(DataContext);
     const [loading, setLoading] = useState(true);
 
     // Package image mapping
@@ -45,22 +43,22 @@ const PackageMain = () => {
         }
     };
 
-    const handlePaynow = (pkg) => {
-        if (!isLoggedIn) {
-            notification.warning({
-                message: 'Authentication Required',
-                description: 'You need login before pay product',
-            });
-            setTimeout(() => navigate('/login'), 1500);
-            return;
-        }
-        navigate('/payment', {
-            state: {
-                package: pkg,
-                months: 3, // Default to 3 months
-            }
-        });
-    };
+    // const handlePaynow = (pkg) => {
+    //     if (!isLoggedIn) {
+    //         notification.warning({
+    //             message: 'Authentication Required',
+    //             description: 'You need login before pay product',
+    //         });
+    //         setTimeout(() => navigate('/login'), 1500);
+    //         return;
+    //     }
+    //     navigate('/payment', {
+    //         state: {
+    //             package: pkg,
+    //             months: 3, // Default to 3 months
+    //         }
+    //     });
+    // };
 
     // Function to get package image
     const getPackageImage = (packageName) => {
@@ -168,7 +166,7 @@ const PackageMain = () => {
                                                     </p>
                                                     <Button
                                                         type="primary"
-                                                        onClick={() => handlePaynow(pkg)}
+                                                        // onClick={() => handlePaynow(pkg)}
                                                         className="package-btn"
                                                     >
                                                         Pay Now

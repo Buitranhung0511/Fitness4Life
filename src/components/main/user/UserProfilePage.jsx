@@ -25,6 +25,7 @@ import { jwtDecode } from "jwt-decode";
 import UpdateProfileModal from "./UpdateProfileModal";
 import ChangePasswordModal from "../login/ChangePasswordModal";
 import { getUserByEmail } from "../../../serviceToken/authService";
+import { getDecodedToken, getTokenData } from "../../../serviceToken/tokenUtils";
 
 const { Title, Text } = Typography;
 
@@ -100,26 +101,14 @@ const UserProfilePage = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const tokenData = localStorage.getItem("tokenData");
-            if (!tokenData) {
-                setLoading(false);
-                return;
-            }
-
             try {
-                const { access_token } = JSON.parse(tokenData);
-                const decodedToken = jwtDecode(access_token);
-                const userEmail = decodedToken?.sub;
                 
-                if (!userEmail) {
-                    notification.error({
-                        message: "Error",
-                        description: "Invalid token data"
-                    });
-                    return;
-                }
-
-                const response = await getUserByEmail(userEmail, access_token);
+                const tokenData = getTokenData();
+                const decodeToken=getDecodedToken();
+                console.log("tokenData",tokenData);
+                console.log("decodeToken",decodeToken);
+                
+                const response = await getUserByEmail(decodeToken.sub,tokenData.access_token);
                 console.log("response123",response);
                 
                 if (response) {
@@ -159,20 +148,13 @@ const UserProfilePage = () => {
     }, []);
 
     const handleProfileUpdate = async () => {
-        const tokenData = localStorage.getItem("tokenData");
-        if (!tokenData) return;
-
         try {
-            const { access_token } = JSON.parse(tokenData);
-            const decodedToken = jwtDecode(access_token);
-            const userEmail = decodedToken?.sub;
+            const tokenData = getTokenData();
+            const decodeToken=getDecodedToken();
 
-            if (!userEmail) return;
-
-            const response = await getUserByEmail(userEmail, access_token);
+            const response = await getUserByEmail( decodeToken.sub,tokenData.access_token);
             if (response) {
                 setUserData(response);
-                localStorage.setItem("user", JSON.stringify(response));
             }
         } catch (error) {
             notification.error({
@@ -372,7 +354,7 @@ const UserProfilePage = () => {
                             handleProfileUpdate();
                         }
                     }}
-                    userId={userData.id}
+    
                     userData={{
                         fullName,
                         phone,
@@ -385,6 +367,7 @@ const UserProfilePage = () => {
                         description,
                         role,
                         avatar,
+                        
                     }}
                 />
             </div>

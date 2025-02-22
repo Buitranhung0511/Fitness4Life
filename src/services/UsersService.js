@@ -85,7 +85,7 @@ const updateUserAPI = async (
 const GetOTP = async (email) => {
     const URL_BACKEND = `${URL_USER}/send-otp`;
     const data = { email };
-    return axios.post(URL_BACKEND, data, createAuthConfig());
+    return axios.post(URL_BACKEND, data);
 };
 
 const ResetPass = async (email, otpCode) => {
@@ -95,7 +95,7 @@ const ResetPass = async (email, otpCode) => {
             email,
             otpCode
         };
-        return axios.post(URL_BACKEND, data, createAuthConfig());
+        return axios.post(URL_BACKEND, data);
     } catch (error) {
         throw new Error(error.response?.data?.message || "Lỗi khi đặt lại mật khẩu.");
     }

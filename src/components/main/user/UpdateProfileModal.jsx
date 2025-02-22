@@ -2,14 +2,15 @@ import React, { useContext, useState } from "react";
 import { Modal, Form, Input, Button, Upload, notification, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
-import { DataContext } from "../../helpers/DataContext";
+import { getDecodedToken, getTokenData } from "../../../serviceToken/tokenUtils";
 import { UpdateProflie } from "../../../services/authService";
 
 
-const UpdateProfileModal = ({ open, onClose, userId, userData }) => {
-    const { user } = useContext(DataContext);
+const UpdateProfileModal = ({ open, onClose, userData }) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+
+    console.log("userData", userData);
 
     // Giá trị enum cho Gender
     const genderOptions = [
@@ -39,15 +40,19 @@ const UpdateProfileModal = ({ open, onClose, userId, userData }) => {
         }
         else {
             // Giữ nguyên avatar nếu không có file mới
-            formData.append("avatar", user.profileDTO.avatar);
+            formData.append("avatar", userData.avatar);
         }
 
         try {
             setLoading(true);
-            const response = await UpdateProflie(userId, formData);
-            if (response.status === 200) {
+            const decodeToken = getDecodedToken();
+            const tokenData = getTokenData();
+            const response = await UpdateProflie(decodeToken.id, formData, tokenData.access_token);
+            console.log("response0000",response);
+            
+            if (response != null) {
                 // Cập nhật DataContext sau khi cập nhật thành công
-                const updatedUser = { ...user, ...values }; // Dữ liệu mới
+                const updatedUser = { ...userData, ...values }; // Dữ liệu mới
                 notification.success({
                     message: "Cập nhật thành công",
                     description: "Thông tin người dùng đã được cập nhật.",
@@ -87,12 +92,15 @@ const UpdateProfileModal = ({ open, onClose, userId, userData }) => {
                 <Form.Item label="Họ và tên" name="fullName">
                     <Input placeholder="Nhập họ và tên" />
                 </Form.Item>
+
                 <Form.Item label="Sở thích" name="hobbies">
                     <Input placeholder="Nhập sở thích" />
                 </Form.Item>
+
                 <Form.Item label="Số điện thoại" name="phone">
                     <Input placeholder="Nhập số điện thoại" />
                 </Form.Item>
+
                 <Form.Item label="Giới tính" name="gender">
                     <Select placeholder="Chọn giới tính">
                         {genderOptions.map((option) => (
@@ -102,12 +110,15 @@ const UpdateProfileModal = ({ open, onClose, userId, userData }) => {
                         ))}
                     </Select>
                 </Form.Item>
+
                 <Form.Item label="Địa chỉ" name="address">
                     <Input placeholder="Nhập địa chỉ" />
                 </Form.Item>
+
                 <Form.Item label="Tuổi" name="age">
                     <Input type="number" placeholder="Nhập tuổi" />
                 </Form.Item>
+
                 <Form.Item label="Tình trạng hôn nhân" name="maritalStatus">
                     <Select placeholder="Chọn tình trạng hôn nhân">
                         {maritalStatusOptions.map((option) => (
@@ -117,20 +128,25 @@ const UpdateProfileModal = ({ open, onClose, userId, userData }) => {
                         ))}
                     </Select>
                 </Form.Item>
+
                 <Form.Item label="Chiều cao" name="heightValue">
                     <Input type="number" placeholder="Nhập chiều cao (cm)" />
                 </Form.Item>
+
                 <Form.Item label="Mô tả" name="description">
                     <Input.TextArea rows={3} placeholder="Nhập mô tả" />
                 </Form.Item>
+
                 <Form.Item label="Vai trò" name="role">
                     <Input placeholder="Vai trò" disabled />
                 </Form.Item>
+
                 <Form.Item label="Ảnh đại diện" name="file" valuePropName="file">
                     <Upload beforeUpload={() => false} listType="picture">
                         <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
                 </Form.Item>
+                
                 <Button type="primary" htmlType="submit" loading={loading}>
                     Cập Nhật
                 </Button>

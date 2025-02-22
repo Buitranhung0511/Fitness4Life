@@ -59,10 +59,22 @@ export const getOneUserById = async (id) => {
 };
 
 
-export const UpdateProflie = async (id, editData) => {
+export const UpdateProflie = async (id, editData, token) => {
+    // Debug log
+    for (let pair of editData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+    }
+    
     try {
-        const response = await axios.put(`${userAPI}/users/update/${id}`, editData)
-        return response;
+        const response = await fetch(`${userAPI}/users/update/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                // Không cần Content-Type với FormData
+            },
+            body: editData  // Truyền trực tiếp FormData, không cần JSON.stringify
+        });
+        return response.json();
     } catch (error) {
         if (error.response) {
             return error.response.data || 'An error occurred'
@@ -72,7 +84,8 @@ export const UpdateProflie = async (id, editData) => {
     }
 };
 
-export const verifyOTP   = async ( otp) => {
+
+export const verifyOTP = async (otp) => {
     try {
         const response = await axios.get(`${userAPI}/users/verify-account/${otp}`)
         return response;

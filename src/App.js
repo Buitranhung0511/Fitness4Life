@@ -48,6 +48,7 @@ import ForbiddenPage from './components/error/ForbiddenPage';
 import NotFoundPage from './components/error/NotFoundPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Register from './components/main/login/Registration';
 
 const App = () => {
   return (
@@ -59,7 +60,8 @@ const App = () => {
 
         <Route element={<><MainHeader /><Outlet /><Footer /></>}>
           {/* Public routes */}
-          <Route path='/login' element={<LoginToken />} />
+          <Route path='/login' element={<LoginToken />} />Register
+          <Route path='/Register' element={<Register />} />
           <Route path='/blog' element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact-us/" element={<ContactForm />} />
@@ -67,17 +69,17 @@ const App = () => {
           <Route path="/clubs/" element={<ClubHome />} />
           <Route path="/clubs/:id" element={<ClubDetails />} />
           <Route path="/packageMain/" element={<PackageMain />} />
-          <Route path="/forums" element={<ForumLayout />}>
+          {/* <Route path="/forums" element={<ForumLayout />}>
             <Route index element={<CategoryPage />} />
             <Route path="forum" element={<ForumPage />} />
             <Route path="category" element={<CategoryPage />} />
             <Route path="whats-new" element={<WhatsNew />} />
             <Route path="post-new" element={<PostNew />} />
-          </Route>
+          </Route> */}
 
           {/* Auth Required Routes - User & Admin can access */}
           <Route element={<AuthenticatedRoute />}>
-            <Route path="/forums" element={<ForumLayout />}>
+            {/* <Route path="/forums" element={<ForumLayout />}>
               <Route path="create-new-post" element={<CreateNewPost />} />
             </Route>
             <Route path="forum/:id" element={<DetailPage />} />
@@ -86,7 +88,7 @@ const App = () => {
             <Route path="/post/:postId" element={<YourPostDetailPage />} />
             <Route path="/update-question/:postId" element={<UpdateQuestion />} />
             <Route path='/bookingMain' element={<BookingMain />} />
-            <Route path="/payment" element={<PaymentMain />} />
+            <Route path="/payment" element={<PaymentMain />} /> */}
             <Route path="/order" element={<OrderPage />} />
           </Route>
 
@@ -112,7 +114,7 @@ const App = () => {
             <Route path="Trainer" element={<Trainer />} />
             <Route path="Package" element={<Package />} />
             <Route path="Promotion" element={<PromotionPage />} />
-            <Route path="Post" element={<PostPage />} />
+            {/* <Route path="Post" element={<PostPage />} /> */}
             <Route path="profile" element={<UserProfilePage />} />
             <Route path="Statistics" element={<StatisticsPage />} />
           </Route>

@@ -50,6 +50,7 @@ const ChangePasswordModal = ({ open, onClose, email }) => {
     const handleSuccessOk = () => {
         setIsSuccessModalVisible(false); // Ẩn modal thành công
         onClose(); // Đóng modal
+        
         navigate('/login'); // Chuyển hướng đến trang đăng nhập
     };
 

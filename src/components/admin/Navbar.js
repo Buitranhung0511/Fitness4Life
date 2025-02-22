@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataContext } from '../helpers/DataContext';
 
 const Navbar = ({ menuItems, onToggleSidebar }) => {
-  const { user } = useContext(DataContext); // Lấy user từ context
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
   const navigate = useNavigate();
 
-  console.log("User:", user);
-  console.log("Avatar:", user?.profile?.avatar);
+
 
   const handleSearch = (e) => {
     const term = e.target.value;
@@ -69,7 +66,7 @@ const Navbar = ({ menuItems, onToggleSidebar }) => {
         <span className="count">12</span>
       </a>
       <a href="/user/profile" className="profile">
-        <img src={user?.profile?.avatar} alt="Profile" />
+        {/* <img src={user?.profile?.avatar} alt="Profile" /> */}
       </a>
     </nav>
   );

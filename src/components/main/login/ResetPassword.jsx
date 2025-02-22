@@ -34,7 +34,9 @@ function ResetPassword(props) {
         } catch (error) {
             notification.error({
                 message: "Lỗi",
-                description: error.response?.data?.message || "Không thể gửi OTP.",
+                description: error.response?.data?.message || 
+                    error.message || 
+                    "Không thể gửi OTP. Vui lòng thử lại sau.",
             });
         } finally {
             setSendingOTP(false);
@@ -57,7 +59,7 @@ function ResetPassword(props) {
                 message: "Thành công",
                 description: "Mật khẩu mới đã được gửi đến email của bạn.",
             });
-            showChangePasswordConfirmation(); // Hiển thị thông báo xác nhận
+           // showChangePasswordConfirmation(); // Hiển thị thông báo xác nhận
         } catch (error) {
             notification.error({
                 message: "Lỗi",
@@ -68,21 +70,21 @@ function ResetPassword(props) {
         }
     };
 
-    const showChangePasswordConfirmation = () => {
-        Modal.confirm({
-            title: "Mật khẩu đã được gửi thành công",
-            content: "Bạn có muốn đổi mật khẩu ngay không?",
-            okText: "Có",
-            cancelText: "Không",
-            onOk: () => {
-                setIsChangePasswordModalVisible(true); // Hiển thị modal đổi mật khẩu
-                setResetPassword(false); // Ẩn modal ResetPassword
-            },
-            onCancel: () => {
-                navigate("/login"); // Chuyển hướng đến trang đăng nhập
-            },
-        });
-    };
+    // const showChangePasswordConfirmation = () => {
+    //     Modal.confirm({
+    //         title: "Mật khẩu đã được gửi thành công",
+    //         content: "Bạn có muốn đổi mật khẩu ngay không?",
+    //         okText: "Có",
+    //         cancelText: "Không",
+    //         onOk: () => {
+    //             setIsChangePasswordModalVisible(true); // Hiển thị modal đổi mật khẩu
+    //             setResetPassword(false); // Ẩn modal ResetPassword
+    //         },
+    //         onCancel: () => {
+    //             navigate("/login"); // Chuyển hướng đến trang đăng nhập
+    //         },
+    //     });
+    // };
 
     const resetAndCloseModal = () => {
         setEmail("");
